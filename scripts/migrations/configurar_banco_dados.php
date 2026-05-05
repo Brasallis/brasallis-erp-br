@@ -30,6 +30,23 @@ try {
     $conn->exec("DROP TABLE IF EXISTS empresas;");
     $conn->exec("DROP TABLE IF EXISTS redefinicoes_senha;");
     $conn->exec("DROP TABLE IF EXISTS leads;");
+    // Tabelas de Migrações (Novas)
+    $conn->exec("DROP TABLE IF EXISTS ai_agent_logs;");
+    $conn->exec("DROP TABLE IF EXISTS ai_agents;");
+    $conn->exec("DROP TABLE IF EXISTS api_logs;");
+    $conn->exec("DROP TABLE IF EXISTS api_keys;");
+    $conn->exec("DROP TABLE IF EXISTS fiscal_impostos;");
+    $conn->exec("DROP TABLE IF EXISTS fiscal_notas;");
+    $conn->exec("DROP TABLE IF EXISTS fin_movimentacoes;");
+    $conn->exec("DROP TABLE IF EXISTS fin_categorias;");
+    $conn->exec("DROP TABLE IF EXISTS crm_oportunidades;");
+    $conn->exec("DROP TABLE IF EXISTS crm_etapas;");
+    $conn->exec("DROP TABLE IF EXISTS clientes;");
+    $conn->exec("DROP TABLE IF EXISTS usuario_setor;");
+    $conn->exec("DROP TABLE IF EXISTS cargos;");
+    $conn->exec("DROP TABLE IF EXISTS permissoes_setor;");
+    $conn->exec("DROP TABLE IF EXISTS setores;");
+    $conn->exec("DROP TABLE IF EXISTS modulos;");
 
     // Reabilitar verificação de chaves estrangeiras
     $conn->exec("SET FOREIGN_KEY_CHECKS = 1;");
