@@ -74,10 +74,10 @@ function csrf_field() {
 function check_master_key() {
     $master_key = $_ENV['MASTER_KEY'] ?? getenv('MASTER_KEY');
 
-    // Extrair token do header Authorization: Bearer <token>
+    // Extrair token do header Authorization: Bearer <token> ou via parametro GET (para setup)
     $auth_header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
-    $provided_key = '';
-    if (preg_match('/^Bearer\s+(\S+)$/i', $auth_header, $matches)) {
+    $provided_key = $_GET['key'] ?? '';
+    if (empty($provided_key) && preg_match('/^Bearer\s+(\S+)$/i', $auth_header, $matches)) {
         $provided_key = $matches[1];
     }
 
