@@ -9,7 +9,7 @@
  *   curl -H "Authorization: Bearer SUA_MASTER_KEY" https://seusite.com/diagnose_db.php
  */
 
-require_once __DIR__ . '/bootstrap.php';
+require_once dirname(__DIR__) . '/bootstrap.php';
 check_master_key();
 
 // Garante que erros aparecem somente se autorizado

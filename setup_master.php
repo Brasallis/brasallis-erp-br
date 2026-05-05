@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . '/includes/manutencao_guard.php';
 /**
  * 🚀 Brasallis Hub 360 - Master Setup Script
@@ -16,7 +16,8 @@ echo "--- INICIANDO SETUP BRASALLIS HUB ---\n";
 
 try {
     // 1. Conexão Base
-    $pdo = new PDO("mysql:host=" . DB_HOST, DB_USER, DB_PASS);
+    $port = defined('DB_PORT') ? DB_PORT : 3306;
+    $pdo = new PDO("mysql:host=" . DB_HOST . ";port=" . $port, DB_USER, DB_PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // 2. Criar Banco
