@@ -2,8 +2,8 @@
 -- Módulo Financeiro: Contas a Pagar, Receber e Categorias
 
 CREATE TABLE IF NOT EXISTS fin_categorias (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    empresa_id INT NOT NULL,
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    empresa_id INT(11) UNSIGNED NOT NULL,
     nome VARCHAR(50) NOT NULL,
     tipo ENUM('receita', 'despesa') NOT NULL,
     cor_hex VARCHAR(7) DEFAULT '#6c757d',
@@ -12,12 +12,12 @@ CREATE TABLE IF NOT EXISTS fin_categorias (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS fin_movimentacoes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    empresa_id INT NOT NULL,
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    empresa_id INT(11) UNSIGNED NOT NULL,
     descricao VARCHAR(255) NOT NULL,
     valor DECIMAL(10, 2) NOT NULL,
     tipo ENUM('receita', 'despesa') NOT NULL,
-    categoria_id INT,
+    categoria_id INT(11) UNSIGNED,
     data_vencimento DATE NOT NULL,
     data_pagamento DATE,
     status ENUM('pendente', 'pago', 'atrasado', 'cancelado') DEFAULT 'pendente',

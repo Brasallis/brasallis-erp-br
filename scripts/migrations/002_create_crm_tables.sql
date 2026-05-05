@@ -3,8 +3,8 @@
 
 -- 1. CLIENTES (Base de Contatos)
 CREATE TABLE IF NOT EXISTS clientes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    empresa_id INT NOT NULL,
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    empresa_id INT(11) UNSIGNED NOT NULL,
     nome VARCHAR(150) NOT NULL,
     tipo ENUM('PF', 'PJ') DEFAULT 'PF',
     cpf_cnpj VARCHAR(20),
@@ -21,10 +21,10 @@ CREATE TABLE IF NOT EXISTS clientes (
 
 -- 2. CRM ETAPAS (Configuração do Funil)
 CREATE TABLE IF NOT EXISTS crm_etapas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    empresa_id INT NOT NULL,
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    empresa_id INT(11) UNSIGNED NOT NULL,
     nome VARCHAR(50) NOT NULL, -- Ex: Prospecção, Qualificação, Proposta, Negociação, Fechado
-    ordem INT NOT NULL DEFAULT 1,
+    ordem INT(11) NOT NULL DEFAULT 1,
     cor_hex VARCHAR(7) DEFAULT '#e9ecef',
     is_final BOOLEAN DEFAULT FALSE, -- Se é uma etapa de conclusão (Ganho/Perdido)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -33,13 +33,13 @@ CREATE TABLE IF NOT EXISTS crm_etapas (
 
 -- 3. CRM OPORTUNIDADES (Deals / Leads)
 CREATE TABLE IF NOT EXISTS crm_oportunidades (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    empresa_id INT NOT NULL,
-    cliente_id INT, -- Pode ser null se for um lead sem cadastro completo ainda
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    empresa_id INT(11) UNSIGNED NOT NULL,
+    cliente_id INT(11) UNSIGNED, -- Pode ser null se for um lead sem cadastro completo ainda
     titulo VARCHAR(100) NOT NULL, -- Ex: "Venda de 50 Notebooks"
     valor_estimado DECIMAL(10, 2) DEFAULT 0.00,
-    etapa_id INT NOT NULL,
-    responsavel_id INT, -- Usuário responsável
+    etapa_id INT(11) UNSIGNED NOT NULL,
+    responsavel_id INT(11) UNSIGNED, -- Usuário responsável
     origem VARCHAR(50), -- Ex: Indicação, Site, Ads
     status ENUM('aberto', 'ganho', 'perdido') DEFAULT 'aberto',
     data_fechamento DATE,

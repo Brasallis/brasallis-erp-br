@@ -3,8 +3,8 @@
 
 -- 1. Tabela de Chaves de API
 CREATE TABLE IF NOT EXISTS api_keys (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    empresa_id INT NOT NULL,
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    empresa_id INT(11) UNSIGNED NOT NULL,
     api_key VARCHAR(64) NOT NULL UNIQUE, -- Hash SHA-256 ou similar
     descricao VARCHAR(100), -- Ex: "Integração Site", "App Mobile"
     permissions JSON, -- Escopo: ["crm:read", "crm:write"]
@@ -31,8 +31,8 @@ CREATE INDEX idx_fiscal_notas_periodo ON fiscal_notas(data_emissao);
 
 -- 3. Webhook Logs (Opcional, para debug de integrações)
 CREATE TABLE IF NOT EXISTS api_logs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    empresa_id INT,
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    empresa_id INT(11) UNSIGNED,
     endpoint VARCHAR(100),
     method VARCHAR(10),
     request_body TEXT,
