@@ -28,6 +28,8 @@ composer.lock
 *.sqlite
 /database/*.sql
 db_structure.json
+!scripts/migrations/*.sql
+!sql/*.sql
 
 # Resíduos de Debug e Testes
 debug_*.php
