@@ -1,0 +1,164 @@
+
+body {
+    background-color: #f8f9fa; /* Um cinza muito claro para o fundo geral */
+}
+
+@media (min-width: 991.98px) {
+    main {
+        padding-left: 240px;
+    }
+}
+
+/* Barra Lateral */
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    padding: 58px 0 0; /* Altura da barra de navegação */
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+    width: 240px;
+    z-index: 600;
+}
+
+@media (max-width: 991.98px) {
+    .sidebar {
+        width: 100%;
+    }
+}
+
+.sidebar .active {
+    border-radius: 5px;
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+}
+
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: 0.5rem;
+    overflow-x: hidden;
+    overflow-y: auto; /* Conteúdo rolável se a viewport for menor que o conteúdo. */
+}
+
+
+/* ========================================= */
+/* === ESTILOS DO PAINEL PRO (DASHBOARD) === */
+/* ========================================= */
+
+:root {
+    --pro-blue: #0052CC;
+    --pro-green: #00875A;
+    --pro-amber: #FFAB00;
+    --pro-red: #DE350B;
+    --pro-purple: #5243AA;
+    --pro-text-primary: #172B4D;
+    --pro-text-secondary: #6B778C;
+    --border-light: #EBECF0;
+}
+
+.pro-metric-card {
+    position: relative; /* Necessário para o sparkline */
+    overflow: hidden; /* Garante que o gráfico não vaze */
+    background-color: #fff;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.sparkline-chart-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    opacity: 0.25;
+    pointer-events: none; /* O gráfico não interfere com o mouse */
+}
+
+.pro-metric-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 7px 14px rgba(0,0,0,0.07), 0 3px 6px rgba(0,0,0,0.05);
+}
+
+.pro-metric-card .card-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pro-metric-card .metric-content .card-title {
+    color: var(--pro-text-secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.pro-metric-card .metric-content .display-4 {
+    color: var(--pro-text-primary);
+    font-weight: 600;
+    font-size: 2.25rem; /* Adjusted size */
+}
+
+.pro-metric-card .metric-icon {
+    font-size: 1.25rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Icon background colors */
+.icon-bg-blue { background-color: var(--pro-blue); }
+.icon-bg-green { background-color: var(--pro-green); }
+.icon-bg-amber { background-color: var(--pro-amber); }
+.icon-bg-red { background-color: var(--pro-red); }
+.icon-bg-purple { background-color: var(--pro-purple); }
+
+
+/* === REFINAMENTOS GLOBAIS DE RESPONSIVIDADE === */
+@media (max-width: 768px) {
+  h1, .h1 {
+    font-size: 1.75rem;
+  }
+  h2, .h2 {
+    font-size: 1.5rem;
+  }
+  h3, .h3 {
+    font-size: 1.25rem;
+  }
+
+  /* Reduz o padding dos cards principais para mais espaço */
+  .card.shadow-sm > .card-body,
+  .card.shadow-sm > .card-header,
+  .card.shadow-sm > .card-footer {
+    padding: 1rem;
+  }
+
+  /* Ajusta o formulário de filtros do painel para não ficar tão grande */
+  .collapse .card-body {
+    padding: 1.5rem;
+  }
+}
+
+/* Responsividade específica para os novos cards do dashboard */
+@media (max-width: 575.98px) {
+    .dashboard-metrics .row > * {
+        flex: 0 0 auto;
+        width: 50%; /* Duas colunas em mobile */
+    }
+    .pro-metric-card .metric-content .display-4 {
+        font-size: 1.5rem;
+    }
+    .pro-metric-card .metric-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+}

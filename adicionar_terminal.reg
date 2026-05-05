@@ -1,0 +1,17 @@
+Windows Registry Editor Version 5.00
+
+; Adicionar ao clicar no fundo de uma pasta
+[HKEY_CLASSES_ROOT\Directory\Background\shell\OpenPowerShellHere]
+@="Abrir Terminal Aqui"
+"Icon"="powershell.exe"
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\OpenPowerShellHere\command]
+@="powershell.exe -noexit -command Set-Location '%V'"
+
+; Adicionar ao clicar sobre o ícone de uma pasta
+[HKEY_CLASSES_ROOT\Directory\shell\OpenPowerShellHere]
+@="Abrir Terminal Aqui"
+"Icon"="powershell.exe"
+
+[HKEY_CLASSES_ROOT\Directory\shell\OpenPowerShellHere\command]
+@="powershell.exe -noexit -command Set-Location '%1'"

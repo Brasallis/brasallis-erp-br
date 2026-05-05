@@ -1,0 +1,985 @@
+/* ==========================================================================
+   RESET & BASE - "THE CLEAN SLATE"
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* Global Brand Utilities */
+.brightness-inverted {
+    filter: brightness(0) invert(1) contrast(100%);
+    opacity: 0.9;
+}
+.sidebar .brightness-inverted {
+    opacity: 0.9;
+}
+.sidebar .brightness-inverted:hover {
+    opacity: 1;
+}
+
+:root {
+    /* --- PALETA GOOGLE DESIGN (Material 3) --- */
+    --g-blue: #1a73e8;
+    --g-red: #ea4335;
+    --g-yellow: #fbbc05;
+    --g-green: #34a853;
+    
+    --slate-50: #f8f9fa; /* Google White */
+    --slate-100: #f1f3f4;
+    --slate-200: #e8eaed;
+    --slate-300: #dadce0;
+    --slate-400: #bdc1c6;
+    --slate-500: #9aa0a6;
+    --slate-600: #80868b;
+    --slate-700: #5f6368;
+    --slate-800: #3c4043;
+    --slate-900: #202124;
+
+    /* --- MARCA & SEMÂNTICA --- */
+    --primary: var(--g-blue);
+    --primary-hover: #1765cc;
+    --primary-light: #e8f0fe;
+    --success: var(--g-green);
+    --warning: var(--g-yellow);
+    --danger: var(--g-red);
+    --info: #12b5cb;
+
+    /* --- DIMENSÕES & ELEVAÇÃO (M3 Evoluído) --- */
+    --sidebar-collapsed-width: 76px;
+    --sidebar-width: 280px;
+    --header-height: 72px;
+    --radius-card: 20px;
+    --radius-btn: 12px;
+    --radius-input: 12px;
+
+    /* Glassmorphism Tokens */
+    --glass-bg: rgba(15, 23, 42, 0.85); /* Deep Navy Glass */
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-blur: 24px;
+    --glass-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.4);
+
+    /* Sombras Google (Extremamente sutis) */
+    --shadow-sm: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+    --shadow-md: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 2px 6px 2px rgba(60, 64, 67, 0.15);
+    --shadow-lg: 0 4px 8px 3px rgba(60, 64, 67, 0.15), 0 1px 3px 0 rgba(60, 64, 67, 0.3);
+
+    /* Tipografia (Google Sans feel) */
+    --fs-xs: 0.75rem;
+    --fs-sm: 0.875rem;
+    --fs-base: 1rem;
+    --fs-lg: 1.125rem;
+    --fs-xl: 1.375rem;
+    --fs-2xl: 1.75rem;
+
+    /* --- BOOTSTRAP 5 OVERRIDES --- */
+    --bs-primary: var(--primary);
+    --bs-body-bg: var(--slate-50);
+    --bs-body-color: var(--slate-900);
+}
+
+/* Force Bootstrap components to respect our variables if they don't use the vars above */
+.btn-primary {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+
+.text-primary {
+    color: var(--primary) !important;
+}
+
+/* --- RESPONSIVIDADE AVANÇADA (Google Quality) --- */
+
+/* 1. Mobile Sidebar Drawer & Overlay */
+#sidebar-overlay {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - var(--header-height));
+    background-color: rgba(15, 23, 42, 0.6);
+    /* Navy/Dark backdrop */
+    z-index: 1040 !important;
+    /* Abaixo da sidebar (1045), mas sob a navbar (1050) */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(4px);
+}
+
+#sidebar-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 1. Universal Sidebar (Integrada) */
+/* 1. Universal Sidebar (Integrada) */
+/* --- LEGACY NAVIGATION REMOVED (Migrated to navigation-hub.css) --- */
+
+/* 2. Mobile Data Tables -> Card View Overlay */
+@media (max-width: 768px) {
+
+    /* Força a tabela a se comportar como blocos */
+    .table-responsive-card .table,
+    .table-responsive-card thead,
+    .table-responsive-card tbody,
+    .table-responsive-card th,
+    .table-responsive-card td,
+    .table-responsive-card tr {
+        display: block;
+    }
+
+    /* Esconde o cabeçalho da tabela */
+    .table-responsive-card thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .table-responsive-card tr {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-card);
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .table-responsive-card td {
+        border: none !important;
+        position: relative;
+        padding-left: 50% !important;
+        /* Espaço para o label */
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+        text-align: right;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .table-responsive-card td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 1rem;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 700;
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+    }
+
+    /* Exceção para colunas de ação ou imagens que não precisam de label */
+    .table-responsive-card td.no-label::before {
+        content: none;
+    }
+
+    .table-responsive-card td.no-label {
+        padding-left: 1rem !important;
+        justify-content: center;
+    }
+}
+
+/* 3. Touch Targets (48px Min) Utils */
+@media (max-width: 768px) {
+
+    .btn,
+    .nav-link {
+        min-height: 48px;
+        /* Google Standard */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 48px;
+    }
+
+    .dropdown-item {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    /* Input text alignment fix for height increase */
+    .form-control,
+    .form-select {
+        justify-content: flex-start;
+    }
+}
+
+/* Scrollbar Suave para Tabelas (Desktop/Tablet fallback) */
+.table-responsive {
+    scrollbar-width: thin;
+    scrollbar-color: var(--slate-300) transparent;
+}
+
+/* ==========================================================================
+   SYSTEM IDENTITY (Google/Apple Quality - Single Source of Truth)
+   ========================================================================== */
+
+:root {
+    /* --- CORE PALETTE (Deep Navy & Clean White) --- */
+    --primary: #2563eb;
+    /* Royal Blue (Google-like) */
+    --primary-hover: #1d4ed8;
+    --primary-soft: rgba(37, 99, 235, 0.08);
+
+    /* Backgrounds */
+    --bg-body: #f8fafc;
+    /* Slate 50 (Clean Page Background) */
+    --bg-sidebar: #0f172a;
+    /* Slate 900 (Deep Navy Sidebar) */
+    --bg-header: #ffffff;
+    /* Pure White Navbar */
+    --bg-card: #ffffff;
+    /* Pure White Cards */
+
+    /* Text */
+    --text-main: #0f172a;
+    /* Slate 900 (High Contrast) */
+    --text-secondary: #475569;
+    /* Slate 600 (Subtitles) */
+    --text-muted: #94a3b8;
+    /* Slate 400 (Metadata) */
+
+    /* Sidebar Specifics */
+    --text-sidebar: #94a3b8;
+    /* Muted for idle state */
+    --text-sidebar-hover: #ffffff;
+    /* White for hover */
+    --text-sidebar-active: #ffffff;
+    /* White for active */
+    --bg-sidebar-hover: rgba(255, 255, 255, 0.06);
+    /* Ultra subtle hover */
+    --bg-sidebar-active: var(--primary);
+    /* Active Brand Color */
+    --border-sidebar: none;
+    /* Seamless */
+
+    /* Borders & Dividers */
+    --border-card: #e2e8f0;
+    /* Slate 200 */
+    --border-header: #f1f5f9;
+    /* Slate 100 (Subtle separation) */
+    --divider-color: #f1f5f9;
+
+    /* Forms & Inputs */
+    --input-bg: #ffffff;
+    --input-border: #cbd5e1;
+    /* Slate 300 */
+    --input-focus-border: var(--primary);
+
+    /* Tables */
+    --table-header-bg: #f8fafc;
+    /* Slate 50 */
+
+    /* --- SHADOWS (Elevation System) --- */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    /* Card default */
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    /* Dropdowns/Hover */
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    /* Modals */
+
+    /* --- DIMENSIONS --- */
+    --sidebar-width: 260px;
+    /* Slightly narrower for elegance */
+    --header-height: 64px;
+    /* Standard refined height */
+    --radius-card: 16px;
+    /* Modern rounded corners */
+    --radius-btn: 8px;
+    /* Subtle button radius */
+    --radius-input: 8px;
+
+    /* --- BOOTSTRAP OVERRIDES --- */
+    --bs-primary: var(--primary);
+    --bs-body-bg: var(--bg-body);
+    --bs-body-color: var(--text-main);
+}
+
+/* ==========================================================================
+   ESTRUTURA & COMPONENTES GERAIS
+   ========================================================================== */
+
+body {
+    background-color: var(--bg-body) !important;
+    color: var(--text-main) !important;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    font-size: var(--fs-base) !important;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+}
+
+/* Main Content Adjustment for Drawer Sidebar */
+main, .navbar {
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    margin-left: var(--sidebar-collapsed-width);
+    width: calc(100% - var(--sidebar-collapsed-width));
+}
+
+body.sidebar-open main, body.sidebar-open .navbar {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+}
+
+@media (max-width: 991.98px) {
+    main, .navbar {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+}
+
+/* Desktop Sidebar Offset - Removido para funcionar como Drawer Overlay em todas as telas */
+
+/* Ajustes Específicos para Resoluções Intermediárias (Tablets/Laptops Pequenos) */
+@media (min-width: 768px) and (max-width: 1100px) {
+
+    .row>.col-xl-8,
+    .row>.col-xl-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .card-dashboard {
+        margin-bottom: 1rem;
+    }
+}
+
+
+
+
+
+/* --- STATUS INDICATORS --- */
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+.status-dot.ok { background-color: #22c55e; }
+.status-dot.low { background-color: #f59e0b; }
+.status-dot.out { background-color: #ef4444; }
+
+/* --- GLOBAL SEARCH UI --- */
+.global-search-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+}
+
+#globalSearchResults {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    z-index: 1100;
+    max-height: 400px;
+    overflow-y: auto;
+    background: var(--bg-card);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-card);
+    display: none;
+}
+
+.search-result-category {
+    font-weight: 700;
+    color: var(--primary);
+    padding: 12px 16px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: var(--bg-body);
+}
+
+/* --- SIDEBAR REFINEMENTS --- */
+.chevron-icon {
+    transition: transform 0.3s ease;
+    font-size: 0.8rem;
+    opacity: 0.5;
+}
+.nav-link-collapse[aria-expanded="true"] .chevron-icon {
+    transform: rotate(180deg);
+}
+
+.sidebar-nav .nav-group {
+    margin: 4px 10px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+}
+
+body.sidebar-open .sidebar-nav .nav-group {
+    margin: 4px 12px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* AI Pulse Button */
+.btn-ai-pulse {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(37, 99, 235, 0.1);
+    transition: all 0.3s ease;
+}
+
+.btn-ai-pulse::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 50%;
+    border: 1.5px solid var(--primary);
+    animation: ping-ai 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+@keyframes ping-ai {
+    75%, 100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* --- DASHBOARD COMPONENTS --- */
+.card-dashboard {
+    border: none;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: var(--bg-card);
+}
+.card-dashboard:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.icon-shape {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1.1rem;
+}
+.bg-primary-light { background-color: var(--primary-soft); color: var(--primary); }
+.bg-success-light { background-color: rgba(34, 197, 94, 0.1); color: #22c55e; }
+.bg-warning-light { background-color: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.bg-danger-light { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+
+
+.sidebar-toggle-tab:hover {
+    color: var(--primary);
+}
+
+body.sidebar-collapsed .sidebar-toggle-tab {
+    left: 80px;
+}
+
+body.sidebar-collapsed .sidebar-toggle-tab i {
+    transform: rotate(180deg);
+}
+
+/* Ajuste da Navbar */
+body.sidebar-collapsed .navbar {
+    width: calc(100% - 80px);
+    margin-left: 80px;
+}
+
+/* Ajuste Dropdowns quando colapsado (Hover para ver submenus - Avançado) */
+/* Por enquanto, ao clicar em "Operacional" com sidebar fechada, ele vai expandir a altura, o que é OK.
+   Para UX perfeita, ideal seria popup, mas isso é complexo. 
+   Vamos manter simples: Clicar expande a sidebar temporariamente ou o usuário expande antes. */
+
+/* --- NAVBAR (HEADER) --- */
+.navbar,
+.glass-navbar,
+.topbar {
+    background-color: var(--bg-header) !important;
+    border-bottom: 1px solid var(--border-header) !important;
+    box-shadow: var(--shadow-sm) !important;
+    /* Remover backdrop-filter se causar problemas em navegadores antigos, mas é bom para glass */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.navbar-brand {
+    color: var(--text-main) !important;
+}
+
+/* Busca Global - Estilo Minimalista Google/Apple */
+.global-search-wrapper {
+    max-width: 500px;
+    transition: var(--transition-base);
+}
+
+.global-search-wrapper .input-group {
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 20px;
+    /* Mais arredondado */
+    padding: 4px 12px;
+    transition: var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.global-search-wrapper .input-group:focus-within {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md), 0 0 0 4px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+}
+
+.global-search-wrapper input {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+}
+
+.global-search-wrapper input:focus {
+    box-shadow: none !important;
+}
+
+.global-search-wrapper .input-group-text {
+    color: var(--text-muted);
+}
+
+/* Ícones da Navbar */
+.navbar .nav-link {
+    color: var(--text-secondary) !important;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.navbar .nav-link:hover {
+    color: var(--primary) !important;
+    background-color: rgba(37, 99, 235, 0.05);
+    /* Toque sutil de feedback */
+    border-radius: 50%;
+    /* Circular para ícones */
+}
+
+/* --- MOBILE SEARCH OVERLAY (Google Style) --- */
+#mobile-search-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height);
+    background-color: var(--bg-header);
+    z-index: 1060;
+    /* Acima de tudo na navbar */
+    backdrop-filter: blur(12px);
+    /* Glassmorphism se suportado */
+    animation: slideDown 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+#mobile-search-overlay .input-group-text {
+    padding-left: 1rem;
+}
+
+#mobile-search-overlay input {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+#mobile-search-overlay input::placeholder {
+    color: var(--slate-400);
+}
+
+#mobileSearchResults {
+    max-height: 60vh;
+    overflow-y: auto;
+    border-top: 1px solid var(--border-header);
+}
+
+/* Ajustes Minimalistas Mobile */
+@media (max-width: 991.98px) {
+    .navbar .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .navbar-brand img {
+        width: 28px;
+        height: 28px;
+    }
+
+    .navbar-brand .brand-text {
+        font-size: 1.1rem !important;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+    }
+
+    /* Mais espaço para toque nos ícones da direita */
+    .navbar-nav.ms-auto {
+        gap: 0.5rem !important;
+    }
+
+    .navbar .nav-link {
+        padding: 8px !important;
+        /* Aumentar área de toque */
+    }
+}
+
+/* --- CARTÕES & CONTEÚDO --- */
+.card,
+.card-dashboard,
+.stat-card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-card) !important;
+    color: var(--text-main) !important;
+    border-radius: var(--radius-card) !important;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-base);
+}
+
+.card:hover,
+.card-dashboard:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.card-header {
+    background-color: transparent !important;
+    border-bottom: 1px solid var(--divider-color) !important;
+    color: var(--text-main) !important;
+    padding: 1.25rem 1.5rem;
+}
+
+.card-header h1,
+.card-header h2,
+.card-header h3,
+.card-header h4,
+.card-header h5,
+.card-header h6 {
+    color: var(--text-main) !important;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+/* --- TABELAS --- */
+.table {
+    margin-bottom: 0;
+    color: var(--text-main) !important;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table th {
+    background-color: var(--table-header-bg) !important;
+    color: var(--text-secondary) !important;
+    border-bottom: 1px solid var(--divider-color) !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    padding: 1rem 1.5rem;
+}
+
+.table td {
+    background-color: transparent !important;
+    border-bottom: 1px solid var(--divider-color) !important;
+    color: var(--text-main) !important;
+    vertical-align: middle;
+    padding: 1.25rem 1.5rem;
+    transition: var(--transition-fast);
+}
+
+/* Remover borda da última linha */
+.table tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Hover na Tabela */
+.table-hover tbody tr:hover td {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    /* Workaround generic */
+}
+
+[data-theme="light"] .table-hover tbody tr:hover td,
+[data-theme="original"] .table-hover tbody tr:hover td {
+    background-color: var(--slate-50) !important;
+}
+
+/* --- DROPDOWNS --- */
+.dropdown-menu {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-card) !important;
+    border-radius: 16px;
+    padding: 0.5rem;
+    box-shadow: var(--shadow-lg);
+    animation: dropdownFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-item {
+    color: var(--text-main) !important;
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    transition: var(--transition-fast);
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-body) !important;
+    /* Destaque sutil */
+    color: var(--primary) !important;
+}
+
+.dropdown-header {
+    color: var(--text-muted) !important;
+}
+
+.dropdown-divider {
+    border-top-color: var(--divider-color) !important;
+}
+
+/* --- ANIMAÇÕES DE NOTIFICAÇÃO --- */
+.badge.bg-danger {
+    animation: pulse-danger 2s infinite;
+}
+
+@keyframes pulse-danger {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+    }
+
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
+}
+
+/* Polimento final de scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--slate-300);
+    border-radius: 10px;
+}
+
+/* --- MODAL Z-INDEX FIXES --- */
+.modal-backdrop {
+    z-index: 1050 !important;
+}
+
+.modal {
+    z-index: 1060 !important;
+}
+
+.modal-dialog {
+    z-index: 1070;
+    /* Garantir que o diálogo esteja acima do backdrop do modal */
+}
+
+.modal-content {
+    pointer-events: auto !important;
+    /* Forçar interactividade */
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: var(--slate-700);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--slate-400);
+}
+
+/* --- TEXTOS E UTILITÁRIOS --- */
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+.text-dark {
+    color: var(--text-main) !important;
+}
+
+/* Botões */
+.btn-light {
+    background-color: var(--bg-body) !important;
+    border-color: var(--border-card) !important;
+    color: var(--text-main) !important;
+}
+
+.btn-light:hover {
+    background-color: var(--border-card) !important;
+}
+
+/* --- UNIFICAÇÃO DE BRANDING (Prevenção de Duplicidade) --- */
+
+/* Esconde qualquer marca secundária se o logo principal estiver presente */
+.navbar-brand + .navbar-brand,
+.topbar .navbar-brand + .navbar-brand {
+    display: none !important;
+}
+
+/* Sidebar Header is now used for the AI Hub and Search */
+.sidebar .sidebar-header {
+    display: flex !important;
+}
+
+/* Evita que duas Navbars/Topbars apareçam simultaneamente */
+.navbar + .topbar,
+.topbar + .navbar,
+.navbar + .navbar,
+.topbar + .topbar {
+    display: none !important;
+}
+
+/* Ajuste de alinhamento para o padrão Google (Logo ao lado do Menu) */
+.navbar-brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    text-decoration: none !important;
+    padding-left: 0.5rem !important;
+}
+
+.brand-text {
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+    color: var(--primary) !important;
+}
+
+/* --- NEW SIDEBAR HUB ELEMENTS --- */
+.sidebar-header {
+    padding-top: 24px !important;
+    margin-bottom: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 16px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    padding-bottom: 20px !important;
+}
+
+.btn-ai-hub {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 14px !important;
+    background: linear-gradient(135deg, #6366f1, #a855f7) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3) !important;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.btn-ai-hub:hover {
+    transform: scale(1.1) rotate(8deg);
+}
+
+.search-trigger-sidebar {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+/* --- SUB-ITEMS REFINEMENT --- */
+.nav-sub-items {
+    padding: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar:hover .nav-sub-items {
+    opacity: 1;
+}
+
+.nav-sub-link {
+    color: rgba(255, 255, 255, 0.5) !important;
+    padding: 8px 30px !important;
+    font-size: 0.85rem;
+    display: flex;
+}
+
+/* --- MOBILE BOTTOM NAVIGATION --- */
+.mobile-bottom-nav {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    height: 72px;
+    background: rgba(15, 23, 42, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 2000;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+
+.mobile-bottom-nav i { font-size: 1.3rem; }
+.mobile-ai-trigger { position: relative; top: -24px; }
+.ai-orb {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid #0f172a;
+}
+

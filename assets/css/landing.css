@@ -1,0 +1,302 @@
+/* --- BRASALLIS MODERN TRUST THEME (System Identity Core) --- */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500&display=swap');
+
+:root {
+    /* BRAND IDENTITY (Restored) */
+    --sys-navy: #0A2647;
+    /* Authority, Headers, Footer */
+    --sys-navy-light: #14365D;
+    /* Hover states */
+
+    --sys-emerald: #2C7865;
+    /* Growth, Money, Success */
+    --sys-emerald-light: #E7F6F2;
+    /* Tints */
+
+    --sys-surface: #FFFFFF;
+    /* Pure White */
+    --sys-surface-alt: #F8FAFC;
+    /* Slate 50 - Section Contrast */
+
+    --sys-text-primary: #0F172A;
+    /* Slate 900 */
+    --sys-text-secondary: #475569;
+    /* Slate 600 */
+
+    --sys-border: #E2E8F0;
+    /* Slate 200 */
+
+    /* DEPTH SYSTEM (Layered UI) */
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    --shadow-hero: 0 25px 50px -12px rgba(10, 38, 71, 0.15);
+    /* Tinted Navy Shadow */
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+}
+
+/* --- BASE --- */
+body {
+    background-color: var(--sys-surface);
+    color: var(--sys-text-primary);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Outfit', sans-serif;
+    color: var(--sys-navy);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.lead {
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--sys-text-secondary);
+}
+
+/* --- COMPONENTS --- */
+
+/* Buttons: Clear Action */
+.btn-trust-primary {
+    background-color: var(--sys-emerald);
+    color: white;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    padding: 14px 28px;
+    border-radius: var(--radius-sm);
+    /* Professional square-ish */
+    border: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(44, 120, 101, 0.2);
+}
+
+.btn-trust-primary:hover {
+    background-color: #236554;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 12px rgba(44, 120, 101, 0.25);
+    color: white;
+}
+
+.btn-trust-outline {
+    background: transparent;
+    color: var(--sys-navy);
+    border: 1px solid var(--sys-border);
+    padding: 14px 28px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+}
+
+.btn-trust-outline:hover {
+    border-color: var(--sys-navy);
+    background: white;
+    color: var(--sys-navy);
+}
+
+/* Cards: Layered Depth */
+.card-trust {
+    background: white;
+    border: 1px solid var(--sys-border);
+    border-radius: var(--radius-md);
+    padding: 32px;
+    transition: all 0.3s ease;
+}
+
+.card-trust:hover {
+    border-color: var(--sys-emerald);
+    /* Active state */
+    box-shadow: var(--shadow-float);
+    transform: translateY(-4px);
+}
+
+/* Icon Box */
+.icon-box-trust {
+    width: 56px;
+    height: 56px;
+    background-color: var(--sys-surface-alt);
+    color: var(--sys-navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+}
+
+.card-trust:hover .icon-box-trust {
+    background-color: var(--sys-navy);
+    color: white;
+    transition: 0.3s;
+}
+
+/* --- SECTIONS --- */
+
+.section-hero {
+    padding: 140px 0 100px 0;
+    background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Abstract Background Pattern */
+.bg-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(#E2E8F0 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.4;
+    z-index: 0;
+}
+
+.section-alt {
+    padding: 100px 0;
+    background-color: var(--sys-surface-alt);
+    border-top: 1px solid var(--sys-border);
+    border-bottom: 1px solid var(--sys-border);
+}
+
+.section-white {
+    padding: 100px 0;
+    background-color: var(--sys-surface);
+}
+
+/* MOCKUP SHOWCASE (The 'Wow' Factor) */
+.mockup-container {
+    position: relative;
+    border-radius: var(--radius-lg);
+    background: white;
+    padding: 12px;
+    /* White bezel */
+    box-shadow: var(--shadow-hero);
+    border: 1px solid var(--sys-border);
+    transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
+    transition: transform 0.5s ease-out;
+}
+
+.mockup-container:hover {
+    transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+}
+
+.mockup-container img {
+    border-radius: 8px;
+    /* Inner radius */
+    display: block;
+    width: 100%;
+}
+
+/* Floating Badges */
+.float-badge {
+    position: absolute;
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    box-shadow: var(--shadow-float);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--sys-border);
+    z-index: 20;
+    animation: float-y 4s ease-in-out infinite;
+}
+
+.badge-pos-1 {
+    top: 20%;
+    left: -40px;
+}
+
+.badge-pos-2 {
+    bottom: 30%;
+    right: -40px;
+    animation-delay: 1s;
+}
+
+@keyframes float-y {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Navbar Trust - Dark Adaptation */
+.navbar-trust {
+    background: rgba(3, 7, 18, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px 0;
+    transition: all 0.3s ease;
+}
+
+.navbar-trust .nav-link {
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.navbar-trust .nav-link:hover, 
+.navbar-trust .nav-link.active {
+    color: var(--u-accent, #10b981) !important;
+}
+
+.navbar-trust .navbar-brand {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+}
+
+/* Interactive Tabs */
+.nav-pills-trust .nav-link {
+    background: white;
+    color: var(--sys-text-secondary);
+    border: 1px solid var(--sys-border);
+    margin: 0 8px;
+    padding: 12px 24px;
+    border-radius: 99px;
+    font-weight: 600;
+}
+
+.nav-pills-trust .nav-link.active {
+    background-color: var(--sys-navy);
+    color: white;
+    border-color: var(--sys-navy);
+    box-shadow: 0 4px 6px rgba(10, 38, 71, 0.2);
+}
+
+/* Footer Trust */
+.footer-trust {
+    background-color: var(--sys-navy);
+    color: white;
+    padding: 80px 0;
+}
+
+.footer-trust h5 {
+    color: white;
+}
+
+.footer-trust a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+}
+
+.footer-trust a:hover {
+    color: white;
+}

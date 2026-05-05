@@ -1,0 +1,69 @@
+# CONFIGURAÇÃO DE INFRAESTRUTURA SAAS - BRASALLIS 360
+
+# 1. Habilitar Log Onisciente de 404
+# Redireciona qualquer arquivo não encontrado para o sensor PHP
+ErrorDocument 404 /error404.php
+
+# 2. Impedir listagem de diretórios por segurança
+Options -Indexes
+
+# 3. Reescrever URLs (Clean URLs - Oculta .php)
+RewriteEngine On
+RewriteBase /
+
+# 3.1. Se o usuário digitar .php na URL (e não for um POST form), redireciona para a versão sem .php
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^.]+)\.php [NC]
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteRule ^ %1 [R=301,L]
+
+# 3.2. Se o arquivo acessado sem extensão for um .php real, o servidor carrega ele silenciosamente
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*?)/?$ $1.php [L]
+
+# Prevenir acesso a arquivos sensíveis
+<FilesMatch "(\.env|\.git|composer\.(json|lock)|Dockerfile|docker-compose\.yml|\.phpunit\.result\.cache)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Bloquear acesso direto a arquivos de diagnóstico / manutenção da raiz
+# (eles agora requerem MASTER_KEY via header, mas bloqueamos acesso browser direto)
+<FilesMatch "^(diagnose_db|DIAGNOSTIC_SAAS|SOLUCAO_BANCO|debug_url|fix_db|fix_db_from_browser|fix_db_modules|fix_db_onboarding|fix_logs|limpeza_dados|teste_conexao|test_server|run_migrations|setup_master|developers)\.php$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# ============================================================
+# SECURITY HEADERS HTTP — Proteção de Navegador
+# ============================================================
+<IfModule mod_headers.c>
+    # Impede clickjacking (iframe embedding em outros domínios)
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # Impede que o browser "adivinhe" o tipo de conteúdo (MIME sniffing)
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Ativa o filtro XSS embutido dos browsers legados
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Força HTTPS por 1 ano (ativar SOMENTE após configurar SSL em produção)
+    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+    # Política de referência: não vaza URL completa para outros domínios
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Controle de cache para páginas autenticadas (evita cache de dados sensíveis)
+    <FilesMatch "\.(php)$">
+        Header always set Cache-Control "no-store, no-cache, must-revalidate"
+        Header always set Pragma "no-cache"
+    </FilesMatch>
+
+    # Content Security Policy — restringe fontes de scripts/estilos
+    # Ajuste os domínios conforme as CDNs que você usa (Bootstrap, Alpine.js, etc.)
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net unpkg.com cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net cdnjs.cloudflare.com fonts.googleapis.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self';"
+
+    # Remove header que revela versão do servidor
+    Header always unset X-Powered-By
+    Header always unset Server
+</IfModule>

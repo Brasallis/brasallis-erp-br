@@ -1,0 +1,287 @@
+/**
+ * PDV Zen - Minimalist Style (Brasallis Edition)
+ */
+
+:root {
+    --navy: #0A2647;
+    --navy-soft: rgba(10, 38, 71, 0.05);
+    --navy-light: #144272;
+    --success: #10b981;
+    --bg-zen: #f8fafc;
+    --radius-zen: 24px;
+    --radius-pill: 50px;
+}
+
+/* Layout Reset para integração */
+.pdv-zen-container {
+    padding: 1rem 0;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Painéis Zen */
+.zen-panel {
+    background: #ffffff;
+    border-radius: var(--radius-zen);
+    border: 1px solid rgba(0,0,0,0.03);
+    overflow: hidden;
+}
+
+/* Busca Minimalista */
+.search-panel {
+    padding: 1.5rem;
+    background: transparent;
+    border: none;
+}
+
+.zen-search-wrapper {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    border: 2px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.zen-search-wrapper:focus-within {
+    border-color: var(--navy);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(10, 38, 71, 0.08);
+}
+
+.search-icon {
+    color: #94a3b8;
+    margin-right: 15px;
+    font-size: 1.2rem;
+}
+
+.zen-search-wrapper input {
+    border: none;
+    background: transparent;
+    flex: 1;
+    outline: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--navy);
+}
+
+.shortcut-hint {
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    border: 1px solid #e2e8f0;
+}
+
+/* Grid de Resultados */
+.results-grid {
+    padding: 0 15px;
+}
+
+.m3-product-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 15px;
+    border: 1px solid rgba(0,0,0,0.04);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.m3-product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border-color: var(--navy-soft);
+}
+
+.m3-product-card.selected {
+    border-color: var(--navy);
+    background: var(--navy-soft);
+}
+
+.product-info h6 {
+    margin: 0;
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 0.9rem;
+    line-height: 1.2;
+}
+
+.product-meta {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+}
+
+.price-tag {
+    font-weight: 800;
+    color: var(--success);
+}
+
+.stock-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+}
+
+/* Painel do Carrinho */
+.cart-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 150px);
+}
+
+.cart-header {
+    padding: 1.5rem;
+    background: #fff;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.bg-navy-soft { background: var(--navy-soft); }
+.text-navy { color: var(--navy); }
+
+/* Itens do Carrinho */
+.cart-items-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.zen-item-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    margin-bottom: 10px;
+    animation: zenFadeIn 0.3s ease;
+}
+
+@keyframes zenFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.item-qty {
+    width: 32px; height: 32px;
+    background: var(--navy-soft);
+    color: var(--navy);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.8rem;
+    margin-right: 12px;
+}
+
+/* Inputs Zen */
+.zen-input-group {
+    display: flex;
+    align-items: center;
+    background: #f1f5f9;
+    padding: 8px 15px;
+    border-radius: 12px;
+}
+
+.zen-input-group input {
+    border: none;
+    background: transparent;
+    flex: 1;
+    margin-left: 10px;
+    outline: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Footer do Carrinho */
+.cart-footer {
+    background: #fff;
+}
+
+.total-row {
+    padding: 10px 0;
+}
+
+.fw-black { font-weight: 900; }
+.ls-tight { letter-spacing: -1px; }
+
+.btn-navy {
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 16px;
+    transition: all 0.3s;
+}
+
+.btn-navy:hover:not(:disabled) {
+    background: var(--navy-light);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(10, 38, 71, 0.2);
+}
+
+.btn-navy:disabled {
+    opacity: 0.5;
+}
+
+/* Modal e Outros */
+.zen-select, .zen-input {
+    border-radius: 12px !important;
+    border: 1.5px solid #e2e8f0;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.zen-select:focus, .zen-input:focus {
+    border-color: var(--navy);
+    box-shadow: none;
+}
+
+.customer-dropdown-results {
+    position: absolute;
+    z-index: 1000;
+    background: #fff;
+    width: calc(100% - 32px);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Toasts customizados */
+.zen-toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 10000;
+    padding: 16px 24px;
+    border-radius: 20px;
+    background: var(--navy);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    animation: zenSlideRight 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes zenSlideRight {
+    from { opacity: 0; transform: translateX(50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+/* Mobile Adaptations */
+@media (max-width: 991px) {
+    .cart-panel { min-height: auto; margin-top: 20px; }
+}

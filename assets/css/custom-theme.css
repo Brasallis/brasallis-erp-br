@@ -1,0 +1,145 @@
+/* Importa a fonte Poppins do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* 
+ * BRASALLIS - CUSTOM THEME V1
+ * Identidade Visual: Profissional & Claro
+ */
+
+:root {
+    /* Paleta de Cores Principal - Brasallis Theme */
+    --bs-primary: #0A2647;
+    /* Deep Navy - Auditoria/Segurança */
+    --bs-primary-rgb: 10, 38, 71;
+    --bs-secondary: #6c757d;
+    --bs-success: #2C7865;
+    /* Emerald Green - Lucro/Dinheiro */
+    --bs-success-rgb: 44, 120, 101;
+    --bs-info: #0288d1;
+    --bs-warning: #FFAB00;
+    --bs-danger: #C62828;
+    --bs-light: #F8F9FA;
+    --bs-dark: #212529;
+
+    /* Cores de Texto */
+    --bs-body-color: #495057;
+    --bs-heading-color: #212529;
+
+    /* Tipografia */
+    --bs-font-sans-serif: 'Poppins', sans-serif;
+    --bs-body-font-family: var(--bs-font-sans-serif);
+    --bs-heading-font-weight: 600;
+}
+
+/* Brand Gradient Utility */
+.brand-gradient {
+    background: linear-gradient(135deg, #0A2647 0%, #2C7865 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: #0A2647;
+    /* Fallback */
+}
+
+/* 
+   NOTE: Structural and Theme styles have been migrated to admin-theme.css 
+   to supoprt Dark/Light modes. Conflicting styles below have been commented out.
+*/
+
+/* 
+body {
+    background-color: var(--bs-light);
+    font-family: var(--bs-font-sans-serif);
+}
+
+h1,h2,h3,h4,h5,h6,
+.h1,.h2,.h3,.h4,.h5,.h6 {
+    font-weight: var(--bs-heading-font-weight);
+    color: var(--bs-heading-color);
+}
+*/
+
+/* Melhorias de UI/UX */
+
+/* 1. Padronização e Estilo dos Cards */
+.card {
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+/* 
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+}
+*/
+
+/* 2. Efeito Ripple (Ondulação) */
+.ripple-effect {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.ripple-effect .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* 3. Degradês Sutis */
+
+/* Botões Primários (Hover) */
+.btn-primary:hover {
+    background: linear-gradient(to bottom, var(--bs-primary), #1565C0);
+    /* Tom um pouco mais escuro */
+    border-color: #1565C0;
+}
+
+/* Gráficos (Exemplo para ser usado no Chart.js) */
+/* A implementação será via JS, mas a ideia é usar gradientes como: */
+/* background: linear-gradient(to bottom, rgba(25, 118, 210, 0.8), rgba(25, 118, 210, 0.2)); */
+
+/* Cards de KPI (Iluminação Sutil) */
+.card.border-left-primary {
+    background-image: radial-gradient(circle at center, #fdfdff, #f8f9fa);
+}
+
+.card.border-left-success {
+    background-image: radial-gradient(circle at center, #f9fff9, #f8f9fa);
+}
+
+.card.border-left-info {
+    background-image: radial-gradient(circle at center, #f7fcff, #f8f9fa);
+}
+
+.card.border-left-warning {
+    background-image: radial-gradient(circle at center, #fffbf2, #f8f9fa);
+}
+
+.card.border-left-danger {
+    background-image: radial-gradient(circle at center, #fff8f8, #f8f9fa);
+}
+
+/* Ajuste no Sidebar para nova identidade */
+/* 
+.sidebar .list-group-item.active {
+    background-color: var(--bs-primary);
+    border-radius: 0.375rem;
+}
+
+.sidebar .list-group-item-action:hover,
+.sidebar .list-group-item-action:focus {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+    color: var(--bs-primary);
+} 
+*/
