@@ -18,31 +18,26 @@ $pdv_categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
 include_once '../includes/cabecalho.php';
 ?>
 <style>
-    /* =====================================================
-       PDV NEXUS — RESET & APP SHELL
-       ===================================================== */
-    .brasallis-sidebar,
-    .brasallis-bottom-nav,
-    .brasallis-topbar,
-    #brasallisAppHub { display: none !important; }
-    
+    /* CRITICAL ISOLATION — Prevent global UI interference */
+    .brasallis-sidebar, .brasallis-bottom-nav, .brasallis-topbar, #brasallisAppHub { 
+        display: none !important; 
+        visibility: hidden !important; 
+        pointer-events: none !important; 
+    }
     .brasallis-main { 
-        padding: 0 !important; 
-        margin: 0 !important; 
-        width: 100% !important;
-        max-width: 100% !important;
+        padding: 0 !important; margin: 0 !important; 
+        width: 100% !important; max-width: 100% !important; 
         min-height: 100vh !important;
     }
-    
     body {
         overflow: hidden !important;
         height: 100dvh;
         background: #f0f4f9;
-        font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
-        -webkit-tap-highlight-color: transparent;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
 </style>
-<link rel="stylesheet" href="<?= $base_url ?>assets/css/pdv_nexus.css?v=<?= filemtime(__DIR__.'/../assets/css/pdv_nexus.css') ?>">
+<!-- Root-relative paths to avoid HTTPS/Mixed Content issues -->
+<link rel="stylesheet" href="/assets/css/pdv_nexus.css?v=<?= time() ?>">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- =====================================================
@@ -363,6 +358,6 @@ include_once '../includes/cabecalho.php';
     </div>
 </div>
 
-<script src="<?= $base_url ?>assets/js/pdv_nexus.js?v=<?= filemtime(__DIR__.'/../assets/js/pdv_nexus.js') ?>"></script>
+<script src="/assets/js/pdv_nexus.js?v=<?= time() ?>"></script>
 
 <?php include_once '../includes/rodape.php'; ?>
