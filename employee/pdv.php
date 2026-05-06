@@ -45,6 +45,7 @@ $extra_css = '
         top: 0 !important;
         border-radius: 0 !important;
         box-shadow: none !important;
+        z-index: 2000 !important; /* Garantir que o botão hambúrguer global funcione */
     }
 
     @media (max-width: 991px) {
@@ -73,11 +74,9 @@ include_once '../includes/cabecalho.php';
         <!-- TOP BAR (Mobile/Tablet Only) -->
         <div class="pdv-top-bar">
             <div class="pdv-topbar-left">
-                <!-- Botão que abre a sidebar global -->
-                <button class="pdv-back-btn" onclick="toggleMobileSidebar()"><i class="fas fa-bars"></i></button>
                 <div class="pdv-topbar-title">
                     <span class="pdv-title-label">PDV NEXUS</span>
-                    <span class="pdv-operator-name"><?= htmlspecialchars($_SESSION['user_nome'] ?? 'Operador') ?></span>
+                    <span class="pdv-operator-name"><?= htmlspecialchars($_SESSION['user_nome'] ?? $_SESSION['username'] ?? 'Operador') ?></span>
                 </div>
             </div>
             <div class="pdv-cart-fab" onclick="PDV.toggleSheet()">

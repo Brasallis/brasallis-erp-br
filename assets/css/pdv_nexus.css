@@ -75,7 +75,7 @@
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid var(--nexus-surface-variant);
-    z-index: 20;
+    z-index: 1500;
 }
 
 .pdv-topbar-left { display: flex; align-items: center; gap: 12px; }
@@ -332,7 +332,7 @@
 .pdv-sheet {
     position: fixed; bottom: 0; left: 0; right: 0;
     background: #ffffff; border-radius: 28px 28px 0 0;
-    z-index: 1000; transform: translateY(calc(100% - 80px));
+    z-index: 3000; transform: translateY(calc(100% - 80px));
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
     display: none; flex-direction: column; max-height: 90vh;

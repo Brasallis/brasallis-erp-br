@@ -34,13 +34,13 @@ const PDV = {
         // Discount Input (Desktop)
         const discountInput = document.getElementById('cart-discount-input');
         if (discountInput) {
-            discountInput.addEventListener('change', (e) => this.updateDiscount(parseFloat(e.target.value) || 0));
+            discountInput.addEventListener('input', (e) => this.updateDiscount(parseFloat(e.target.value) || 0));
         }
 
         // Discount Input (Mobile Sheet)
         const sheetDiscountInput = document.getElementById('sheet-discount-input');
         if (sheetDiscountInput) {
-            sheetDiscountInput.addEventListener('change', (e) => this.updateDiscount(parseFloat(e.target.value) || 0));
+            sheetDiscountInput.addEventListener('input', (e) => this.updateDiscount(parseFloat(e.target.value) || 0));
         }
 
         // Global Keyboard Shortcuts
@@ -198,9 +198,15 @@ const PDV = {
         
         // Auto-focus value input
         setTimeout(() => {
-            document.getElementById('payment-value-input').value = this.state.total.toFixed(2);
-            document.getElementById('payment-value-input').select();
-        }, 500);
+            const modalTotalSale = document.getElementById('modal-total-sale');
+            if (modalTotalSale) modalTotalSale.textContent = this.formatCurrency(this.state.total);
+            
+            const valInput = document.getElementById('payment-value-input');
+            if (valInput) {
+                valInput.value = this.state.total.toFixed(2);
+                valInput.select();
+            }
+        }, 300);
     },
 
     fastCheckout(method) {
@@ -431,8 +437,12 @@ const PDV = {
 
     updateGlobalBadges() {
         const qty = this.state.cart.reduce((acc, i) => acc + i.quantity, 0);
-        document.getElementById('topbar-cart-badge').textContent = qty;
-        document.getElementById('cart-count-badge').textContent = `${qty} itens`;
+        
+        const topBadge = document.getElementById('topbar-cart-badge');
+        if (topBadge) topBadge.textContent = qty;
+        
+        const countBadge = document.getElementById('cart-count-badge');
+        if (countBadge) countBadge.textContent = `${qty} itens`;
     },
 
     // =====================================================
