@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($action === 'add') { $repo->add($_POST); $_SESSION['message'] = 'Colaborador cadastrado!'; }
         if ($action === 'edit') { $repo->update($_POST); $_SESSION['message'] = 'Dados atualizados!'; }
         if ($action === 'delete') { $repo->delete($_POST['id']); $_SESSION['message'] = 'Colaborador removido!'; }
-    } catch (Exception $e) { $_SESSION['message'] = 'Erro: ' . $e->getMessage(); }
+    } catch (Exception $e) { reportar_erro($e, 'Usuarios'); }
     header("Location: usuarios.php"); exit;
 }
 

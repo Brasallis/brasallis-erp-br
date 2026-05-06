@@ -140,6 +140,28 @@ function registrar_erro_sistema($message, $severity = 'error', $source = 'PHP', 
     }
 }
 
+/**
+ * Função Mestra para tratamento de erros capturados em blocos try-catch.
+ * Registra o erro no SuperAdmin e define uma mensagem amigável para o usuário.
+ */
+function reportar_erro($exception, $source = 'General Module') {
+    $msg_tecnica = $exception instanceof Exception ? $exception->getMessage() : $exception;
+    $stack = $exception instanceof Exception ? $exception->getTraceAsString() : '';
+    
+    // 1. Envia para o SuperAdmin
+    registrar_erro_sistema($msg_tecnica, 'error', $source, $stack);
+    
+    // 2. Define a mensagem amigável para o usuário (Admin/Funcionario)
+    if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'super_admin') {
+        $_SESSION['message'] = 'Ops! Algo não saiu como esperado. Nossa equipe técnica já foi notificada e estamos verificando o ocorrido. Por favor, tente novamente em instantes.';
+        $_SESSION['message_type'] = 'danger';
+    } else {
+        // Se for SuperAdmin, mantém o erro original para debug rápido
+        $_SESSION['message'] = 'DEBUG (God Mode): ' . $msg_tecnica;
+        $_SESSION['message_type'] = 'warning';
+    }
+}
+
 // Handlers Globais
 function global_exception_handler($exception) {
     registrar_erro_sistema($exception->getMessage(), 'critical', 'PHP Exception', $exception->getTraceAsString());

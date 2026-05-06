@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $produtoRepository->delete($_POST['id']); 
             $_SESSION['message'] = 'Produto excluído!'; 
         }
-    } catch (Exception $e) { $_SESSION['message'] = 'Erro: ' . $e->getMessage(); }
+    } catch (Exception $e) { reportar_erro($e, 'Produtos'); }
     header("Location: produtos.php"); exit;
 }
 
