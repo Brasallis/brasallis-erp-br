@@ -23,12 +23,44 @@ $extra_css = '
     .brasallis-main { 
         padding: 0 !important; 
         overflow: hidden;
-        height: calc(100vh - 70px); /* Descontando Topbar aproximada */
+        height: 100dvh; /* Usa altura dinâmica do viewport */
+        display: flex;
+        flex-direction: column;
     }
-    .pdv-app { height: 100%; width: 100%; }
+    
+    .pdv-app { 
+        flex: 1;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    /* MENU NA LATERAL DIREITA NO MOBILE — Como solicitado pelo usuário */
     @media (max-width: 991px) {
-        .pdv-app { height: calc(100vh - 140px); }
-        .pdv-sheet { bottom: 70px !important; }
+        .brasallis-sidebar {
+            display: flex !important; /* Força exibição no mobile */
+            left: auto !important;
+            right: 0 !important;
+            border-right: none !important;
+            border-left: 1px solid rgba(0,0,0,0.06);
+            height: calc(100% - 80px) !important; /* Acima do bottom nav */
+            top: 0 !important;
+        }
+        .brasallis-sidebar:hover {
+            width: 200px !important; /* Um pouco menor no mobile para não cobrir tudo */
+        }
+        .brasallis-main {
+            padding-right: 0 !important; /* Sidebar é fixa/overlay */
+            padding-bottom: 80px !important; /* Espaço para o bottom nav original */
+        }
+        .pdv-app {
+            height: calc(100dvh - 150px); /* Ajuste para não cortar */
+        }
+        .pdv-sheet {
+            bottom: 80px !important;
+            right: 0;
+            left: 0;
+            z-index: 1500;
+        }
     }
 </style>
 <link rel="stylesheet" href="/assets/css/pdv_nexus.css?v=' . time() . '">';
