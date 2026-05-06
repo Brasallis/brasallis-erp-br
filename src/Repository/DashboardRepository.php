@@ -1304,16 +1304,16 @@ class DashboardRepository
         // 3. Saúde Financeira (Recebíveis vs Pagáveis no mês)
         // Fallback para 100 se as tabelas não existirem ou estiverem vazias
         try {
-            $stmt_rec = $this->conn->prepare("SELECT SUM(valor) FROM contas_receber WHERE empresa_id = ? AND MONTH(data_vencimento) = MONTH(CURDATE()) AND YEAR(data_vencimento) = YEAR(CURDATE())");
+            $stmt_rec = $this->conn->prepare("SELECT SUM(valor) FROM fin_movimentacoes WHERE empresa_id = ? AND tipo = 'receita' AND MONTH(data_vencimento) = MONTH(CURDATE()) AND YEAR(data_vencimento) = YEAR(CURDATE())");
             $stmt_rec->execute([$this->empresa_id]);
             $receber = (float)$stmt_rec->fetchColumn() ?: 0;
 
-            $stmt_pag = $this->conn->prepare("SELECT SUM(valor) FROM contas_pagar WHERE empresa_id = ? AND MONTH(data_vencimento) = MONTH(CURDATE()) AND YEAR(data_vencimento) = YEAR(CURDATE())");
+            $stmt_pag = $this->conn->prepare("SELECT SUM(valor) FROM fin_movimentacoes WHERE empresa_id = ? AND tipo = 'despesa' AND MONTH(data_vencimento) = MONTH(CURDATE()) AND YEAR(data_vencimento) = YEAR(CURDATE())");
             $stmt_pag->execute([$this->empresa_id]);
             $pagar = (float)$stmt_pag->fetchColumn() ?: 0;
 
             $finance_health = ($receber + $pagar > 0) ? round(($receber / ($receber + $pagar)) * 100) : 100;
-        } catch (Exception $e) { $finance_health = 100; }
+        } catch (\Exception $e) { $finance_health = 100; }
 
         return [
             'giro_estoque' => $giro,
