@@ -112,9 +112,46 @@ try {
     echo "Tabela 'categorias' verificada/criada com sucesso.\n";
 
     // Tabela de Produtos (MODIFICADA)
-    $sql_produtos = "CREATE TABLE IF NOT EXISTS produtos (\n        id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,\n        empresa_id INT(11) UNSIGNED NOT NULL,\n        categoria_id INT(11) UNSIGNED NULL, -- MODIFICADO\n        fornecedor_id INT(11) UNSIGNED NULL,\n        name VARCHAR(255) NOT NULL,\n        sku VARCHAR(50) NULL,\n        description TEXT,\n        price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,\n        cost_price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,\n        quantity INT(11) NOT NULL DEFAULT 0,\n        minimum_stock INT(11) NOT NULL DEFAULT 0,\n        unidade_medida VARCHAR(50) NOT NULL DEFAULT 'unidade',\n        lote VARCHAR(255) NULL,\n        validade DATE NULL,\n        observacoes TEXT NULL,\n        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n        FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE,\n        FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE SET NULL,\n        FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id) ON DELETE SET NULL\n    ) ENGINE=InnoDB;";
+    $sql_produtos = "CREATE TABLE IF NOT EXISTS produtos (
+        id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        empresa_id INT(11) UNSIGNED NOT NULL,
+        categoria_id INT(11) UNSIGNED NULL, -- MODIFICADO
+        fornecedor_id INT(11) UNSIGNED NULL,
+        name VARCHAR(255) NOT NULL,
+        sku VARCHAR(50) NULL,
+        description TEXT,
+        price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+        cost_price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+        quantity INT(11) NOT NULL DEFAULT 0,
+        minimum_stock INT(11) NOT NULL DEFAULT 0,
+        unidade_medida VARCHAR(50) NOT NULL DEFAULT 'unidade',
+        lote VARCHAR(255) NULL,
+        validade DATE NULL,
+        observacoes TEXT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE,
+        FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE SET NULL,
+        FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id) ON DELETE SET NULL
+    ) ENGINE=InnoDB;";
     $conn->exec($sql_produtos);
     echo "Tabela 'produtos' verificada/criada com sucesso.\n";
+
+    // Tabela de Lotes (NOVA/RESTAURADA)
+    $sql_lotes = "CREATE TABLE IF NOT EXISTS lotes (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        produto_id INT(11) UNSIGNED NOT NULL,
+        numero_lote VARCHAR(50) NOT NULL,
+        data_validade DATE DEFAULT NULL,
+        quantidade_inicial INT NOT NULL,
+        quantidade_atual INT NOT NULL,
+        fornecedor VARCHAR(100) DEFAULT NULL,
+        data_entrada DATETIME DEFAULT CURRENT_TIMESTAMP,
+        empresa_id INT(11) UNSIGNED NOT NULL,
+        FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE,
+        FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+    $conn->exec($sql_lotes);
+    echo "Tabela 'lotes' verificada/criada com sucesso.\n";
 
     // Tabela de Compras
     $sql_compras = "CREATE TABLE IF NOT EXISTS compras (
