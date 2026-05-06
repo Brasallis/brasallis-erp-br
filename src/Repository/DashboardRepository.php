@@ -1228,21 +1228,50 @@ class DashboardRepository
      */
     public function getCrossAnalysisData(): array
     {
-        $sql = "
+        $sql_sales = "
             SELECT 
-                DATE_FORMAT(v.created_at, '%b') as month,
-                SUM(v.total_amount) as revenue,
-                (SELECT SUM(total_amount) FROM compras WHERE empresa_id = v.empresa_id AND MONTH(purchase_date) = MONTH(v.created_at) AND YEAR(purchase_date) = YEAR(v.created_at)) as expenses
-            FROM vendas v
-            WHERE v.empresa_id = ? 
-              AND v.created_at >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
-            GROUP BY month, MONTH(v.created_at), YEAR(v.created_at)
-            ORDER BY YEAR(v.created_at) ASC, MONTH(v.created_at) ASC
+                DATE_FORMAT(created_at, '%Y-%m') as ym_group,
+                DATE_FORMAT(MIN(created_at), '%b') as month,
+                SUM(total_amount) as revenue
+            FROM vendas
+            WHERE empresa_id = ? 
+              AND created_at >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+            GROUP BY ym_group
+            ORDER BY ym_group ASC
         ";
+        $stmt_sales = $this->conn->prepare($sql_sales);
+        $stmt_sales->execute([$this->empresa_id]);
+        $sales = $stmt_sales->fetchAll(PDO::FETCH_ASSOC);
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$this->empresa_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $sql_purchases = "
+            SELECT 
+                DATE_FORMAT(purchase_date, '%Y-%m') as ym_group,
+                SUM(total_amount) as expenses
+            FROM compras
+            WHERE empresa_id = ? 
+              AND purchase_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+            GROUP BY ym_group
+            ORDER BY ym_group ASC
+        ";
+        $stmt_purchases = $this->conn->prepare($sql_purchases);
+        $stmt_purchases->execute([$this->empresa_id]);
+        $purchases = $stmt_purchases->fetchAll(PDO::FETCH_ASSOC);
+
+        $purchases_map = [];
+        foreach ($purchases as $p) {
+            $purchases_map[$p['ym_group']] = (float)$p['expenses'];
+        }
+
+        $result = [];
+        foreach ($sales as $s) {
+            $result[] = [
+                'month' => $s['month'],
+                'revenue' => (float)$s['revenue'],
+                'expenses' => $purchases_map[$s['ym_group']] ?? 0.0
+            ];
+        }
+
+        return $result;
     }
 
     /**
