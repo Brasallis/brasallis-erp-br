@@ -178,8 +178,8 @@ class DashboardRepository
                 SUM(CASE WHEN data_vencimento < CURDATE() AND status != 'pago' THEN valor ELSE 0 END) as overdue,
                 SUM(CASE WHEN data_vencimento = CURDATE() AND status != 'pago' THEN valor ELSE 0 END) as today,
                 SUM(CASE WHEN data_vencimento > CURDATE() AND status != 'pago' THEN valor ELSE 0 END) as upcoming
-            FROM contas_receber 
-            WHERE empresa_id = ?
+            FROM fin_movimentacoes 
+            WHERE empresa_id = ? AND tipo = 'receita'
         ");
         $stmt_receivables->execute([$this->empresa_id]);
         $receivables = $stmt_receivables->fetch(PDO::FETCH_ASSOC);
@@ -193,8 +193,8 @@ class DashboardRepository
 
         // 2. Contas a Pagar (Para balanço rápido)
         $stmt_payables = $this->conn->prepare("
-            SELECT SUM(valor) FROM contas_pagar 
-            WHERE empresa_id = ? AND status != 'pago' AND data_vencimento <= CURDATE() + INTERVAL 7 DAY
+            SELECT SUM(valor) FROM fin_movimentacoes 
+            WHERE empresa_id = ? AND tipo = 'despesa' AND status != 'pago' AND data_vencimento <= CURDATE() + INTERVAL 7 DAY
         ");
         $stmt_payables->execute([$this->empresa_id]);
         $kpis['payables_next_7_days'] = (float)($stmt_payables->fetchColumn() ?: 0);
@@ -276,7 +276,7 @@ class DashboardRepository
         ];
 
         // Inadimplência
-        $stmt_overdue = $this->conn->prepare("SELECT SUM(valor) FROM contas_receber WHERE empresa_id = ? AND data_vencimento < CURDATE() AND status != 'pago'");
+        $stmt_overdue = $this->conn->prepare("SELECT SUM(valor) FROM fin_movimentacoes WHERE empresa_id = ? AND tipo = 'receita' AND data_vencimento < CURDATE() AND status != 'pago'");
         $stmt_overdue->execute([$this->empresa_id]);
         $inadimplencia = $stmt_overdue->fetchColumn() ?: 0;
         
