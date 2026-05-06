@@ -65,6 +65,9 @@ try {
         website VARCHAR(255) NULL,
         segmento VARCHAR(100) NULL,
         ai_plan VARCHAR(50) DEFAULT 'foundation',
+        ai_token_limit INT DEFAULT 100000,
+        ai_tokens_used_month INT DEFAULT 0,
+        iq_actions_used_month INT DEFAULT 0,
         max_users INT DEFAULT 5,
         support_level VARCHAR(50) DEFAULT 'community',
         subscription_status VARCHAR(50) DEFAULT 'trial',
@@ -73,6 +76,9 @@ try {
         branding_secondary_color VARCHAR(20) DEFAULT '#3b82f6',
         branding_bg_style VARCHAR(50) DEFAULT 'modern_light',
         active_modules JSON DEFAULT NULL,
+        last_payment_at DATETIME DEFAULT NULL,
+        next_billing_at DATETIME DEFAULT NULL,
+        blocked_at DATETIME DEFAULT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB;";
     $conn->exec($sql_empresas);
