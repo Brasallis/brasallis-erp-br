@@ -8,18 +8,24 @@ $empresa_id = $_SESSION['empresa_id'] ?? 1;
 $is_admin = in_array($user_type, ['admin', 'super_admin']);
 $page_active = basename($_SERVER['PHP_SELF']);
 
-// Detectar Base URL dinamicamente respeitando proxies (Railway/Cloudflare)
 $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') || 
             (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') 
             ? "https" : "http";
 $host = $_SERVER['HTTP_HOST'];
 $script_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-
-// Remove as pastas conhecidas do caminho para encontrar a raiz real do projeto
-// O regex agora garante que estamos pegando a pasta exata (fim de string ou seguida de /)
 $project_root = preg_replace('/(\/(admin|employee|modules|includes|api|assets|uploads))($|\/.*)/', '', $script_path);
 
+// Fallback: Se não estiver em localhost e o protocolo for http, forçar https (Padrão Cloud/Railway)
+if ($host !== 'localhost' && $host !== '127.0.0.1' && $protocol === 'http') {
+    $protocol = 'https';
+}
+
 $base_url = $protocol . "://" . $host . rtrim($project_root, '/') . '/';
+
+// Flags de controle de UI
+$hide_sidebar = $hide_sidebar ?? false;
+$hide_topbar = $hide_topbar ?? false;
+$hide_bottom_nav = $hide_bottom_nav ?? false;
 
 require_once __DIR__ . '/planos_config.php';
 
@@ -72,6 +78,7 @@ function can_access($module) {
 ?>
 
 <!-- GOOGLE-STYLE EXPANDABLE SIDEBAR -->
+<?php if (!$hide_sidebar): ?>
 <aside class="brasallis-sidebar" id="mainSidebar">
     <div class="sidebar-top-branding" onclick="toggleBrasallisHub()">
         <div class="branding-logo bg-transparent text-muted"><i class="fas fa-bars"></i></div>
@@ -169,6 +176,7 @@ function can_access($module) {
         </div>
     </nav>
 </aside>
+<?php endif; ?>
 
 <script>
 function toggleSubmenu(id) {
@@ -199,6 +207,7 @@ document.getElementById('mainSidebar').addEventListener('mouseleave', function()
 </script>
 
 <!-- ELITE TOPBAR -->
+<?php if (!$hide_topbar): ?>
 <header class="brasallis-topbar">
     <a href="<?php echo $base_url; ?>admin/painel_admin.php" class="d-flex align-items-center gap-3 text-decoration-none">
         <img src="<?php echo $base_url; ?>assets/img/pureza.png" alt="Logo" style="height: 32px; width: auto;">
@@ -258,6 +267,7 @@ document.getElementById('mainSidebar').addEventListener('mouseleave', function()
         </div>
     </div>
 </header>
+<?php endif; ?>
 
 <?php
 // Lógica para os 4 botões essenciais dinâmicos
@@ -276,6 +286,7 @@ $right_links = array_slice($display_links, 2, 2);
 ?>
 
 <!-- BOTTOM NAV (Mobile) -->
+<?php if (!$hide_bottom_nav): ?>
 <nav class="brasallis-bottom-nav">
     <?php foreach($left_links as $link): ?>
     <a href="<?= $link['url'] ?>" class="bottom-nav-item <?= $link['active'] ? 'active' : '' ?>">
@@ -297,8 +308,10 @@ $right_links = array_slice($display_links, 2, 2);
     </a>
     <?php endforeach; ?>
 </nav>
+<?php endif; ?>
 
 <!-- APP HUB OVERLAY (GOOGLE APP DRAWER STYLE) -->
+<?php if (!$hide_sidebar && !$hide_bottom_nav): ?>
 <div id="brasallisAppHub">
     <div class="hub-header">
         <div class="hub-handle"></div>
@@ -383,6 +396,7 @@ $right_links = array_slice($display_links, 2, 2);
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

@@ -8,6 +8,7 @@ checkAuth();
 $title = "Caixa — PDV Nexus";
 $hide_bottom_nav = true;
 $hide_sidebar = true;
+$hide_topbar = true;
 
 // Buscar categorias dinâmicas do banco
 $conn_pdv = connect_db();
