@@ -69,52 +69,42 @@ $categories = $produtoRepository->getCategories();
 ?>
 
 <style>
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
     
     .product-card { 
         background: #fff; border-radius: 20px; padding: 20px; 
-        border: 1px solid rgba(0,0,0,0.05); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(0,0,0,0.05); transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
         display: flex; flex-wrap: wrap; align-items: center; gap: 16px; cursor: pointer; position: relative;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.02);
     }
-    .product-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); border-color: var(--brasallis-primary); }
+    .product-card:active { transform: scale(0.98); background: #f8fafc; }
     
     .product-icon { 
-        width: 54px; height: 54px; background: #f8fafc; border-radius: 14px; 
+        width: 48px; height: 48px; background: #f1f5f9; border-radius: 12px; 
         display: flex; align-items: center; justify-content: center; 
-        color: var(--navy); font-size: 1.3rem; flex-shrink: 0;
-        border: 1px solid rgba(0,0,0,0.03);
+        color: var(--navy); font-size: 1.2rem; flex-shrink: 0;
     }
     
-    .product-info { flex: 1; min-width: 150px; }
-    .product-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .product-info { flex: 1; min-width: 120px; }
+    .product-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
     
-    .product-meta { display: flex; flex-wrap: wrap; gap: 6px; }
-    .badge-google { padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+    .product-meta { display: flex; flex-wrap: wrap; gap: 4px; }
+    .badge-google { padding: 4px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
     .badge-price { background: #e0f2fe; color: #0369a1; }
     .badge-cat { background: #f1f5f9; color: #64748b; }
     .badge-danger { background: #fee2e2; color: #dc2626; }
 
     .product-stock { text-align: right; }
-    .stock-val { font-size: 1.25rem; font-weight: 800; color: var(--navy); line-height: 1; }
-    .stock-label { font-size: 0.65rem; font-weight: 700; color: #94a3b8; margin-top: 4px; }
+    .stock-val { font-size: 1.2rem; font-weight: 800; color: var(--navy); line-height: 1; }
+    .stock-label { font-size: 0.6rem; font-weight: 700; color: #94a3b8; margin-top: 2px; }
 
-    .card-actions { width: 100%; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.05); }
+    .card-actions { width: 100%; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.04); }
 
-    .fab {
-        position: fixed; bottom: 100px; right: 24px; width: 56px; height: 56px;
-        background: var(--brasallis-primary); color: #fff; border-radius: 16px;
-        display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 4px 12px rgba(0, 112, 242, 0.3); border: none; z-index: 1000;
-    }
-
-    @media (max-width: 768px) {
-        .desktop-only { display: none !important; }
-        .page-container { padding: 10px 10px 120px 10px; }
-        .product-card { padding: 15px; }
-        .product-info { flex: 1; min-width: 0; }
-        .product-stock { width: auto; }
-        .card-actions { flex-direction: column; }
-        .card-actions .btn { width: 100%; text-align: center; justify-content: center; }
+    @media (max-width: 991px) {
+        .product-grid { grid-template-columns: 1fr; }
+        .product-card { padding: 16px; }
+        .card-actions { display: flex; gap: 8px; }
+        .card-actions .btn { flex: 1; height: 44px; display: flex; align-items: center; justify-content: center; }
     }
 </style>
 
@@ -140,7 +130,9 @@ $categories = $produtoRepository->getCategories();
     </div>
 
     <?php if ($is_admin || has_permission('estoque', 2)): ?>
-    <button class="fab shadow-lg d-md-none" data-bs-toggle="modal" data-bs-target="#addProductModal"><i class="fas fa-plus fa-lg"></i></button>
+    <a href="javascript:void(0)" class="m3-fab d-md-none shadow-lg" data-bs-toggle="modal" data-bs-target="#addProductModal">
+        <i class="fas fa-plus fa-lg"></i>
+    </a>
     <?php endif; ?>
 
     <div class="section-card border-0 p-3 mb-4">

@@ -40,6 +40,11 @@ require_once __DIR__ . '/../includes/header.php';
     </button>
 </nav>
 
+<!-- BRASALLIS SMART FAB (WhatsApp Support) -->
+<a href="https://wa.me/5511999999999" target="_blank" class="m3-fab" style="background: var(--u-wa-green);" aria-label="Suporte WhatsApp">
+    <i class="fab fa-whatsapp" style="font-size: 1.8rem;"></i>
+</a>
+
 <style>
     :root {
         --u-bg: #ffffff; 

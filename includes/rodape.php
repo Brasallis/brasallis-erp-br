@@ -16,10 +16,16 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php if (isset($use_charts) && $use_charts): ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<?php endif; ?>
 <script src="/assets/js/admin.js"></script>
 <script src="/assets/js/main.js"></script>
+<?php if (isset($use_marked) && $use_marked): ?>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<?php else: ?>
+<!-- marked.js carregado somente nas páginas com chat AI -->
+<?php endif; ?>
 <script>
 // A lógica de busca e navegação mobile foi centralizada no cabecalho.php para performance e consistência.
 </script>

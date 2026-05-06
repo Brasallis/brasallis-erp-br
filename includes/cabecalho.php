@@ -2,8 +2,8 @@
 // includes/cabecalho.php - TOTAL RESCUE
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
-// No Docker, os caminhos partem da raiz
-$base_url = '/';
+// Carrega a navegação e define $base_url dinamicamente
+require_once __DIR__ . '/navigation-brasallis.php';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -11,7 +11,7 @@ $base_url = '/';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brasallis Hub - Inteligência Operacional</title>
-    <link rel="icon" type="image/png" href="/assets/img/pureza.png">
+    <link rel="icon" type="image/png" href="<?= $base_url ?>assets/img/pureza.png">
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -19,7 +19,8 @@ $base_url = '/';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- CSS Signature (Cache Buster ativo) -->
-    <link rel="stylesheet" href="/assets/css/brasallis-hub.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="<?= $base_url ?>assets/css/material_system.css?v=<?= filemtime(__DIR__.'/../assets/css/material_system.css') ?>">
+    <link rel="stylesheet" href="<?= $base_url ?>assets/css/brasallis-hub.css?v=<?= filemtime(__DIR__.'/../assets/css/brasallis-hub.css') ?>">
 
     <style>
         body { 
@@ -32,9 +33,6 @@ $base_url = '/';
 </head>
 <body class="bg-light">
 <?php
-// Carrega a navegação v6.0
-require __DIR__ . '/navigation-brasallis.php';
-
 // Busca avisos globais ativos
 $conn_avisos = connect_db();
 if ($conn_avisos) {

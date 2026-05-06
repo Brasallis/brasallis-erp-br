@@ -43,9 +43,9 @@ include_once '../includes/cabecalho.php';
             <h3 class="fw-bold m-0"><i class="fas fa-cash-register text-primary me-2"></i> Fluxo de Caixa</h3>
             <p class="text-muted m-0">Gerencie e consulte todas as vendas realizadas</p>
         </div>
-        <form class="d-flex gap-2">
+        <form class="d-flex flex-column flex-sm-row gap-2 w-100 w-md-auto">
             <input type="date" name="data" class="form-control rounded-pill border-light bg-light px-4" value="<?= $date_filter ?>" onchange="this.form.submit()">
-            <input type="text" name="search" class="form-control rounded-pill border-light bg-light px-4" placeholder="Buscar ID da Venda..." value="<?= $search ?>">
+            <input type="text" name="search" class="form-control rounded-pill border-light bg-light px-4 flex-grow-1" placeholder="Buscar ID da Venda..." value="<?= $search ?>">
             <button class="btn btn-primary rounded-pill px-4">Filtrar</button>
         </form>
     </div>

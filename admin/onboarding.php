@@ -48,11 +48,13 @@ $all_modules = $central_config['modulos_info'];
     <title>Configurando seu Brasallis Hub</title>
     <link rel="icon" type="image/png" href="/assets/img/pureza.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="../assets/css/material_system.css" rel="stylesheet">
     <style>
-        :root { --primary: #000; --bg-airy: #f8fafc; }
-        body { font-family: 'Outfit', sans-serif; background-color: var(--bg-airy); }
+        :root { --primary: var(--m3-primary); --bg-airy: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-airy); padding-bottom: 80px; }
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; }
         .wizard-step { display: none; }
         .wizard-step.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

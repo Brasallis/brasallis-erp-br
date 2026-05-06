@@ -4,6 +4,8 @@
  * Estética: Apple Pure + Salesforce Insights
  * Adaptado para variáveis do repositório legado.
  */
+$use_charts = true;  // Habilita Chart.js no rodapé
+$use_marked = true;  // Habilita marked.js para o Chat AI
 include_once __DIR__ . '/../../includes/cabecalho.php';
 
 // Formatação amigável
@@ -46,18 +48,16 @@ $cross_expenses = json_encode(array_map(fn($v) => (float)$v, array_column($cross
         </div>
     </div>
 
-    <!-- Mobile FAB -->
-    <button class="btn btn-primary rounded-pill shadow-lg d-md-none position-fixed" 
-            style="bottom: 100px; right: 24px; width: 60px; height: 60px; z-index: 2000;" 
-            onclick="window.location.href='registrar_compra.php'">
+    <!-- Mobile FAB (MD3 Style) -->
+    <a href="registrar_compra.php" class="m3-fab d-md-none shadow-lg">
         <i class="fas fa-plus fa-lg"></i>
-    </button>
+    </a>
 
     <!-- 2. Executive Scorecard -->
-    <div class="row g-4 mb-4">
+    <div class="row g-3 g-md-4 mb-4">
         <!-- Faturamento -->
-        <div class="col-md-3">
-            <div class="section-card p-4 mb-0">
+        <div class="col-6 col-md-3">
+            <div class="section-card p-3 p-md-4 mb-0">
                 <div class="d-flex align-items-center gap-2 mb-3">
                     <div class="icon-circle bg-blue-soft text-primary">
                         <i class="fas fa-chart-line"></i>
@@ -73,8 +73,8 @@ $cross_expenses = json_encode(array_map(fn($v) => (float)$v, array_column($cross
         </div>
 
         <!-- Lucro Bruto -->
-        <div class="col-md-3">
-            <div class="section-card p-4 mb-0">
+        <div class="col-6 col-md-3">
+            <div class="section-card p-3 p-md-4 mb-0">
                 <div class="d-flex align-items-center gap-2 mb-3">
                     <div class="icon-circle bg-emerald-soft text-success">
                         <i class="fas fa-hand-holding-usd"></i>
@@ -89,8 +89,8 @@ $cross_expenses = json_encode(array_map(fn($v) => (float)$v, array_column($cross
         </div>
 
         <!-- Ticket Médio -->
-        <div class="col-md-3">
-            <div class="section-card p-4 mb-0">
+        <div class="col-6 col-md-3">
+            <div class="section-card p-3 p-md-4 mb-0">
                 <div class="d-flex align-items-center gap-2 mb-3">
                     <div class="icon-circle bg-purple-soft text-purple">
                         <i class="fas fa-shopping-bag"></i>
@@ -103,8 +103,8 @@ $cross_expenses = json_encode(array_map(fn($v) => (float)$v, array_column($cross
         </div>
 
         <!-- Saúde de Estoque -->
-        <div class="col-md-3">
-            <div class="section-card p-4 mb-0">
+        <div class="col-6 col-md-3">
+            <div class="section-card p-3 p-md-4 mb-0">
                 <div class="d-flex align-items-center gap-2 mb-3">
                     <div class="icon-circle bg-orange-soft text-warning">
                         <i class="fas fa-box-open"></i>
@@ -256,7 +256,6 @@ $cross_expenses = json_encode(array_map(fn($v) => (float)$v, array_column($cross
     .progress-bar { transition: width 1s ease-in-out; }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Gráfico Semanal (Barras)

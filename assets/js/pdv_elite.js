@@ -17,7 +17,7 @@ const PDV = {
     },
 
     init() {
-        console.log("PDV Zen Inicializado");
+        console.log("PDV Zen Material v3.0 - Carregado com Sucesso");
         this.bindEvents();
         this.render();
     },
@@ -104,7 +104,6 @@ const PDV = {
             }
         }
     },
-
     addToCart(product) {
         // Garantir campos corretos da API legada (price, name, etc)
         const itemPrice = parseFloat(product.price);
@@ -121,6 +120,20 @@ const PDV = {
             });
         }
         
+        // Feedback Visual Mobile
+        if (window.innerWidth < 992) {
+            this.showMiniFeedback();
+            
+            // Animar o card clicado
+            const cards = document.querySelectorAll('.m3-product-card');
+            cards.forEach(card => {
+                if (card.innerText.includes(product.name)) {
+                    card.classList.add('m3-added');
+                    setTimeout(() => card.classList.remove('m3-added'), 500);
+                }
+            });
+        }
+
         // Limpar busca
         this.state.searchResults = [];
         this.state.selectedIndex = -1;
@@ -132,6 +145,15 @@ const PDV = {
         
         this.calculateTotals();
         this.render();
+    },
+
+    showMiniFeedback() {
+        const sheet = document.getElementById('pdv-sheet');
+        if (!sheet) return;
+        sheet.style.transform = 'translateY(calc(100% - 90px))';
+        setTimeout(() => {
+            sheet.style.transform = '';
+        }, 200);
     },
 
     removeFromCart(index) {
@@ -187,6 +209,35 @@ const PDV = {
         this.renderCart();
         this.renderTotals();
         this.renderCustomerInfo();
+        this.renderSheetCart();
+    },
+
+    renderSheetCart() {
+        const container = document.getElementById('sheet-cart-items');
+        if (!container) return;
+
+        if (this.state.cart.length === 0) {
+            container.innerHTML = '<p class="text-center text-muted my-5">Seu carrinho está vazio</p>';
+            return;
+        }
+
+        container.innerHTML = this.state.cart.map((item, idx) => `
+            <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded-4">
+                <div class="d-flex align-items-center">
+                    <div class="item-qty me-3">${item.qty}</div>
+                    <div>
+                        <div class="fw-bold text-navy small">${item.name}</div>
+                        <div class="text-muted extra-small">R$ ${item.price.toFixed(2)}</div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="fw-bold text-navy me-3">R$ ${(item.price * item.qty).toFixed(2)}</div>
+                    <button class="btn btn-sm text-danger" onclick="PDV.removeFromCart(${idx})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
     },
 
     renderCart() {
@@ -239,28 +290,77 @@ const PDV = {
         }
 
         grid.innerHTML = this.state.searchResults.map((p, idx) => `
-            <div class="col-md-4 col-sm-6">
-                <div class="m3-product-card ${this.state.selectedIndex === idx ? 'selected' : ''}" onclick='PDV.addToCart(${JSON.stringify(p)})'>
-                    <div class="product-info">
-                        <h6>${p.name}</h6>
-                        <span class="extra-small text-muted">${p.sku || 'S/ SKU'}</span>
-                    </div>
-                    <div class="product-meta">
-                        <span class="stock-tag ${p.quantity < 5 ? 'text-danger' : ''}">Est: ${p.quantity}</span>
-                        <span class="price-tag">R$ ${parseFloat(p.price).toFixed(2)}</span>
-                    </div>
+            <div class="m3-product-card ${this.state.selectedIndex === idx ? 'selected' : ''}" onclick='PDV.addToCart(${JSON.stringify(p)})'>
+                <div class="product-icon-m3"><i class="fas fa-cube"></i></div>
+                <div class="product-info">
+                    <h6>${p.name}</h6>
+                    <span class="extra-small text-muted">${p.sku || 'S/ SKU'}</span>
+                </div>
+                <div class="product-meta">
+                    <span class="stock-tag ${p.quantity < 5 ? 'text-danger' : ''}">Est: ${p.quantity}</span>
+                    <span class="price-tag">R$ ${parseFloat(p.price).toFixed(2)}</span>
                 </div>
             </div>
         `).join('');
     },
 
     renderTotals() {
-        document.getElementById('cart-qty').innerText = `${this.state.cart.length} itens`;
-        document.getElementById('cart-subtotal').innerText = `R$ ${this.state.subtotal.toFixed(2)}`;
-        document.getElementById('cart-total').innerText = `R$ ${this.state.total.toFixed(2)}`;
+        const qty = this.state.cart.length;
+        const totalFormatted = `R$ ${this.state.total.toFixed(2)}`;
+
+        // Desktop
+        const cartQtyEl = document.getElementById('cart-qty');
+        const cartSubtotalEl = document.getElementById('cart-subtotal');
+        const cartTotalEl = document.getElementById('cart-total');
         
+        if (cartQtyEl) cartQtyEl.innerText = `${qty} itens`;
+        if (cartSubtotalEl) cartSubtotalEl.innerText = `R$ ${this.state.subtotal.toFixed(2)}`;
+        if (cartTotalEl) cartTotalEl.innerText = totalFormatted;
+        
+        // Mobile Bar
+        const mobileQtyEl = document.getElementById('mobile-cart-qty');
+        const mobileTotalEl = document.getElementById('mobile-cart-total');
+        if (mobileQtyEl) mobileQtyEl.innerText = `${qty} itens no carrinho`;
+        if (mobileTotalEl) mobileTotalEl.innerText = totalFormatted;
+
         const modalTotal = document.getElementById('modal-total-sale');
-        if (modalTotal) modalTotal.innerText = `R$ ${this.state.total.toFixed(2)}`;
+        if (modalTotal) modalTotal.innerText = totalFormatted;
+
+        // Sync Sheet
+        const sheetTotalEl = document.getElementById('sheet-total');
+        const sheetQtyEl = document.getElementById('sheet-qty');
+        const sheetFinalTotalEl = document.getElementById('sheet-final-total');
+        const sheetDiscountEl = document.getElementById('sheet-discount');
+
+        if (sheetTotalEl) sheetTotalEl.innerText = totalFormatted;
+        if (sheetQtyEl) sheetQtyEl.innerText = qty;
+        if (sheetFinalTotalEl) sheetFinalTotalEl.innerText = totalFormatted;
+        if (sheetDiscountEl) sheetDiscountEl.innerText = `- R$ ${this.state.discount.toFixed(2)}`;
+    },
+
+    toggleBottomSheet() {
+        const sheet = document.getElementById('pdv-sheet');
+        const overlay = document.getElementById('sheet-overlay');
+        sheet.classList.toggle('collapsed');
+        overlay.classList.toggle('active');
+        
+        if (!sheet.classList.contains('collapsed')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    },
+
+    filterCategory(cat, el) {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        
+        // Simular filtro (no futuro usar API com category_id)
+        this.searchProducts(cat === 'all' ? '' : cat);
+    },
+
+    toggleMobileView() {
+        // Obsoleto mas mantido para compatibilidade se necessário
     },
 
     renderCustomerInfo() {

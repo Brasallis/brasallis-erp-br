@@ -19,6 +19,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Custom CSS -->
+    <link href="assets/css/material_system.css" rel="stylesheet">
     <link href="assets/css/landing.css?v=14.0" rel="stylesheet">
 </head>
 <body>

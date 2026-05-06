@@ -1,201 +1,359 @@
 <?php
-// employee/pdv.php - PDV ZEN (Restauração e Melhoria)
-// Ponto de entrada oficial do Frente de Caixa integrado ao Brasallis Hub.
+// employee/pdv.php — PDV NEXUS v2.0 (Google-Grade UX)
+// Layout adaptativo: Desktop Split | Tablet Stack | Mobile App Nativo
 
 require_once '../includes/funcoes.php';
-checkAuth(); // Garante que o usuário está logado
+checkAuth();
 
-$title = "Frente de Caixa — PDV Zen";
+$title = "Caixa — PDV Nexus";
+$hide_bottom_nav = true;
+$hide_sidebar = true;
+
+// Buscar categorias dinâmicas do banco
+$conn_pdv = connect_db();
+$categories_stmt = $conn_pdv->prepare("SELECT id, nome FROM categorias WHERE empresa_id = ? ORDER BY nome ASC");
+$categories_stmt->execute([$_SESSION['empresa_id']]);
+$pdv_categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
+
 include_once '../includes/cabecalho.php';
 ?>
+<style>
+    /* =====================================================
+       PDV NEXUS — RESET & APP SHELL
+       ===================================================== */
+    .brasallis-sidebar,
+    .brasallis-bottom-nav,
+    .brasallis-topbar { display: none !important; }
+    .brasallis-main { padding: 0 !important; margin: 0 !important; }
+    body {
+        overflow: hidden;
+        height: 100dvh;
+        background: #f0f4f9;
+        font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+        -webkit-tap-highlight-color: transparent;
+    }
+</style>
+<link rel="stylesheet" href="<?= $base_url ?>assets/css/pdv_nexus.css?v=<?= filemtime(__DIR__.'/../assets/css/pdv_nexus.css') ?>">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<!-- Estilos específicos do PDV Zen -->
-<link rel="stylesheet" href="../assets/css/pdv_zen.css?v=<?php echo time(); ?>">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<!-- =====================================================
+     PDV NEXUS — APP SHELL
+     ===================================================== -->
+<div class="pdv-app" id="pdv-app">
 
-<div class="pdv-zen-container">
-    <div class="row g-4">
-        <!-- ÁREA ESQUERDA: Busca e Catálogo -->
-        <div class="col-lg-8">
-            <div class="zen-panel search-panel mb-4">
-                <div class="zen-search-wrapper">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="pdv-search" placeholder="O que vamos vender agora? (F2)" autocomplete="off" autofocus>
-                    <div class="shortcut-hint">F2</div>
-                </div>
+    <!-- ═══════════════════════════════════════════════════
+         TOP APP BAR (Mobile/Tablet only — Google M3)
+         ═══════════════════════════════════════════════════ -->
+    <header class="pdv-top-bar" id="pdv-topbar">
+        <div class="pdv-topbar-left">
+            <a href="../admin/painel_admin.php" class="pdv-back-btn" title="Voltar ao Hub">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="pdv-topbar-title">
+                <span class="pdv-title-label">Brasallis PDV</span>
+                <span class="pdv-operator-name"><?= htmlspecialchars($_SESSION['user_nome'] ?? $_SESSION['username'] ?? 'Operador') ?></span>
             </div>
+        </div>
+        <div class="pdv-topbar-right">
+            <div class="pdv-cart-fab" id="topbar-cart-btn" onclick="PDV.toggleSheet()">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="pdv-cart-badge" id="topbar-cart-badge">0</span>
+            </div>
+        </div>
+    </header>
 
-            <div id="pdv-results" class="row g-3 results-grid">
-                <!-- Resultados preenchidos via JS -->
-                <div class="col-12 text-center py-5 text-muted opacity-50">
-                    <i class="fas fa-barcode fa-3x mb-3"></i>
-                    <p>Escaneie um produto ou digite o nome para começar.</p>
-                </div>
+    <!-- ═══════════════════════════════════════════════════
+         LEFT COLUMN — Search + Catalog (Desktop = persistent)
+         ═══════════════════════════════════════════════════ -->
+    <div class="pdv-catalog-col" id="pdv-catalog-col">
+
+        <!-- Search Bar (M3 Search) -->
+        <div class="pdv-search-section">
+            <div class="pdv-search-bar" id="pdv-search-bar-wrapper">
+                <i class="fas fa-search pdv-search-icon"></i>
+                <input
+                    type="text"
+                    id="pdv-search"
+                    class="pdv-search-input"
+                    placeholder="Buscar produto por nome ou código..."
+                    autocomplete="off"
+                    inputmode="search"
+                    autofocus>
+                <button class="pdv-search-clear" id="search-clear-btn" onclick="PDV.clearSearch()" style="display:none">
+                    <i class="fas fa-times-circle"></i>
+                </button>
             </div>
         </div>
 
-        <!-- ÁREA DIREITA: Carrinho e Checkout -->
-        <div class="col-lg-4">
-            <div class="zen-panel cart-panel shadow-sm">
-                <div class="cart-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="fw-bold mb-0">Carrinho</h5>
-                        <span class="badge bg-navy-soft text-navy" id="cart-qty">0 itens</span>
-                    </div>
-                </div>
+        <!-- Category Chips Scroller (M3 Style) -->
+        <div class="pdv-chips-row" id="pdv-chips-row">
+            <div class="pdv-chip active" data-cat="all" onclick="PDV.filterCategory('all', this)">
+                <i class="fas fa-border-all me-1"></i>Todos
+            </div>
+            <?php foreach ($pdv_categories as $cat): ?>
+            <div class="pdv-chip" data-cat="<?= $cat['id'] ?>" onclick="PDV.filterCategory('<?= $cat['id'] ?>', this)">
+                <?= htmlspecialchars($cat['nome']) ?>
+            </div>
+            <?php endforeach; ?>
+            <?php if (empty($pdv_categories)): ?>
+            <div class="pdv-chip" data-cat="all">Geral</div>
+            <?php endif; ?>
+        </div>
 
-                <!-- Identificação do Cliente -->
-                <div class="customer-section p-3 border-bottom">
-                    <div class="zen-input-group">
-                        <i class="fas fa-user-circle text-muted"></i>
-                        <input type="text" id="customer-search" placeholder="Identificar Cliente (Opcional)" autocomplete="off">
-                    </div>
-                    <div id="customer-results" class="customer-dropdown-results"></div>
+        <!-- Product Grid / Results -->
+        <div class="pdv-product-grid" id="pdv-results">
+            <!-- Estado inicial: vazio com placeholder -->
+            <div class="pdv-empty-state" id="pdv-empty-state">
+                <div class="pdv-empty-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>Busque um produto</h3>
+                <p>Digite o nome ou código acima para encontrar itens rapidamente.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+         RIGHT COLUMN — Cart (Desktop: always visible)
+         ═══════════════════════════════════════════════════ -->
+    <aside class="pdv-cart-col" id="pdv-cart-col">
+        <div class="pdv-cart-panel">
+
+            <!-- Cart Header -->
+            <div class="pdv-cart-header">
+                <div class="pdv-cart-header-title">
+                    <h2>Carrinho</h2>
+                    <span class="pdv-cart-count" id="cart-count-badge">0 itens</span>
+                </div>
+                <!-- Customer Quick ID -->
+                <div class="pdv-customer-input-wrap">
+                    <i class="fas fa-user-circle"></i>
+                    <input type="text" id="customer-search" placeholder="Cliente (opcional)..." autocomplete="off">
+                    <div id="customer-results" class="pdv-customer-dropdown"></div>
                     <div id="selected-customer-info"></div>
                 </div>
+            </div>
 
-                <!-- Lista de Itens -->
-                <div id="cart-container" class="cart-items-area custom-scrollbar">
-                    <!-- Itens via JS -->
-                </div>
-
-                <!-- Resumo e Ação -->
-                <div class="cart-footer p-4 border-top mt-auto">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-muted small">Subtotal</span>
-                        <span class="fw-bold" id="cart-subtotal">R$ 0,00</span>
-                    </div>
-                    
-                    <div class="discount-row d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-muted small">Desconto</span>
-                        <div class="input-group input-group-sm w-50">
-                            <span class="input-group-text bg-transparent border-0">R$</span>
-                            <input type="number" id="cart-discount-input" class="form-control text-end border-0 bg-light rounded-3" value="0.00" step="0.01">
-                        </div>
-                    </div>
-
-                    <div class="total-row d-flex justify-content-between align-items-center mb-4">
-                        <span class="h5 fw-bold mb-0">TOTAL</span>
-                        <span class="h3 fw-black text-navy mb-0" id="cart-total">R$ 0,00</span>
-                    </div>
-
-                    <button class="btn btn-navy btn-lg w-100 py-3 fw-bold" id="btn-open-payment" disabled onclick="PDV.openPaymentModal()">
-                        FINALIZAR VENDA (F9)
-                    </button>
-                    
-                    <button class="btn btn-link text-danger w-100 mt-2 extra-small text-decoration-none fw-bold" onclick="PDV.clearCart()">
-                        LIMPAR CARRINHO (ESC)
-                    </button>
+            <!-- Cart Items List -->
+            <div class="pdv-cart-items" id="cart-container">
+                <div class="pdv-cart-empty" id="cart-empty-state">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Carrinho vazio</p>
                 </div>
             </div>
+
+            <!-- Cart Footer -->
+            <div class="pdv-cart-footer">
+                <!-- Discount Row -->
+                <div class="pdv-discount-row">
+                    <span class="pdv-footer-label"><i class="fas fa-tag me-1"></i>Desconto</span>
+                    <div class="pdv-discount-input-wrap">
+                        <span>R$</span>
+                        <input type="number" id="cart-discount-input" value="0.00" step="0.01" min="0">
+                    </div>
+                </div>
+
+                <!-- Total Row -->
+                <div class="pdv-total-row">
+                    <span>TOTAL</span>
+                    <span class="pdv-total-amount" id="cart-total">R$ 0,00</span>
+                </div>
+
+                <!-- Checkout Button -->
+                <button class="pdv-checkout-btn" id="btn-open-payment" disabled onclick="PDV.openPaymentModal()">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span>Finalizar Venda</span>
+                    <kbd class="pdv-kbd">F9</kbd>
+                </button>
+
+                <button class="pdv-clear-btn" onclick="PDV.clearCart()">
+                    <i class="fas fa-trash-alt me-1"></i>Limpar Carrinho
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════════════
+         MOBILE BOTTOM SHEET (Cart — Google Bottom Sheet)
+         ═══════════════════════════════════════════════════ -->
+    <div class="pdv-sheet-backdrop" id="sheet-backdrop" onclick="PDV.collapseSheet()"></div>
+
+    <div class="pdv-sheet" id="pdv-sheet">
+        <!-- Sheet Handle Bar -->
+        <div class="pdv-sheet-handle-bar" id="sheet-handle" ontouchstart="PDV.sheetDragStart(event)">
+            <div class="pdv-sheet-handle"></div>
+        </div>
+
+        <!-- Sheet Collapsed Peek: Total + Checkout Button -->
+        <div class="pdv-sheet-peek" onclick="PDV.toggleSheet()">
+            <div class="pdv-sheet-peek-info">
+                <span class="pdv-sheet-label">Total</span>
+                <span class="pdv-sheet-total" id="sheet-total">R$ 0,00</span>
+            </div>
+            <button class="pdv-sheet-checkout-btn" id="sheet-checkout-btn" onclick="event.stopPropagation(); PDV.openPaymentModal()">
+                Pagar <span class="pdv-sheet-qty-badge" id="sheet-qty">0</span>
+            </button>
+        </div>
+
+        <!-- Sheet Full Content (when expanded) -->
+        <div class="pdv-sheet-body" id="sheet-body">
+            <div class="pdv-sheet-section-title">Seu Pedido</div>
+            <div id="sheet-cart-items" class="pdv-sheet-items"></div>
+
+            <!-- Summary -->
+            <div class="pdv-sheet-summary">
+                <div class="pdv-sheet-summary-row">
+                    <span>Desconto</span>
+                    <span class="text-danger" id="sheet-discount">- R$ 0,00</span>
+                </div>
+                <div class="pdv-sheet-summary-row pdv-sheet-total-row">
+                    <span>Total Final</span>
+                    <span id="sheet-final-total">R$ 0,00</span>
+                </div>
+            </div>
+
+            <button class="pdv-sheet-full-checkout" onclick="PDV.openPaymentModal()">
+                <i class="fas fa-lock me-2"></i>Finalizar Pagamento
+            </button>
+            <button class="pdv-sheet-continue" onclick="PDV.collapseSheet()">
+                Continuar Comprando
+            </button>
         </div>
     </div>
-</div>
 
-<!-- MODAL DE PAGAMENTO ZEN -->
+</div><!-- /.pdv-app -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     PAYMENT MODAL — Material Design Bottom Sheet Style
+     ═══════════════════════════════════════════════════════ -->
 <div class="modal fade" id="paymentModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4 overflow-hidden shadow-lg">
-            <div class="modal-header bg-navy text-white p-4">
-                <h5 class="modal-title fw-bold">Pagamento</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4 bg-light">
-                <div class="text-center mb-4">
-                    <span class="text-muted small text-uppercase fw-bold ls-wide">Total a Pagar</span>
-                    <h2 class="fw-black text-navy mb-0 ls-tight" id="modal-total-sale">R$ 0,00</h2>
-                </div>
+    <div class="modal-dialog modal-dialog-centered pdv-payment-dialog">
+        <div class="modal-content pdv-payment-content">
 
-                <div class="fast-checkout-options mb-4">
-                    <div class="row g-2">
-                        <div class="col-6"><button class="btn btn-outline-success w-100 py-3 fw-bold" onclick="PDV.fastCheckout('dinheiro')"><i class="fas fa-money-bill-wave d-block mb-1 fs-4"></i>Dinheiro</button></div>
-                        <div class="col-6"><button class="btn btn-outline-primary w-100 py-3 fw-bold" onclick="PDV.fastCheckout('pix')"><i class="fab fa-pix d-block mb-1 fs-4"></i>PIX</button></div>
-                        <div class="col-6"><button class="btn btn-outline-info w-100 py-3 fw-bold" onclick="PDV.fastCheckout('cartao_debito')"><i class="fas fa-credit-card d-block mb-1 fs-4"></i>Débito</button></div>
-                        <div class="col-6"><button class="btn btn-outline-warning w-100 py-3 fw-bold" onclick="PDV.fastCheckout('cartao_credito')"><i class="fas fa-credit-card d-block mb-1 fs-4"></i>Crédito</button></div>
-                    </div>
-                </div>
-
-                <div class="text-center mb-3">
-                    <span class="badge bg-light text-muted border px-3 py-2 rounded-pill">OU PAGAMENTO PARCIAL / MÚLTIPLO</span>
-                </div>
-
-                <div class="payment-selection mb-4">
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <select class="form-select zen-select" id="payment-method-select">
-                                <option value="dinheiro">Dinheiro</option>
-                                <option value="pix">PIX</option>
-                                <option value="cartao_debito">C. Débito</option>
-                                <option value="cartao_credito">C. Crédito</option>
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <div class="input-group">
-                                <input type="number" class="form-control zen-input" id="payment-value-input" step="0.01" placeholder="Valor">
-                                <button class="btn btn-navy" type="button" onclick="PDV.addPayment()"><i class="fas fa-plus"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="payments-log mb-4">
-                    <ul class="list-group list-group-flush rounded-3 border overflow-hidden" id="payments-list">
-                        <!-- Lista de pagamentos via JS -->
-                    </ul>
-                </div>
-
-                <div class="summary-box p-3 rounded-4 bg-white shadow-sm">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="small text-muted fw-bold">RECEBIDO</span>
-                        <span class="fw-bold text-success" id="modal-total-paid">R$ 0,00</span>
-                    </div>
-                    <div id="remaining-container" class="d-flex justify-content-between">
-                        <span class="small text-muted fw-bold">FALTA</span>
-                        <span class="fw-bold text-danger" id="modal-remaining">R$ 0,00</span>
-                    </div>
-                    <div id="change-container" class="d-flex justify-content-between d-none">
-                        <span class="small text-muted fw-bold">TROCO</span>
-                        <span class="fw-bold text-primary" id="modal-change">R$ 0,00</span>
-                    </div>
+            <!-- Header -->
+            <div class="pdv-payment-header">
+                <button type="button" class="pdv-payment-close" data-bs-dismiss="modal">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="pdv-payment-title-group">
+                    <span class="pdv-payment-label">TOTAL A PAGAR</span>
+                    <h1 class="pdv-payment-amount" id="modal-total-sale">R$ 0,00</h1>
                 </div>
             </div>
-            <div class="modal-footer p-4 border-top bg-white">
-                <button class="btn btn-navy btn-lg w-100 fw-bold disabled" id="btn-confirm-sale" onclick="PDV.confirmSale()">
-                    CONFIRMAR E FINALIZAR (ENTER)
+
+            <!-- Body -->
+            <div class="pdv-payment-body">
+
+                <!-- Fast Payment Tiles (M3 Card Style) -->
+                <div class="pdv-payment-section-label">Pagamento Rápido</div>
+                <div class="pdv-payment-methods-grid">
+                    <button class="pdv-method-tile" onclick="PDV.fastCheckout('dinheiro')" id="method-dinheiro">
+                        <div class="pdv-method-icon" style="background:#dcfce7; color:#16a34a">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <span>Dinheiro</span>
+                    </button>
+                    <button class="pdv-method-tile" onclick="PDV.fastCheckout('pix')" id="method-pix">
+                        <div class="pdv-method-icon" style="background:#ede9fe; color:#7c3aed">
+                            <i class="fab fa-pix"></i>
+                        </div>
+                        <span>PIX</span>
+                    </button>
+                    <button class="pdv-method-tile" onclick="PDV.fastCheckout('cartao_debito')" id="method-debito">
+                        <div class="pdv-method-icon" style="background:#dbeafe; color:#1d4ed8">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <span>Débito</span>
+                    </button>
+                    <button class="pdv-method-tile" onclick="PDV.fastCheckout('cartao_credito')" id="method-credito">
+                        <div class="pdv-method-icon" style="background:#fef3c7; color:#d97706">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <span>Crédito</span>
+                    </button>
+                </div>
+
+                <!-- Divider -->
+                <div class="pdv-payment-divider">
+                    <span>ou pagamento parcial / múltiplo</span>
+                </div>
+
+                <!-- Split Payment -->
+                <div class="pdv-split-payment">
+                    <select class="pdv-select" id="payment-method-select">
+                        <option value="dinheiro">💵 Dinheiro</option>
+                        <option value="pix">💜 PIX</option>
+                        <option value="cartao_debito">💳 Cartão Débito</option>
+                        <option value="cartao_credito">💳 Cartão Crédito</option>
+                    </select>
+                    <div class="pdv-split-input-row">
+                        <div class="pdv-amount-input-wrap">
+                            <span class="pdv-currency">R$</span>
+                            <input type="number" class="pdv-amount-input" id="payment-value-input" step="0.01" placeholder="0,00" inputmode="decimal">
+                        </div>
+                        <button class="pdv-add-payment-btn" onclick="PDV.addPayment()">
+                            <i class="fas fa-plus"></i> Adicionar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Payments Log -->
+                <ul class="pdv-payments-list" id="payments-list"></ul>
+
+                <!-- Summary Box -->
+                <div class="pdv-payment-summary">
+                    <div class="pdv-summary-row">
+                        <span>Recebido</span>
+                        <span class="pdv-summary-paid" id="modal-total-paid">R$ 0,00</span>
+                    </div>
+                    <div class="pdv-summary-row" id="remaining-container">
+                        <span>Falta</span>
+                        <span class="pdv-summary-remaining" id="modal-remaining">R$ 0,00</span>
+                    </div>
+                    <div class="pdv-summary-row d-none" id="change-container">
+                        <span>Troco</span>
+                        <span class="pdv-summary-change" id="modal-change">R$ 0,00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirm Button -->
+            <div class="pdv-payment-footer">
+                <button class="pdv-confirm-btn disabled" id="btn-confirm-sale" onclick="PDV.confirmSale()">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Confirmar e Fechar Venda
                 </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- MODAL DE SUCESSO -->
+
+<!-- SUCCESS MODAL -->
 <div class="modal fade" id="successModal" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 rounded-4 shadow-lg text-center p-4">
-            <div class="mb-3">
-                <i class="fas fa-check-circle text-success fa-4x mb-3"></i>
-                <h4 class="fw-bold text-navy">Compra Finalizada!</h4>
-                <p class="text-muted small">A venda foi registrada com sucesso.</p>
+    <div class="modal-dialog modal-dialog-centered pdv-success-dialog">
+        <div class="modal-content pdv-success-content">
+            <div class="pdv-success-icon">
+                <div class="pdv-success-checkmark">
+                    <i class="fas fa-check"></i>
+                </div>
             </div>
-            
-            <div class="bg-light rounded-3 p-3 mb-4">
-                <p class="fw-bold mb-1">Deseja imprimir o cupom?</p>
-                <span class="text-muted extra-small">Você pode imprimir depois no histórico.</span>
-            </div>
-            
-            <div class="d-flex flex-column gap-2">
-                <button class="btn btn-primary fw-bold py-2" id="btn-print-receipt" onclick="PDV.printReceipt()">
-                    <i class="fas fa-print me-2"></i>Sim, Imprimir Recibo
+            <h2 class="pdv-success-title">Venda Concluída!</h2>
+            <p class="pdv-success-subtitle">Registrada com sucesso no sistema.</p>
+
+            <div class="pdv-success-actions">
+                <button class="pdv-print-btn" id="btn-print-receipt" onclick="PDV.printReceipt()">
+                    <i class="fas fa-print me-2"></i>Imprimir Cupom
                 </button>
-                <button class="btn btn-light fw-bold py-2 border text-muted" onclick="PDV.closeSuccessModal()">
-                    Não, Próxima Venda
+                <button class="pdv-next-btn" onclick="PDV.closeSuccessModal()">
+                    <i class="fas fa-plus me-2"></i>Nova Venda
                 </button>
             </div>
         </div>
     </div>
 </div>
 
-<script src="../assets/js/pdv_elite.js?v=<?php echo time(); ?>"></script>
-
+<script src="<?= $base_url ?>assets/js/pdv_nexus.js?v=<?= filemtime(__DIR__.'/../assets/js/pdv_nexus.js') ?>"></script>
 
 <?php include_once '../includes/rodape.php'; ?>
