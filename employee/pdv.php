@@ -18,41 +18,58 @@ $pdv_categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Injetar estilos no head para garantir a fluidez da interface
 $extra_css = '
-<style>
     /* INTEGRAÇÃO PREMIUM — ESTILO GOOGLE HUB */
-    .brasallis-main > .flex-grow-1 { padding: 0 !important; }
+    
+    /* 1. Reset Global para PDV - Previne scroll do body e foca na App Shell */
+    body {
+        overflow: hidden !important;
+    }
 
+    /* 2. Configura o main e seu filho para flexbox fluido */
+    .brasallis-main {
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100vh !important;
+    }
+    
+    .brasallis-main > .flex-grow-1 {
+        flex: 1 !important;
+        display: flex !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    /* 3. PDV App ocupa todo o espaço liberado */
     .pdv-app {
-        position: fixed !important;
-        top: 64px !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        width: auto !important;
-        height: auto !important;
-        z-index: 100;
+        flex: 1 !important;
+        width: 100% !important;
+        height: 100% !important;
         background: var(--nexus-surface);
     }
 
     @media (min-width: 992px) {
         .pdv-app {
-            left: 72px !important; /* Sidebar width */
             flex-direction: row !important;
         }
     }
 
     @media (max-width: 991px) {
         .pdv-app {
-            left: 0 !important;
-            top: 80px !important; /* Mobile topbar + margin usually takes ~80px */
             flex-direction: column !important;
         }
-        /* Mobile: Compensa a bottom nav global de 72px */
+        
+        /* Mobile: O Sheet DEVE ter altura fixa para o efeito Drawer funcionar perfeitamente */
         .pdv-sheet {
-            bottom: 72px !important;
+            bottom: 72px !important; /* Acima do menu global */
+            height: 75vh !important; /* Altura padrão Google Bottom Sheet */
             z-index: 5000 !important;
         }
+        
+        /* Ajuste do botão flutuante para evitar conflito de clique com o peek do sheet */
         .pdv-cart-fab {
-            bottom: 170px !important; /* Move para cima do sheet-peek */
+            bottom: 170px !important;
+            z-index: 5001 !important;
         }
     }
 </style>
