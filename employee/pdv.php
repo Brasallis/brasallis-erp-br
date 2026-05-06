@@ -44,7 +44,17 @@ $extra_css = '
         display: flex !important;
         left: 0 !important;
         right: auto !important;
-        z-index: 3000 !important;
+        z-index: 3500 !important; /* Acima de tudo */
+    }
+
+    /* BACKDROP PARA O MENU MOBILE */
+    .sidebar-backdrop {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 3400;
+        display: none;
+        backdrop-filter: blur(4px);
     }
 
     @media (max-width: 991px) {
@@ -54,11 +64,31 @@ $extra_css = '
         .brasallis-sidebar {
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 240px !important;
+        <script>
+    function toggleNexusMenu() {
+        const sidebar = document.getElementById('mainSidebar');
+        const backdrop = document.getElementById('sidebarBackdrop');
+        if (sidebar) {
+            sidebar.classList.toggle('mobile-open');
+            if (backdrop) backdrop.classList.toggle('active');
+        }
+    }
+
+    // Sobrescrever a função global para o PDV Nexus
+    // Assim o botão "Menu" da barra inferior abre a SIDEBAR e não o HUB
+    window.toggleBrasallisHub = function() {
+        toggleNexusMenu();
+    };
+</script>
+            width: 260px !important;
+            box-shadow: none !important;
         }
         .brasallis-sidebar.mobile-open {
             transform: translateX(0);
-            box-shadow: 20px 0 50px rgba(0,0,0,0.2);
+            box-shadow: 20px 0 50px rgba(0,0,0,0.2) !important;
+        }
+        .sidebar-backdrop.active {
+            display: block;
         }
         .pdv-app {
             height: calc(100dvh - 80px); /* Bottom Nav original */
@@ -77,6 +107,8 @@ include_once '../includes/cabecalho.php';
 <!-- =====================================================
      PDV NEXUS — APP SHELL
      ===================================================== -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleNexusMenu()"></div>
+
 <div class="pdv-app">
     <!-- Catalog Section -->
     <div class="pdv-catalog-col">
@@ -164,9 +196,12 @@ include_once '../includes/cabecalho.php';
                 </div>
                 <div class="pdv-total-row">
                     <span>TOTAL</span>
-                    <i class="fas fa-check-circle me-2"></i>
-                    <span>Finalizar Venda</span>
-                    <kbd class="pdv-kbd">F9</kbd>
+                    <span id="cart-total" class="pdv-total-amount">R$ 0,00</span>
+                </div>
+
+                <button class="pdv-checkout-btn" id="btn-open-payment" onclick="PDV.openPaymentModal()" disabled>
+                    <i class="fas fa-check-circle"></i>
+                    <span>PAGAR (F9)</span>
                 </button>
 
                 <button class="pdv-clear-btn" onclick="PDV.clearCart()">
