@@ -202,7 +202,7 @@ include_once '../includes/cabecalho.php';
                 </button>
             </div>
         </div>
-    </aside>
+    </div>
 
 </div><!-- /.pdv-app -->
 
