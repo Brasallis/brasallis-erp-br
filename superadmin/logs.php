@@ -96,7 +96,6 @@ require_once 'includes/header.php';
         </div>
     </div>
 
-    <!-- Toolbar -->
     <div class="d-flex justify-content-between align-items-center mb-3 bg-white p-3 rounded shadow-sm">
         <div class="d-flex gap-3 align-items-center flex-wrap">
             <h4 class="mb-0"><i class="fas fa-microchip me-2 text-primary"></i>Log Console</h4>
@@ -113,30 +112,26 @@ require_once 'includes/header.php';
                 <option value="warning" <?= $filters['severity'] == 'warning' ? 'selected' : '' ?>>Aviso</option>
                 <option value="info" <?= $filters['severity'] == 'info' ? 'selected' : '' ?>>Info</option>
             </select>
-
-            <!-- Filtro rápido por source -->
-            <select class="form-select form-select-sm" style="width: 170px;" onchange="updateFilter('source', this.value)">
-                <option value="">Todos os Sistemas</option>
-                <option value="Security" <?= $filters['source'] == 'Security' ? 'selected' : '' ?> style="color:#d93025;font-weight:700;">&#x1F6E1; Segurança</option>
-                <option value="PHP" <?= $filters['source'] == 'PHP' ? 'selected' : '' ?>>PHP</option>
-                <option value="PHP Exception" <?= $filters['source'] == 'PHP Exception' ? 'selected' : '' ?>>PHP Exception</option>
-                <option value="PHP Error" <?= $filters['source'] == 'PHP Error' ? 'selected' : '' ?>>PHP Error</option>
-                <option value="Billing" <?= $filters['source'] == 'Billing' ? 'selected' : '' ?>>Billing</option>
-                <option value="AuthController" <?= $filters['source'] == 'AuthController' ? 'selected' : '' ?>>Auth</option>
-            </select>
         </div>
 
         <div class="d-flex gap-2">
+            <!-- Botão Mágico para IA -->
+            <button class="btn btn-sm btn-dark px-3" onclick="copyToAI()">
+                <i class="fas fa-robot me-2 text-info"></i>Copiar para Antigravity
+            </button>
             <button id="btnRefresh" class="btn btn-sm btn-light border" onclick="location.reload()">
                 <i class="fas fa-sync-alt"></i> Atualizar
             </button>
             <div class="form-check form-switch mt-1 ms-2">
                 <input class="form-check-input" type="checkbox" id="autoRefresh">
-                <label class="form-check-label small" for="autoRefresh">Auto-Refresh (15s)</label>
+                <label class="form-check-label small" for="autoRefresh">Auto-Refresh</label>
             </div>
-            <button class="btn btn-sm btn-success px-3 ms-3" onclick="resolveAll()">Marcar Todos como Lidos</button>
+            <button class="btn btn-sm btn-outline-success px-3 ms-3" onclick="resolveAll()">Resolver Todos</button>
         </div>
     </div>
+
+    <!-- Hidden text area for copy support -->
+    <textarea id="aiCopyArea" style="position: absolute; left: -9999px;"></textarea>
 
     <!-- Main Table -->
     <div class="log-console overflow-hidden">
@@ -225,6 +220,39 @@ function updateFilter(key, value) {
     window.location.href = url.href;
 }
 
+function copyToAI() {
+    const logs = <?= json_encode($logs) ?>;
+    if (logs.length === 0) {
+        alert('Não há logs para copiar.');
+        return;
+    }
+
+    let markdown = "### 🛡️ RELATÓRIO DE ERROS - BRASALLIS HUB\n\n";
+    markdown += "Aqui estão os logs mais recentes do sistema para análise:\n\n";
+
+    logs.forEach(log => {
+        markdown += `---
+**ID:** #${log.id} | **Data:** ${log.created_at}
+**Severity:** ${log.severity.toUpperCase()} | **Source:** ${log.source}
+**Empresa:** ${log.empresa_nome || 'SISTEMA'} | **URL:** ${log.url || 'N/A'}
+**Mensagem:** \`${log.message}\`
+**Stack Trace:**
+\`\`\`
+${log.stack_trace || 'N/A'}
+\`\`\`
+\n`;
+    });
+
+    const copyArea = document.getElementById('aiCopyArea');
+    copyArea.value = markdown;
+    copyArea.select();
+    document.execCommand('copy');
+
+    if (confirm('✅ Logs copiados para o Antigravity!\n\nDeseja marcar todos esses logs como RESOLVIDOS agora? (Isso limpará seu console)')) {
+        resolveAll();
+    }
+}
+
 function resolveLog(id) {
     const formData = new FormData();
     formData.append('id', id);
@@ -245,8 +273,6 @@ function resolveLog(id) {
 }
 
 function resolveAll() {
-    if (!confirm('Deseja marcar todos os logs pendentes como resolvidos?')) return;
-    
     const formData = new FormData();
     formData.append('action', 'resolve_all');
 
