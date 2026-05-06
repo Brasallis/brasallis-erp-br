@@ -29,7 +29,7 @@ RewriteRule ^(.*?)/?$ $1.php [L]
 
 # Bloquear acesso direto a arquivos de diagnóstico / manutenção da raiz
 # (eles agora requerem MASTER_KEY via header, mas bloqueamos acesso browser direto)
-<FilesMatch "^(diagnose_db|DIAGNOSTIC_SAAS|SOLUCAO_BANCO|debug_url|fix_db|fix_db_from_browser|fix_db_modules|fix_db_onboarding|fix_logs|limpeza_dados|teste_conexao|test_server|run_migrations|developers)\.php$">
+<FilesMatch "^(diagnose_db|DIAGNOSTIC_SAAS|SOLUCAO_BANCO|debug_url|fix_db|fix_db_from_browser|fix_db_modules|fix_db_onboarding|fix_logs|limpeza_dados|teste_conexao|test_server|run_migrations|setup_master|developers)\.php$">
     Order allow,deny
     Deny from all
 </FilesMatch>
