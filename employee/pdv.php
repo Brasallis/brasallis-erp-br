@@ -19,13 +19,16 @@ $pdv_categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
 // Injetar estilos no head para evitar FOUC (Flash of Unstyled Content)
 $extra_css = '
 <style>
-    /* INTEGRAÇÃO COM O SISTEMA ORIGINAL */
+    /* INTEGRAÇÃO COM O SISTEMA ORIGINAL — PENSANDO COMO A GOOGLE */
     .brasallis-main { 
         padding: 0 !important; 
+        margin: 0 !important;
         overflow: hidden;
-        height: 100dvh; /* Usa altura dinâmica do viewport */
+        height: 100dvh; 
         display: flex;
         flex-direction: column;
+        width: 100% !important;
+        max-width: 100% !important;
     }
     
     .pdv-app { 
@@ -34,32 +37,41 @@ $extra_css = '
         overflow: hidden;
     }
 
-    /* MENU NA LATERAL DIREITA NO MOBILE — Como solicitado pelo usuário */
+    /* BARRA LATERAL À DIREITA — Como solicitado pelo usuário */
+    .brasallis-sidebar {
+        left: auto !important;
+        right: 0 !important;
+        border-right: none !important;
+        border-left: 1px solid rgba(0,0,0,0.06);
+    }
+
     @media (max-width: 991px) {
         .brasallis-sidebar {
-            display: flex !important; /* Força exibição no mobile */
-            left: auto !important;
-            right: 0 !important;
-            border-right: none !important;
-            border-left: 1px solid rgba(0,0,0,0.06);
-            height: calc(100% - 80px) !important; /* Acima do bottom nav */
+            display: flex !important;
+            height: calc(100% - 80px) !important;
             top: 0 !important;
+            z-index: 2100;
         }
         .brasallis-sidebar:hover {
-            width: 200px !important; /* Um pouco menor no mobile para não cobrir tudo */
-        }
-        .brasallis-main {
-            padding-right: 0 !important; /* Sidebar é fixa/overlay */
-            padding-bottom: 80px !important; /* Espaço para o bottom nav original */
+            width: 200px !important;
         }
         .pdv-app {
-            height: calc(100dvh - 150px); /* Ajuste para não cortar */
+            height: calc(100dvh - 150px);
+            padding-right: 0 !important; /* Sidebar mobile é overlay */
         }
         .pdv-sheet {
             bottom: 80px !important;
             right: 0;
             left: 0;
-            z-index: 1500;
+            z-index: 2000;
+        }
+        /* Garantir que o topo e a busca apareçam */
+        .pdv-search-section {
+            width: 100%;
+            padding: 12px;
+        }
+        .pdv-top-bar {
+            width: 100%;
         }
     }
 </style>
