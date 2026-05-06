@@ -21,6 +21,7 @@ const PDV = {
         console.log("Nexus PDV initialized — Google Standard UX");
         this.bindEvents();
         this.loadInitialCatalog();
+        this.render(); // Ensure empty state is rendered immediately!
     },
 
     bindEvents() {

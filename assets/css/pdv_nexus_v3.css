@@ -166,10 +166,10 @@
    ===================================================== */
 .pdv-product-grid {
     flex: 1; overflow-y: auto;
-    padding: 0 12px 100px;
+    padding: 0 24px 100px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
     -webkit-overflow-scrolling: touch;
 }
 
