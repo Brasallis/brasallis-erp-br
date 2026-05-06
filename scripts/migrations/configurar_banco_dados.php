@@ -206,19 +206,54 @@ try {
     $conn->exec($sql_dados_nota_fiscal);
     echo "Tabela 'dados_nota_fiscal' verificada/criada com sucesso.\n";
 
-    // Tabela de Vendas
+    // Tabela de Clientes (Base CRM/PDV)
+    $sql_clientes = "CREATE TABLE IF NOT EXISTS clientes (
+        id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        empresa_id INT(11) UNSIGNED NOT NULL,
+        nome VARCHAR(150) NOT NULL,
+        tipo ENUM('PF', 'PJ') DEFAULT 'PF',
+        cpf_cnpj VARCHAR(20),
+        email VARCHAR(100),
+        telefone VARCHAR(20),
+        endereco TEXT,
+        cidade VARCHAR(100),
+        estado VARCHAR(2),
+        status ENUM('ativo', 'inativo') DEFAULT 'ativo',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+    $conn->exec($sql_clientes);
+    echo "Tabela 'clientes' verificada/criada com sucesso.\n";
+
+    // Tabela de Vendas (MODIFICADA)
     $sql_vendas = "CREATE TABLE IF NOT EXISTS vendas (
         id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         empresa_id INT(11) UNSIGNED NOT NULL,
         user_id INT(11) UNSIGNED NOT NULL,
+        cliente_id INT(11) UNSIGNED NULL,
         total_amount DECIMAL(10, 2) NOT NULL,
-        payment_method VARCHAR(50) DEFAULT 'dinheiro',
+        discount_amount DECIMAL(10, 2) DEFAULT 0.00,
+        payment_method VARCHAR(50) DEFAULT 'múltiplos',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE,
-        FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE RESTRICT
+        FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE RESTRICT,
+        FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE SET NULL
     ) ENGINE=InnoDB;";
     $conn->exec($sql_vendas);
-    echo "Tabela 'vendas' verificada/criada com sucesso.\n";
+    echo "Tabela 'vendas' verificada/atualizada com sucesso.\n";
+
+    // Tabela de Pagamentos de Venda (Suporte a múltiplos métodos)
+    $sql_venda_pagamentos = "CREATE TABLE IF NOT EXISTS venda_pagamentos (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        venda_id INT(11) UNSIGNED NOT NULL,
+        metodo_pagamento VARCHAR(50) NOT NULL,
+        valor DECIMAL(10,2) NOT NULL,
+        data_pagamento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (venda_id) REFERENCES vendas(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+    $conn->exec($sql_venda_pagamentos);
+    echo "Tabela 'venda_pagamentos' verificada/criada com sucesso.\n";
 
     // Tabela de Itens da Venda
     $sql_venda_itens = "CREATE TABLE IF NOT EXISTS venda_itens (
@@ -232,6 +267,61 @@ try {
     ) ENGINE=InnoDB;";
     $conn->exec($sql_venda_itens);
     echo "Tabela 'venda_itens' verificada/criada com sucesso.\n";
+
+    // Tabela de Regras Fiscais (Tax Engine)
+    $sql_tax_rules = "CREATE TABLE IF NOT EXISTS tax_rules (
+        id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        ncm VARCHAR(20) NOT NULL,
+        cest VARCHAR(20) NULL,
+        type ENUM('monofasico', 'substituicao_tributaria', 'isento', 'tributado') NOT NULL DEFAULT 'tributado',
+        description TEXT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_ncm (ncm)
+    ) ENGINE=InnoDB;";
+    $conn->exec($sql_tax_rules);
+    echo "Tabela 'tax_rules' verificada/criada com sucesso.\n";
+
+    // Tabela de Análise Tributária
+    $sql_analise_tributaria = "CREATE TABLE IF NOT EXISTS analise_tributaria (
+        id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        compra_id INT(11) UNSIGNED NOT NULL,
+        product_id INT(11) UNSIGNED NULL,
+        item_name_xml VARCHAR(255) NULL,
+        ncm_detectado VARCHAR(20) NULL,
+        cfop_entrada VARCHAR(10) NULL,
+        cst_csosn_entrada VARCHAR(10) NULL,
+        alert_level ENUM('info', 'warning', 'critical', 'ok') NOT NULL DEFAULT 'info',
+        ai_suggestion TEXT NULL,
+        savings_potential DECIMAL(10, 2) DEFAULT 0.00,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (compra_id) REFERENCES compras(id) ON DELETE CASCADE,
+        FOREIGN KEY (product_id) REFERENCES produtos(id) ON DELETE SET NULL
+    ) ENGINE=InnoDB;";
+    $conn->exec($sql_analise_tributaria);
+    echo "Tabela 'analise_tributaria' verificada/criada com sucesso.\n";
+
+    // Tabela de Notas Fiscais (Fiscal)
+    $sql_fiscal_notas = "CREATE TABLE IF NOT EXISTS fiscal_notas (
+        id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        empresa_id INT(11) UNSIGNED NOT NULL,
+        numero VARCHAR(20) NOT NULL,
+        serie VARCHAR(5),
+        tipo ENUM('entrada', 'saida') NOT NULL,
+        modelo ENUM('nfe', 'nfse', 'cte', 'cupom') DEFAULT 'nfe',
+        chave_acesso VARCHAR(44),
+        emitente_destinatario VARCHAR(150),
+        cpf_cnpj VARCHAR(20),
+        data_emissao DATE NOT NULL,
+        valor_total DECIMAL(10, 2) DEFAULT 0.00,
+        valor_impostos DECIMAL(10, 2) DEFAULT 0.00,
+        status ENUM('autorizada', 'cancelada', 'denegada', 'rascunho') DEFAULT 'rascunho',
+        xml_path VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB;";
+    $conn->exec($sql_fiscal_notas);
+    echo "Tabela 'fiscal_notas' verificada/criada com sucesso.\n";
 
     // Tabela de Histórico de Estoque
     $sql_historico_estoque = "CREATE TABLE IF NOT EXISTS historico_estoque (
@@ -251,7 +341,6 @@ try {
     ) ENGINE=InnoDB;";
     $conn->exec($sql_historico_estoque);
     echo "Tabela 'historico_estoque' verificada/criada com sucesso.\n";
-
     // Tabela de Notificações
     $sql_notificacoes = "CREATE TABLE IF NOT EXISTS notificacoes (
         id INT AUTO_INCREMENT PRIMARY KEY,
