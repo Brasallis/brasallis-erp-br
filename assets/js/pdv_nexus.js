@@ -176,12 +176,30 @@ const PDV = {
     expandSheet() {
         if (this.state.cart.length === 0) return;
         this.state.isSheetExpanded = true;
-        document.getElementById('pdv-sheet').classList.add('expanded');
+        const sheet = document.getElementById('pdv-sheet');
+        if (sheet) {
+            sheet.classList.add('expanded');
+            sheet.style.setProperty('bottom', '72px', 'important');
+        }
+        const backdrop = document.getElementById('sheet-backdrop');
+        if (backdrop) {
+            backdrop.style.display = 'block';
+            setTimeout(() => backdrop.style.opacity = '1', 10);
+        }
     },
 
     collapseSheet() {
         this.state.isSheetExpanded = false;
-        document.getElementById('pdv-sheet').classList.remove('expanded');
+        const sheet = document.getElementById('pdv-sheet');
+        if (sheet) {
+            sheet.classList.remove('expanded');
+            sheet.style.setProperty('bottom', '-100%', 'important');
+        }
+        const backdrop = document.getElementById('sheet-backdrop');
+        if (backdrop) {
+            backdrop.style.opacity = '0';
+            setTimeout(() => backdrop.style.display = 'none', 300);
+        }
     },
 
     // =====================================================
@@ -376,30 +394,45 @@ const PDV = {
 
     renderCart() {
         const container = document.getElementById('cart-container');
+        if(!container) return;
+
         if (this.state.cart.length === 0) {
-            container.innerHTML = `<div class="pdv-cart-empty"><i class="fas fa-shopping-cart"></i><p>Carrinho vazio</p></div>`;
+            container.innerHTML = `
+                <div class="text-center text-muted" style="margin-top: 80px; padding: 20px;">
+                    <div style="width: 80px; height: 80px; background: #f0f4f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                        <i class="fas fa-shopping-basket" style="font-size: 2rem; color: #0061a4; opacity: 0.5;"></i>
+                    </div>
+                    <p class="small fw-bold" style="color: #001d35; font-size: 1rem;">Carrinho Vazio</p>
+                    <p class="small text-muted" style="line-height: 1.4;">Selecione produtos no catálogo para iniciar a venda.</p>
+                </div>
+            `;
+            const btn = document.getElementById('btn-open-payment');
+            if(btn) btn.disabled = true;
+            return;
         } else {
-            container.innerHTML = this.state.cart.map(i => `
+            container.innerHTML = this.state.cart.map((i, index) => `
                 <div class="pdv-cart-item">
                     <div class="pdv-cart-item-info">
                         <span class="pdv-cart-item-name">${i.name}</span>
-                        <span class="pdv-cart-item-meta">${i.quantity}x ${this.formatCurrency(i.price)}</span>
+                        <span class="pdv-cart-item-meta">${this.formatCurrency(i.price)}</span>
                     </div>
                     <div class="pdv-qty-control">
                         <button class="pdv-qty-btn" onclick="PDV.updateQuantity(${i.id}, -1)">-</button>
                         <span class="pdv-qty-val">${i.quantity}</span>
                         <button class="pdv-qty-btn" onclick="PDV.updateQuantity(${i.id}, 1)">+</button>
                     </div>
+                    <div class="pdv-cart-item-price ms-3 text-end" style="min-width: 80px;">
+                        ${this.formatCurrency(i.price * i.quantity)}
+                    </div>
                 </div>
             `).join('');
         }
 
-        // Totals
         document.getElementById('cart-subtotal').textContent = this.formatCurrency(this.state.subtotal);
         document.getElementById('cart-total').textContent = this.formatCurrency(this.state.total);
         
         const btn = document.getElementById('btn-open-payment');
-        btn.disabled = this.state.cart.length === 0;
+        if(btn) btn.disabled = this.state.cart.length === 0;
     },
 
     renderSheet() {
