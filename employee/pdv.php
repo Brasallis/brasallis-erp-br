@@ -157,7 +157,7 @@ include_once '../includes/cabecalho.php';
         <div class="pdv-search-section">
             <div class="pdv-search-bar">
                 <i class="fas fa-search pdv-search-icon"></i>
-                <input type="text" id="pdv-search" class="pdv-search-input" placeholder="Buscar produto ou SKU..." autocomplete="off">
+                <input type="text" id="pdv-search" class="pdv-search-input" placeholder="Buscar produto ou SKU (F2)..." autocomplete="off">
                 <button id="search-clear-btn" class="pdv-search-clear" onclick="PDV.clearSearch()" style="display:none;">
                     <i class="fas fa-times-circle"></i>
                 </button>

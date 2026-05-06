@@ -19,6 +19,12 @@ const PDV = {
 
     init() {
         console.log("Nexus PDV initialized — Google Standard UX");
+        
+        // Move modals to body level to fix z-index stacking issues
+        document.querySelectorAll('.modal').forEach(modal => {
+            document.body.appendChild(modal);
+        });
+        
         this.bindEvents();
         this.loadInitialCatalog();
         this.render(); // Ensure empty state is rendered immediately!
@@ -46,6 +52,15 @@ const PDV = {
 
         // Global Keyboard Shortcuts
         document.addEventListener('keydown', (e) => {
+            if (e.key === 'F2') {
+                e.preventDefault();
+                const input = document.getElementById('pdv-search');
+                if (input) input.focus();
+            }
+            if (e.key === 'F4') {
+                e.preventDefault();
+                this.clearCart();
+            }
             if (e.key === 'F9') {
                 e.preventDefault();
                 if (this.state.cart.length > 0) this.openPaymentModal();
@@ -85,11 +100,21 @@ const PDV = {
         fetch(url)
             .then(res => res.json())
             .then(data => {
-                console.log("PDV API Results:", data);
-                this.state.searchResults = data;
+                this.state.searchResults = Array.isArray(data) ? data : [];
                 this.renderResults();
             })
             .catch(err => console.error("Search error:", err));
+    },
+
+    handleGlobalShortcuts(e) {
+        if (e.key === 'Enter' && this.state.searchResults.length > 0) {
+            e.preventDefault();
+            this.addToCart(this.state.searchResults[0]);
+            this.clearSearch();
+        }
+        if (e.key === 'Escape') {
+            this.clearSearch();
+        }
     },
 
     filterCategory(id, el) {
@@ -205,18 +230,13 @@ const PDV = {
     openPaymentModal() {
         if (this.state.cart.length === 0) return;
         
-        // Hide the mobile sheet so the modal takes full focus
-        if (window.innerWidth <= 991) {
-            this.collapseSheet();
-        }
+        // Hide the mobile sheet and its backdrop immediately
+        this.collapseSheet();
         
         this.state.payments = [];
         this.updatePaymentSummary();
         
         const modalEl = document.getElementById('paymentModal');
-        // Increase z-index of the modal wrapper to guarantee it's above everything
-        modalEl.style.zIndex = '6000';
-        
         const modal = new bootstrap.Modal(modalEl);
         modal.show();
         
@@ -238,9 +258,9 @@ const PDV = {
         const modal = bootstrap.Modal.getInstance(modalEl);
         if (modal) modal.hide();
         
-        // Re-open the mobile sheet if on mobile
+        // Return to peek state if on mobile
         if (window.innerWidth <= 991) {
-            setTimeout(() => this.expandSheet(), 300); // Wait for modal to close
+            this.render(); 
         }
     },
 
@@ -331,7 +351,9 @@ const PDV = {
 
     showSuccess() {
         // Hide payment modal
-        bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
+        const pModalEl = document.getElementById('paymentModal');
+        const pModal = bootstrap.Modal.getInstance(pModalEl);
+        if (pModal) pModal.hide();
         
         // Show success modal
         const successModal = new bootstrap.Modal(document.getElementById('successModal'));
@@ -346,7 +368,9 @@ const PDV = {
     },
 
     closeSuccessModal() {
-        bootstrap.Modal.getInstance(document.getElementById('successModal')).hide();
+        const sModalEl = document.getElementById('successModal');
+        const sModal = bootstrap.Modal.getInstance(sModalEl);
+        if (sModal) sModal.hide();
     },
 
     printReceipt() {
@@ -454,6 +478,16 @@ const PDV = {
     },
 
     renderSheet() {
+        const sheet = document.getElementById('pdv-sheet');
+        if (!sheet) return;
+
+        if (this.state.cart.length > 0) {
+            sheet.classList.add('has-items');
+        } else {
+            sheet.classList.remove('has-items', 'expanded');
+            this.collapseSheet();
+        }
+
         const itemsContainer = document.getElementById('sheet-cart-items');
         itemsContainer.innerHTML = this.state.cart.map(i => `
             <div class="pdv-cart-item">
