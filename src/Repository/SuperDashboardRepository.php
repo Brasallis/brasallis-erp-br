@@ -51,8 +51,8 @@ class SuperDashboardRepository
             SELECT DATE_FORMAT(created_at, '%d/%m') as label, SUM(total_amount) as value 
             FROM vendas 
             WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 15 DAY) 
-            GROUP BY label 
-            ORDER BY created_at ASC
+            GROUP BY label, DATE(created_at)
+            ORDER BY DATE(created_at) ASC
         ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
