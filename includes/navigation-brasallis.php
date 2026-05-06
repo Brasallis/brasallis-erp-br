@@ -8,8 +8,10 @@ $empresa_id = $_SESSION['empresa_id'] ?? 1;
 $is_admin = in_array($user_type, ['admin', 'super_admin']);
 $page_active = basename($_SERVER['PHP_SELF']);
 
-// Detectar Base URL dinamicamente
-$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+// Detectar Base URL dinamicamente respeitando proxies (Railway/Cloudflare)
+$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') || 
+            (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') 
+            ? "https" : "http";
 $host = $_SERVER['HTTP_HOST'];
 $script_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
 

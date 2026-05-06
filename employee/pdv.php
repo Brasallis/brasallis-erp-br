@@ -23,10 +23,19 @@ include_once '../includes/cabecalho.php';
        ===================================================== */
     .brasallis-sidebar,
     .brasallis-bottom-nav,
-    .brasallis-topbar { display: none !important; }
-    .brasallis-main { padding: 0 !important; margin: 0 !important; }
+    .brasallis-topbar,
+    #brasallisAppHub { display: none !important; }
+    
+    .brasallis-main { 
+        padding: 0 !important; 
+        margin: 0 !important; 
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 100vh !important;
+    }
+    
     body {
-        overflow: hidden;
+        overflow: hidden !important;
         height: 100dvh;
         background: #f0f4f9;
         font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
