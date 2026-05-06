@@ -208,10 +208,19 @@ const PDV = {
     openPaymentModal() {
         if (this.state.cart.length === 0) return;
         
+        // Hide the mobile sheet so the modal takes full focus
+        if (window.innerWidth <= 991) {
+            this.collapseSheet();
+        }
+        
         this.state.payments = [];
         this.updatePaymentSummary();
         
-        const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+        const modalEl = document.getElementById('paymentModal');
+        // Increase z-index of the modal wrapper to guarantee it's above everything
+        modalEl.style.zIndex = '6000';
+        
+        const modal = new bootstrap.Modal(modalEl);
         modal.show();
         
         // Auto-focus value input
@@ -225,6 +234,17 @@ const PDV = {
                 valInput.select();
             }
         }, 300);
+    },
+
+    closePaymentModalAndReturn() {
+        const modalEl = document.getElementById('paymentModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+        
+        // Re-open the mobile sheet if on mobile
+        if (window.innerWidth <= 991) {
+            setTimeout(() => this.expandSheet(), 300); // Wait for modal to close
+        }
     },
 
     fastCheckout(method) {

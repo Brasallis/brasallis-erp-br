@@ -230,7 +230,13 @@ include_once '../includes/cabecalho.php';
 
     <!-- Sheet Full Content (when expanded) -->
     <div class="pdv-sheet-body" id="sheet-body">
-        <div class="pdv-sheet-section-title">Seu Pedido</div>
+        <div class="d-flex align-items-center mb-3">
+            <button class="btn btn-link text-dark p-0 me-3" onclick="PDV.collapseSheet()" style="text-decoration: none;">
+                <i class="fas fa-arrow-left fs-4"></i>
+            </button>
+            <div class="pdv-sheet-section-title mb-0">Seu Pedido</div>
+        </div>
+        
         <div id="sheet-cart-items" class="pdv-sheet-items"></div>
 
         <!-- Summary -->
@@ -266,11 +272,11 @@ include_once '../includes/cabecalho.php';
      ═══════════════════════════════════════════════════════ -->
 <div class="modal fade" id="paymentModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered pdv-payment-dialog">
-        <div class="modal-content pdv-payment-content">
+        <div class="modal-content pdv-payment-content" style="z-index: 6000;">
 
             <!-- Header -->
             <div class="pdv-payment-header">
-                <button type="button" class="pdv-payment-close" data-bs-dismiss="modal">
+                <button type="button" class="pdv-payment-close" onclick="PDV.closePaymentModalAndReturn()">
                     <i class="fas fa-arrow-left"></i>
                 </button>
                 <div class="pdv-payment-title-group">
