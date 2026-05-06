@@ -140,10 +140,7 @@ $extra_css = '
 
 include_once '../includes/cabecalho.php';
 ?>
-<div style="position:fixed; top:0; left:0; width:100%; background:red; color:white; text-align:center; z-index:100000; font-weight:bold; padding:10px;">
-    DEBUG: VOCÊ ESTÁ VENDO ESTA MENSAGEM? (V3.4.2)
-</div>
-<div class="pdv-version-badge">NEXUS V3.4</div>
+<div class="pdv-version-badge">NEXUS V3.4.2</div>
 <div style="display:none" id="nexus-v3-marker">V3.3.1</div>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
