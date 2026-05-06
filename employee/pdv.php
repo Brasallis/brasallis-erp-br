@@ -19,72 +19,52 @@ $pdv_categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
 // Injetar estilos no head para evitar FOUC (Flash of Unstyled Content)
 $extra_css = '
 <style>
-    /* RESET RADICAL PARA PDV NEXUS — PENSANDO COMO A GOOGLE */
-    html, body {
-        width: 100% !important;
-        overflow-x: hidden !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
+    /* INTEGRAÇÃO PREMIUM — PENSANDO COMO A GOOGLE */
     .brasallis-main { 
-        padding: 0 !important; 
+        padding-top: 0 !important; 
+        padding-left: 72px !important; /* Sidebar Slim */
         margin: 0 !important;
         overflow: hidden;
         height: 100dvh; 
         display: flex;
         flex-direction: column;
-        width: 100% !important;
-        max-width: 100% !important;
-        left: 0 !important;
-        position: relative !important;
+        transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     .pdv-app { 
         flex: 1;
-        width: 100% !important;
-        max-width: 100% !important;
+        width: 100%;
         overflow: hidden;
         display: flex;
         flex-direction: column;
     }
 
-    /* BARRA LATERAL À DIREITA — Como solicitado pelo usuário */
+    /* BARRA LATERAL ORIGINAL (ESQUERDA) */
     .brasallis-sidebar {
-        left: auto !important;
-        right: 0 !important;
-        border-right: none !important;
-        border-left: 1px solid rgba(0,0,0,0.06);
-        z-index: 2500 !important;
-    }
-
-    /* BARRA SUPERIOR — Ocultar no PDV para ganhar espaço */
-    .brasallis-topbar {
-        display: none !important;
+        display: flex !important;
+        left: 0 !important;
+        right: auto !important;
+        z-index: 3000 !important;
     }
 
     @media (max-width: 991px) {
-        .brasallis-sidebar {
-            display: flex !important;
-            height: calc(100% - 80px) !important;
-            top: 0 !important;
-            width: 72px !important; /* Mantém slim por padrão */
+        .brasallis-main {
+            padding-left: 0 !important;
         }
-        .brasallis-sidebar:hover {
-            width: 200px !important;
+        .brasallis-sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 240px !important;
+        }
+        .brasallis-sidebar.mobile-open {
+            transform: translateX(0);
+            box-shadow: 20px 0 50px rgba(0,0,0,0.2);
         }
         .pdv-app {
-            height: calc(100dvh - 80px) !important; /* Ajuste para o bottom nav */
-            padding: 0 !important;
-            margin: 0 !important;
-            width: 100vw !important;
-        }
-        .pdv-product-grid {
-            padding-bottom: 120px !important; /* Espaço para o carrinho */
+            height: calc(100dvh - 80px); /* Bottom Nav original */
         }
         .pdv-sheet {
             bottom: 80px !important;
-            z-index: 2400 !important;
         }
     }
 </style>
@@ -97,128 +77,93 @@ include_once '../includes/cabecalho.php';
 <!-- =====================================================
      PDV NEXUS — APP SHELL
      ===================================================== -->
-<div class="pdv-app" id="pdv-app">
-
-    <!-- ═══════════════════════════════════════════════════
-         TOP APP BAR (Mobile/Tablet only — Google M3)
-         ═══════════════════════════════════════════════════ -->
-    <header class="pdv-top-bar" id="pdv-topbar">
-        <div class="pdv-topbar-left">
-            <a href="../admin/painel_admin.php" class="pdv-back-btn" title="Voltar ao Hub">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <div class="pdv-topbar-title">
-                <span class="pdv-title-label">Brasallis PDV</span>
-                <span class="pdv-operator-name"><?= htmlspecialchars($_SESSION['user_nome'] ?? $_SESSION['username'] ?? 'Operador') ?></span>
+<div class="pdv-app">
+    <!-- Catalog Section -->
+    <div class="pdv-catalog-col">
+        <!-- TOP BAR (Mobile/Tablet Only) -->
+        <div class="pdv-top-bar">
+            <div class="pdv-topbar-left">
+                <!-- Botão de Menu que abre apenas a SIDEBAR (Google Style) -->
+                <button class="pdv-back-btn" onclick="toggleNexusMenu()"><i class="fas fa-bars"></i></button>
+                <div class="pdv-topbar-title">
+                    <span class="pdv-title-label">PDV NEXUS</span>
+                    <span class="pdv-operator-name"><?= htmlspecialchars($_SESSION['nome_usuario']) ?></span>
+                </div>
             </div>
-        </div>
-        <div class="pdv-topbar-right">
-            <div class="pdv-cart-fab" id="topbar-cart-btn" onclick="PDV.toggleSheet()">
-                <i class="fas fa-shopping-cart"></i>
+            <div class="pdv-cart-fab" onclick="PDV.toggleSheet()">
+                <i class="fas fa-shopping-basket"></i>
                 <span class="pdv-cart-badge" id="topbar-cart-badge">0</span>
             </div>
         </div>
-    </header>
 
-    <!-- ═══════════════════════════════════════════════════
-         LEFT COLUMN — Search + Catalog (Desktop = persistent)
-         ═══════════════════════════════════════════════════ -->
-    <div class="pdv-catalog-col" id="pdv-catalog-col">
-
-        <!-- Search Bar (M3 Search) -->
+        <!-- SEARCH SECTION -->
         <div class="pdv-search-section">
-            <div class="pdv-search-bar" id="pdv-search-bar-wrapper">
+            <div class="pdv-search-bar">
                 <i class="fas fa-search pdv-search-icon"></i>
-                <input
-                    type="text"
-                    id="pdv-search"
-                    class="pdv-search-input"
-                    placeholder="Buscar produto por nome ou código..."
-                    autocomplete="off"
-                    inputmode="search"
-                    autofocus>
-                <button class="pdv-search-clear" id="search-clear-btn" onclick="PDV.clearSearch()" style="display:none">
+                <input type="text" id="pdv-search" class="pdv-search-input" placeholder="Buscar produto ou SKU..." autocomplete="off">
+                <button id="search-clear-btn" class="pdv-search-clear" onclick="PDV.clearSearch()" style="display:none;">
                     <i class="fas fa-times-circle"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Category Chips Scroller (M3 Style) -->
-        <div class="pdv-chips-row" id="pdv-chips-row">
-            <div class="pdv-chip active" data-cat="all" onclick="PDV.filterCategory('all', this)">
-                <i class="fas fa-border-all me-1"></i>Todos
-            </div>
+        <!-- CATEGORIES CHIPS -->
+        <div class="pdv-chips-row">
+            <div class="pdv-chip active" onclick="PDV.filterCategory('all', this)">Todos</div>
             <?php foreach ($pdv_categories as $cat): ?>
-            <div class="pdv-chip" data-cat="<?= $cat['id'] ?>" onclick="PDV.filterCategory('<?= $cat['id'] ?>', this)">
-                <?= htmlspecialchars($cat['nome']) ?>
-            </div>
+                <div class="pdv-chip" onclick="PDV.filterCategory(<?= $cat['id'] ?>, this)"><?= htmlspecialchars($cat['nome']) ?></div>
             <?php endforeach; ?>
             <?php if (empty($pdv_categories)): ?>
             <div class="pdv-chip" data-cat="all">Geral</div>
             <?php endif; ?>
         </div>
 
-        <!-- Product Grid / Results -->
-        <div class="pdv-product-grid" id="pdv-results">
-            <!-- Estado inicial: vazio com placeholder -->
+        <!-- PRODUCT GRID -->
+        <div id="pdv-results" class="pdv-product-grid">
+            <!-- Renderizado via JS -->
             <div class="pdv-empty-state" id="pdv-empty-state">
-                <div class="pdv-empty-icon">
-                    <i class="fas fa-search"></i>
-                </div>
-                <h3>Busque um produto</h3>
-                <p>Digite o nome ou código acima para encontrar itens rapidamente.</p>
+                <div class="pdv-empty-icon"><i class="fas fa-box-open"></i></div>
+                <h3>Carregando catálogo...</h3>
             </div>
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════
-         RIGHT COLUMN — Cart (Desktop: always visible)
-         ═══════════════════════════════════════════════════ -->
-    <aside class="pdv-cart-col" id="pdv-cart-col">
+    <!-- Cart Column (Desktop) -->
+    <div class="pdv-cart-col">
         <div class="pdv-cart-panel">
-
-            <!-- Cart Header -->
             <div class="pdv-cart-header">
                 <div class="pdv-cart-header-title">
                     <h2>Carrinho</h2>
                     <span class="pdv-cart-count" id="cart-count-badge">0 itens</span>
                 </div>
-                <!-- Customer Quick ID -->
+                
+                <!-- Customer Search -->
                 <div class="pdv-customer-input-wrap">
-                    <i class="fas fa-user-circle"></i>
-                    <input type="text" id="customer-search" placeholder="Cliente (opcional)..." autocomplete="off">
-                    <div id="customer-results" class="pdv-customer-dropdown"></div>
-                    <div id="selected-customer-info"></div>
+                    <i class="fas fa-user-plus text-muted"></i>
+                    <input type="text" id="customer-search" placeholder="Vincular cliente (F2)" autocomplete="off">
+                    <div id="customer-results" class="pdv-customer-results"></div>
                 </div>
+                <div id="selected-customer-info"></div>
             </div>
 
-            <!-- Cart Items List -->
-            <div class="pdv-cart-items" id="cart-container">
-                <div class="pdv-cart-empty" id="cart-empty-state">
-                    <i class="fas fa-shopping-cart"></i>
-                    <p>Carrinho vazio</p>
-                </div>
+            <div id="cart-container" class="pdv-cart-items">
+                <!-- Itens do carrinho -->
             </div>
 
-            <!-- Cart Footer -->
             <div class="pdv-cart-footer">
-                <!-- Discount Row -->
                 <div class="pdv-discount-row">
-                    <span class="pdv-footer-label"><i class="fas fa-tag me-1"></i>Desconto</span>
+                    <span class="pdv-footer-label">Desconto</span>
                     <div class="pdv-discount-input-wrap">
-                        <span>R$</span>
-                        <input type="number" id="cart-discount-input" value="0.00" step="0.01" min="0">
+                        <span class="pdv-currency">R$</span>
+                        <input type="number" id="cart-discount-input" step="0.01" value="0.00">
                     </div>
                 </div>
-
-                <!-- Total Row -->
+                <div class="pdv-summary-row mb-2">
+                    <span class="pdv-footer-label">Subtotal</span>
+                    <span id="cart-subtotal">R$ 0,00</span>
+                </div>
                 <div class="pdv-total-row">
                     <span>TOTAL</span>
-                    <span class="pdv-total-amount" id="cart-total">R$ 0,00</span>
-                </div>
-
-                <!-- Checkout Button -->
-                <button class="pdv-checkout-btn" id="btn-open-payment" disabled onclick="PDV.openPaymentModal()">
                     <i class="fas fa-check-circle me-2"></i>
                     <span>Finalizar Venda</span>
                     <kbd class="pdv-kbd">F9</kbd>
