@@ -205,7 +205,10 @@ const PDV = {
         const sheet = document.getElementById('pdv-sheet');
         const backdrop = document.getElementById('sheet-backdrop');
         
-        if (sheet) sheet.classList.add('expanded');
+        if (sheet) {
+            sheet.classList.add('expanded');
+            sheet.style.visibility = 'visible';
+        }
         if (backdrop) {
             backdrop.style.display = 'block';
             setTimeout(() => backdrop.style.opacity = '1', 10);
@@ -466,7 +469,7 @@ const PDV = {
                         <span class="pdv-qty-val">${i.quantity}</span>
                         <button class="pdv-qty-btn" onclick="PDV.updateQuantity(${i.id}, 1)">+</button>
                     </div>
-                    <div class="pdv-cart-item-price ms-3 text-end" style="min-width: 80px;">
+                    <div class="pdv-cart-item-price">
                         ${this.formatCurrency(i.price * i.quantity)}
                     </div>
                 </div>
@@ -494,6 +497,11 @@ const PDV = {
                 <div class="pdv-cart-item-info">
                     <span class="pdv-cart-item-name">${i.name}</span>
                     <span class="pdv-cart-item-meta">${i.quantity}x ${this.formatCurrency(i.price)}</span>
+                </div>
+                <div class="pdv-qty-control">
+                    <button class="pdv-qty-btn" onclick="PDV.updateQuantity(${i.id}, -1)">-</button>
+                    <span class="pdv-qty-val">${i.quantity}</span>
+                    <button class="pdv-qty-btn" onclick="PDV.updateQuantity(${i.id}, 1)">+</button>
                 </div>
                 <div class="pdv-cart-item-price">
                     ${this.formatCurrency(i.price * i.quantity)}

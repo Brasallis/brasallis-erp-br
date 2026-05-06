@@ -94,10 +94,10 @@ $extra_css = '
         z-index: 19;
     }
 
-    /* 4. Carrinho Lateral (Desktop) */
+    /* 4. Carrinho Lateral (Desktop) — Google Hub Spacious Style */
     @media (min-width: 992px) {
         .pdv-cart-col { 
-            width: 380px !important;
+            width: 420px !important; /* Aumentado para melhor visibilidade */
             flex-shrink: 0 !important;
             background: #ffffff !important;
             border-left: 1px solid #e2e8f0;
@@ -123,18 +123,15 @@ $extra_css = '
 
         /* FAB & Sheet */
         .pdv-cart-fab {
-            bottom: 24px !important; /* Ajustado para não colidir com o menu */
+            bottom: 24px !important;
             right: 24px !important;
-            z-index: 5000 !important;
+            z-index: 4000 !important; /* Abaixo do sheet quando expandido */
         }
         
         .pdv-sheet {
-            z-index: 6000 !important;
+            z-index: 5000 !important;
             border-radius: 32px 32px 0 0;
             max-height: 85dvh !important;
-        }
-        .pdv-sheet.expanded {
-            bottom: 0 !important; /* Agora sobe até o fim, o menu fica atrás */
         }
     }
 </style>
