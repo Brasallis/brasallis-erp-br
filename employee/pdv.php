@@ -107,7 +107,7 @@ $extra_css = '
     }
 </style>
 <link rel="stylesheet" href="/assets/css/toasts.css?v=' . time() . '">
-<link rel="stylesheet" href="/assets/css/pdv_nexus.css?v=' . time() . '">';
+<link rel="stylesheet" href="/assets/css/pdv_nexus_v2.css?v=' . time() . '">';
 
 include_once '../includes/cabecalho.php';
 ?>
@@ -391,6 +391,6 @@ include_once '../includes/cabecalho.php';
     </div>
 </div>
 
-<script src="/assets/js/pdv_nexus.js?v=<?= time() ?>"></script>
+<script src="/assets/js/pdv_nexus_v2.js?v=<?= time() ?>"></script>
 
 <?php include_once '../includes/rodape.php'; ?>
