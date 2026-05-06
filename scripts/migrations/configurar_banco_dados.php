@@ -285,6 +285,21 @@ try {
     $conn->exec($sql_system_logs);
     echo "Tabela 'system_logs' verificada/criada com sucesso.\n";
 
+    // Tabela de Chamados de Suporte (Helpdesk SaaS)
+    $sql_suporte = "CREATE TABLE IF NOT EXISTS chamados_suporte (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        empresa_id INT(11) UNSIGNED NOT NULL,
+        assunto VARCHAR(255) NOT NULL,
+        mensagem TEXT NOT NULL,
+        resposta TEXT NULL,
+        status ENUM('aberto', 'respondido', 'fechado') DEFAULT 'aberto',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB;";
+    $conn->exec($sql_suporte);
+    echo "Tabela 'chamados_suporte' verificada/criada com sucesso.\n";
+
     // Tabela de Avisos Globais (SuperAdmin)
     $sql_avisos_globais = "CREATE TABLE IF NOT EXISTS avisos_globais (
         id INT AUTO_INCREMENT PRIMARY KEY,
