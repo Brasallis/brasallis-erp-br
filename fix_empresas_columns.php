@@ -7,32 +7,38 @@ try {
     $pdo = new PDO($dsn, DB_USER, DB_PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    echo "<h1>Reparando Tabela Empresas...</h1>";
+    echo "<h1>Reparando Tabela Empresas (Modo Compatível)...</h1>";
 
-    $queries = [
-        "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS ai_plan VARCHAR(50) DEFAULT 'foundation'",
-        "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS max_users INT DEFAULT 5",
-        "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS support_level VARCHAR(50) DEFAULT 'community'",
-        "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS subscription_status VARCHAR(50) DEFAULT 'trial'",
-        "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS onboarding_completed TINYINT(1) DEFAULT 0",
-        "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS branding_primary_color VARCHAR(20) DEFAULT '#1e3a8a'",
-        "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS branding_secondary_color VARCHAR(20) DEFAULT '#3b82f6'",
-        "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS branding_bg_style VARCHAR(50) DEFAULT 'modern_light'",
-        "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS segmento VARCHAR(100) NULL",
-        "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS active_modules JSON DEFAULT NULL"
+    $columns = [
+        "ai_plan" => "VARCHAR(50) DEFAULT 'foundation'",
+        "max_users" => "INT DEFAULT 5",
+        "support_level" => "VARCHAR(50) DEFAULT 'community'",
+        "subscription_status" => "VARCHAR(50) DEFAULT 'trial'",
+        "onboarding_completed" => "TINYINT(1) DEFAULT 0",
+        "branding_primary_color" => "VARCHAR(20) DEFAULT '#1e3a8a'",
+        "branding_secondary_color" => "VARCHAR(20) DEFAULT '#3b82f6'",
+        "branding_bg_style" => "VARCHAR(50) DEFAULT 'modern_light'",
+        "segmento" => "VARCHAR(100) NULL",
+        "active_modules" => "JSON DEFAULT NULL"
     ];
 
-    foreach ($queries as $sql) {
+    foreach ($columns as $col => $definition) {
         try {
-            $pdo->exec($sql);
-            echo "<p style='color:green;'>Sucesso: $sql</p>";
+            // Verifica se a coluna existe
+            $check = $pdo->query("SHOW COLUMNS FROM empresas LIKE '$col'");
+            if ($check->rowCount() == 0) {
+                $pdo->exec("ALTER TABLE empresas ADD COLUMN $col $definition");
+                echo "<p style='color:green;'>Coluna <b>$col</b> adicionada com sucesso.</p>";
+            } else {
+                echo "<p style='color:blue;'>Coluna <b>$col</b> já existe.</p>";
+            }
         } catch (Exception $e) {
-            echo "<p style='color:orange;'>Aviso: " . $e->getMessage() . "</p>";
+            echo "<p style='color:orange;'>Aviso em $col: " . $e->getMessage() . "</p>";
         }
     }
 
-    echo "<h2>Reparo concluído!</h2>";
-    echo "<p>Agora tente fazer o login com admin@brasallis.com.br novamente.</p>";
+    echo "<h2>Reparo concluído! ✨</h2>";
+    echo "<p>Agora tente fazer o login com <b>admin@brasallis.com.br</b> novamente.</p>";
 
 } catch (Exception $e) {
     echo "<h1>Erro Crítico</h1><p>" . $e->getMessage() . "</p>";
