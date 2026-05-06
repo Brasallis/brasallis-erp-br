@@ -261,6 +261,24 @@ try {
     $conn->exec($sql_notificacoes);
     echo "Tabela 'notificacoes' verificada/criada com sucesso.\n";
 
+    // Tabela de Logs do Sistema (Cloud Logging)
+    $sql_system_logs = "CREATE TABLE IF NOT EXISTS system_logs (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        empresa_id INT(11) UNSIGNED NULL,
+        user_id INT(11) UNSIGNED NULL,
+        severity ENUM('info', 'warning', 'error', 'critical') DEFAULT 'info',
+        source VARCHAR(100) DEFAULT 'System',
+        message TEXT NOT NULL,
+        stack_trace TEXT NULL,
+        url VARCHAR(255) NULL,
+        ip_address VARCHAR(45) NULL,
+        status ENUM('new', 'resolved', 'ignored') DEFAULT 'new',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB;";
+    $conn->exec($sql_system_logs);
+    echo "Tabela 'system_logs' verificada/criada com sucesso.\n";
+
     // Tabela de Avisos Globais (SuperAdmin)
     $sql_avisos_globais = "CREATE TABLE IF NOT EXISTS avisos_globais (
         id INT AUTO_INCREMENT PRIMARY KEY,
