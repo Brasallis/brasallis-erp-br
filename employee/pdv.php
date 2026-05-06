@@ -16,19 +16,17 @@ $categories_stmt = $conn_pdv->prepare("SELECT id, nome FROM categorias WHERE emp
 $categories_stmt->execute([$_SESSION['empresa_id']]);
 $pdv_categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Injetar estilos no head para evitar FOUC (Flash of Unstyled Content)
+// Injetar estilos no head para garantir a fluidez da interface
 $extra_css = '
 <style>
-    /* INTEGRAÇÃO PREMIUM — PENSANDO COMO A GOOGLE */
+    /* INTEGRAÇÃO PREMIUM — ESTILO GOOGLE HUB */
     .brasallis-main { 
-        padding-top: 0 !important; 
-        padding-left: 72px !important; /* Sidebar Slim */
+        padding: 0 !important;
         margin: 0 !important;
         overflow: hidden;
         height: 100dvh; 
         display: flex;
         flex-direction: column;
-        transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     .pdv-app { 
@@ -39,65 +37,26 @@ $extra_css = '
         flex-direction: column;
     }
 
-    /* BARRA LATERAL ORIGINAL (ESQUERDA) */
-    .brasallis-sidebar {
-        display: flex !important;
+    /* Ajuste para o Topbar no PDV */
+    .brasallis-topbar {
+        position: relative !important;
         left: 0 !important;
-        right: auto !important;
-        z-index: 3500 !important; /* Acima de tudo */
-    }
-
-    /* BACKDROP PARA O MENU MOBILE */
-    .sidebar-backdrop {
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 3400;
-        display: none;
-        backdrop-filter: blur(4px);
+        width: 100% !important;
+        top: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
     }
 
     @media (max-width: 991px) {
-        .brasallis-main {
-            padding-left: 0 !important;
-        }
-        .brasallis-sidebar {
-            transform: translateX(-100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        <script>
-    function toggleNexusMenu() {
-        const sidebar = document.getElementById('mainSidebar');
-        const backdrop = document.getElementById('sidebarBackdrop');
-        if (sidebar) {
-            sidebar.classList.toggle('mobile-open');
-            if (backdrop) backdrop.classList.toggle('active');
-        }
-    }
-
-    // Sobrescrever a função global para o PDV Nexus
-    // Assim o botão "Menu" da barra inferior abre a SIDEBAR e não o HUB
-    window.toggleBrasallisHub = function() {
-        toggleNexusMenu();
-    };
-</script>
-            width: 260px !important;
-            box-shadow: none !important;
-        }
-        .brasallis-sidebar.mobile-open {
-            transform: translateX(0);
-            box-shadow: 20px 0 50px rgba(0,0,0,0.2) !important;
-        }
-        .sidebar-backdrop.active {
-            display: block;
-        }
         .pdv-app {
-            height: calc(100dvh - 80px); /* Bottom Nav original */
+            height: calc(100dvh - 64px); /* Espaço do Topbar */
         }
         .pdv-sheet {
-            bottom: 80px !important;
+            bottom: 0 !important; /* Colado no fundo agora que não tem bottom nav */
         }
     }
 </style>
+<link rel="stylesheet" href="/assets/css/toasts.css?v=' . time() . '">
 <link rel="stylesheet" href="/assets/css/pdv_nexus.css?v=' . time() . '">';
 
 include_once '../includes/cabecalho.php';
@@ -107,7 +66,6 @@ include_once '../includes/cabecalho.php';
 <!-- =====================================================
      PDV NEXUS — APP SHELL
      ===================================================== -->
-<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleNexusMenu()"></div>
 
 <div class="pdv-app">
     <!-- Catalog Section -->
@@ -115,11 +73,11 @@ include_once '../includes/cabecalho.php';
         <!-- TOP BAR (Mobile/Tablet Only) -->
         <div class="pdv-top-bar">
             <div class="pdv-topbar-left">
-                <!-- Botão de Menu que abre apenas a SIDEBAR (Google Style) -->
-                <button class="pdv-back-btn" onclick="toggleNexusMenu()"><i class="fas fa-bars"></i></button>
+                <!-- Botão que abre a sidebar global -->
+                <button class="pdv-back-btn" onclick="toggleMobileSidebar()"><i class="fas fa-bars"></i></button>
                 <div class="pdv-topbar-title">
                     <span class="pdv-title-label">PDV NEXUS</span>
-                    <span class="pdv-operator-name"><?= htmlspecialchars($_SESSION['nome_usuario']) ?></span>
+                    <span class="pdv-operator-name"><?= htmlspecialchars($_SESSION['user_nome'] ?? 'Operador') ?></span>
                 </div>
             </div>
             <div class="pdv-cart-fab" onclick="PDV.toggleSheet()">
@@ -240,9 +198,9 @@ include_once '../includes/cabecalho.php';
 
             <!-- Summary -->
             <div class="pdv-sheet-summary">
-                <div class="pdv-sheet-summary-row">
-                    <span>Desconto</span>
-                    <span class="text-danger" id="sheet-discount">- R$ 0,00</span>
+                <div class="pdv-sheet-summary-row align-items-center">
+                    <span>Desconto (R$)</span>
+                    <input type="number" id="sheet-discount-input" class="form-control form-control-sm text-end w-auto border-0 bg-light fw-bold" step="0.01" value="0.00" style="max-width: 100px; border-radius: 8px;">
                 </div>
                 <div class="pdv-sheet-summary-row pdv-sheet-total-row">
                     <span>Total Final</span>

@@ -31,10 +31,16 @@ const PDV = {
             searchInput.addEventListener('keydown', (e) => this.handleGlobalShortcuts(e));
         }
 
-        // Discount Input
+        // Discount Input (Desktop)
         const discountInput = document.getElementById('cart-discount-input');
         if (discountInput) {
             discountInput.addEventListener('change', (e) => this.updateDiscount(parseFloat(e.target.value) || 0));
+        }
+
+        // Discount Input (Mobile Sheet)
+        const sheetDiscountInput = document.getElementById('sheet-discount-input');
+        if (sheetDiscountInput) {
+            sheetDiscountInput.addEventListener('change', (e) => this.updateDiscount(parseFloat(e.target.value) || 0));
         }
 
         // Global Keyboard Shortcuts
@@ -106,8 +112,17 @@ const PDV = {
     // CART MANAGEMENT
     // =====================================================
     addToCart(product) {
+        if (product.quantity <= 0) {
+            this.notify("Produto sem estoque disponível.", "error");
+            return;
+        }
+
         const existing = this.state.cart.find(i => i.id === product.id);
         if (existing) {
+            if (existing.quantity >= product.quantity) {
+                this.notify("Quantidade máxima em estoque atingida.", "warning");
+                return;
+            }
             existing.quantity++;
         } else {
             this.state.cart.push({
@@ -115,7 +130,7 @@ const PDV = {
                 quantity: 1
             });
         }
-        this.notify(`Adicionado: ${product.name}`);
+        this.notify(`Adicionado: ${product.name}`, "success");
         this.render();
     },
 
@@ -132,6 +147,13 @@ const PDV = {
 
     updateDiscount(val) {
         this.state.discount = val;
+        
+        // Sincronizar inputs
+        const dInput = document.getElementById('cart-discount-input');
+        const sInput = document.getElementById('sheet-discount-input');
+        if (dInput) dInput.value = val.toFixed(2);
+        if (sInput) sInput.value = val.toFixed(2);
+        
         this.render();
     },
 
@@ -254,14 +276,15 @@ const PDV = {
             this.state.isProcessing = false;
             if (data.success) {
                 this.state.lastSaleId = data.venda_id;
+                this.notify("Venda processada com sucesso!", "success");
                 this.showSuccess();
             } else {
-                alert("Erro ao processar venda: " + data.error);
+                this.notify("Erro ao processar: " + data.error, "error");
             }
         })
         .catch(err => {
             this.state.isProcessing = false;
-            alert("Erro de conexão com o servidor.");
+            this.notify("Erro crítico de conexão.", "error");
         });
     },
 
@@ -429,9 +452,54 @@ const PDV = {
         return names[method] || method;
     },
 
-    notify(msg) {
-        // Simple toast or console
-        console.log(msg);
+    notify(msg, type = 'info') {
+        // Sistema de Toast Premium (Google Style)
+        let container = document.querySelector('.toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'toast-container';
+            document.body.appendChild(container);
+        }
+
+        const icons = {
+            'success': 'fa-check-circle',
+            'error': 'fa-exclamation-circle',
+            'warning': 'fa-exclamation-triangle',
+            'info': 'fa-info-circle'
+        };
+
+        const titles = {
+            'success': 'Sucesso',
+            'error': 'Erro',
+            'warning': 'Atenção',
+            'info': 'Aviso'
+        };
+
+        const toast = document.createElement('div');
+        toast.className = `bh-toast bh-toast-${type}`;
+        toast.innerHTML = `
+            <div class="bh-toast-icon"><i class="fas ${icons[type]}"></i></div>
+            <div class="bh-toast-content">
+                <span class="bh-toast-title">${titles[type]}</span>
+                <span class="bh-toast-msg">${msg}</span>
+            </div>
+        `;
+
+        container.appendChild(toast);
+        
+        // Trigger animação
+        setTimeout(() => toast.classList.add('active'), 10);
+
+        // Auto-remove
+        setTimeout(() => {
+            toast.classList.remove('active');
+            setTimeout(() => toast.remove(), 400);
+        }, 3500);
+
+        toast.onclick = () => {
+            toast.classList.remove('active');
+            setTimeout(() => toast.remove(), 400);
+        };
     },
 
     searchCustomers(query) {

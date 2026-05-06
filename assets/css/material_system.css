@@ -57,8 +57,8 @@ h1, h2, h3, .m3-title {
 }
 
 .m3-card-elevated:hover {
-    box-shadow: var(--m3-shadow-3);
-    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    transform: translateY(-6px);
 }
 
 /* Bottom Navigation (Mobile Only) */
@@ -136,7 +136,7 @@ h1, h2, h3, .m3-title {
     border: none;
     cursor: pointer;
     z-index: 3100;
-    transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none !important;
 }
 

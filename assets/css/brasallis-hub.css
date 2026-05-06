@@ -135,7 +135,7 @@ body {
     white-space: nowrap;
 }
 
-.brasallis-sidebar:hover {
+.brasallis-sidebar:hover, .brasallis-sidebar.mobile-open {
     width: 240px;
     box-shadow: 20px 0 50px rgba(0,0,0,0.05);
 }
@@ -162,7 +162,7 @@ body {
     opacity: 0;
     transition: opacity 0.2s;
 }
-.brasallis-sidebar:hover .branding-text { opacity: 1; transition-delay: 0.1s; }
+.brasallis-sidebar:hover .branding-text, .brasallis-sidebar.mobile-open .branding-text { opacity: 1; transition-delay: 0.1s; }
 
 .brasallis-nav { 
     flex: 1; 
@@ -200,7 +200,7 @@ body {
     transition: transform 0.3s ease;
     opacity: 0;
 }
-.brasallis-sidebar:hover .submenu-arrow { opacity: 1; }
+.brasallis-sidebar:hover .submenu-arrow, .brasallis-sidebar.mobile-open .submenu-arrow { opacity: 1; }
 .brasallis-item.submenu-open .submenu-arrow { transform: rotate(90deg); }
 
 .nav-label {
@@ -209,7 +209,7 @@ body {
     transition: opacity 0.2s;
     font-weight: 500;
 }
-.brasallis-sidebar:hover .nav-label { opacity: 1; transition-delay: 0.1s; }
+.brasallis-sidebar:hover .nav-label, .brasallis-sidebar.mobile-open .nav-label { opacity: 1; transition-delay: 0.1s; }
 
 /* SUBMENU STYLES */
 .brasallis-submenu {
@@ -316,7 +316,19 @@ body {
 
 /* --- MOBILE ZEN --- */
 @media (max-width: 991px) {
-    .brasallis-sidebar { display: none; }
+    .brasallis-sidebar { 
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+        z-index: 5000 !important;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 240px !important;
+    }
+    .brasallis-sidebar.mobile-open {
+        transform: translateX(0);
+    }
     .brasallis-main { padding-left: 0 !important; }
     .brasallis-topbar { left: 0; padding: 0 20px; }
     #brasallisAppHub { padding: 40px 20px; }
@@ -398,11 +410,11 @@ body {
 .brasallis-bottom-nav { display: none; } /* Explicit Hide on Desktop */
 
 @media (max-width: 991px) {
-    .brasallis-sidebar { display: none !important; }
+    .brasallis-sidebar { display: flex !important; } /* Agora visível via transform */
     .brasallis-main { 
         padding-left: 0 !important; 
         padding-top: max(80px, calc(70px + env(safe-area-inset-top))) !important; 
-        padding-bottom: max(100px, calc(80px + env(safe-area-inset-bottom))) !important; 
+        padding-bottom: 20px !important; /* Removido espaço para bottom nav */
     }
     .brasallis-topbar { 
         left: 12px !important; 
@@ -414,24 +426,7 @@ body {
     }
     
     .brasallis-bottom-nav {
-        display: flex; 
-        position: fixed; 
-        bottom: 0; 
-        left: 0; 
-        right: 0;
-        height: max(80px, calc(64px + env(safe-area-inset-bottom))); 
-        background: rgba(255, 255, 255, 0.95); 
-        backdrop-filter: blur(25px) saturate(200%);
-        -webkit-backdrop-filter: blur(25px) saturate(200%);
-        align-items: center; 
-        justify-content: space-around; 
-        border-top: 1px solid rgba(0,0,0,0.05);
-        z-index: 2000;
-        padding: 0 10px;
-        padding-bottom: max(10px, env(safe-area-inset-bottom));
-        box-shadow: 0 -10px 40px rgba(0,0,0,0.05);
-        max-width: 100%;
-        margin: 0;
+        display: none !important; /* Ocultado conforme solicitado */
     }
     
     /* Esconde bottom nav quando modal estiver aberto (evita z-index conflict) */
@@ -587,6 +582,37 @@ body {
     .bg-danger-soft { background: #fee2e2; }
     .bg-indigo-soft { background: #e0e7ff; }
     .bg-dark-soft { background: #f1f5f9; }
+}
+
+/* NOVO: Menu Hamburguer Mobile e Backdrop */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--navy);
+    padding: 8px;
+    margin-right: 12px;
+}
+
+.sidebar-backdrop {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    z-index: 4500;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-backdrop.active {
+    display: block;
+    opacity: 1;
+}
+
+@media (max-width: 991px) {
+    .mobile-menu-toggle { display: block; }
 }
 
 /* Responsive Table Card (Elite Standard) */

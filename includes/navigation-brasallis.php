@@ -176,6 +176,9 @@ function can_access($module) {
         </div>
     </nav>
 </aside>
+
+<!-- BACKDROP GLOBAL PARA SIDEBAR MOBILE -->
+<div class="sidebar-backdrop" id="mainSidebarBackdrop" onclick="toggleMobileSidebar()"></div>
 <?php endif; ?>
 
 <script>
@@ -196,23 +199,47 @@ function toggleSubmenu(id) {
     targetItem.classList.toggle('submenu-open');
 }
 
-// Auto-recolhimento ao sair da sidebar
+// Lógica Global para Sidebar Mobile
+function toggleMobileSidebar() {
+    const sidebar = document.getElementById('mainSidebar');
+    const backdrop = document.getElementById('mainSidebarBackdrop');
+    if (sidebar) {
+        sidebar.classList.toggle('mobile-open');
+        if (backdrop) {
+            backdrop.classList.toggle('active');
+        }
+        
+        // Bloqueia scroll do body quando aberto
+        document.body.style.overflow = sidebar.classList.contains('mobile-open') ? 'hidden' : '';
+    }
+}
+
+// Auto-recolhimento ao sair da sidebar (Desktop)
 document.getElementById('mainSidebar').addEventListener('mouseleave', function() {
-    const submenus = document.querySelectorAll('.brasallis-submenu');
-    const items = document.querySelectorAll('.has-submenu');
-    
-    submenus.forEach(s => s.classList.remove('active'));
-    items.forEach(i => i.classList.remove('submenu-open'));
+    if (window.innerWidth > 991) {
+        const submenus = document.querySelectorAll('.brasallis-submenu');
+        const items = document.querySelectorAll('.has-submenu');
+        
+        submenus.forEach(s => s.classList.remove('active'));
+        items.forEach(i => i.classList.remove('submenu-open'));
+    }
 });
 </script>
 
 <!-- ELITE TOPBAR -->
 <?php if (!$hide_topbar): ?>
 <header class="brasallis-topbar">
-    <a href="<?php echo $base_url; ?>admin/painel_admin.php" class="d-flex align-items-center gap-3 text-decoration-none">
-        <img src="<?php echo $base_url; ?>assets/img/pureza.png" alt="Logo" style="height: 32px; width: auto;">
-        <h5 class="mb-0 fw-bold d-none d-lg-block" style="color: #0A2647; font-size: 0.95rem;">Brasallis Hub</h5>
-    </a>
+    <div class="d-flex align-items-center">
+        <!-- BOTÃO HAMBÚRGUER MOBILE -->
+        <button class="mobile-menu-toggle" onclick="toggleMobileSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <a href="<?php echo $base_url; ?>admin/painel_admin.php" class="d-flex align-items-center gap-3 text-decoration-none">
+            <img src="<?php echo $base_url; ?>assets/img/pureza.png" alt="Logo" style="height: 32px; width: auto;">
+            <h5 class="mb-0 fw-bold d-none d-lg-block" style="color: #0A2647; font-size: 0.95rem;">Brasallis Hub</h5>
+        </a>
+    </div>
 
     <div class="brasallis-search-container d-none d-md-flex mx-auto" id="omniSearchContainer">
         <i class="fas fa-search text-muted opacity-50"></i>
