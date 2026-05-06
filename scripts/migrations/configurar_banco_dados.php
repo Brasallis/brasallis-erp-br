@@ -79,6 +79,11 @@ try {
         plan VARCHAR(50) NOT NULL DEFAULT 'basico',
         trial_ends_at DATETIME NULL,
         subscription_status VARCHAR(50) NOT NULL DEFAULT 'active',
+        permissions JSON DEFAULT NULL,
+        data_admissao DATE DEFAULT NULL,
+        cpf VARCHAR(14) DEFAULT NULL,
+        celular VARCHAR(20) DEFAULT NULL,
+        status_colaborador ENUM('ativo', 'inativo', 'ferias', 'afastado') DEFAULT 'ativo',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
         FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
