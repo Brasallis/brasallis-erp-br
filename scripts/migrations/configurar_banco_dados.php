@@ -214,6 +214,18 @@ try {
     $conn->exec($sql_notificacoes);
     echo "Tabela 'notificacoes' verificada/criada com sucesso.\n";
 
+    // Tabela de Avisos Globais (SuperAdmin)
+    $sql_avisos_globais = "CREATE TABLE IF NOT EXISTS avisos_globais (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        message TEXT NOT NULL,
+        type VARCHAR(50) DEFAULT 'info',
+        active TINYINT(1) DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB;";
+    $conn->exec($sql_avisos_globais);
+    echo "Tabela 'avisos_globais' verificada/criada com sucesso.\n";
+
     // Tabela de Leads (não pertence a uma empresa específica)
     $sql_leads = "CREATE TABLE IF NOT EXISTS leads (
         id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,

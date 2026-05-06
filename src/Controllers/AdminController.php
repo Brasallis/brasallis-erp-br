@@ -82,7 +82,20 @@ class AdminController
             $crm_projects = $dashboardRepo->getProjectCompletionBoard();
             $operacoes = $dashboardRepo->getOperationsLogistics();
             
-            $avisos = $dashboardRepo->getConnection()->query("SELECT * FROM avisos_globais WHERE active = 1 ORDER BY created_at DESC")->fetchAll(\PDO::FETCH_ASSOC);
+            try {
+                $avisos = $dashboardRepo->getConnection()->query("SELECT * FROM avisos_globais WHERE active = 1 ORDER BY created_at DESC")->fetchAll(\PDO::FETCH_ASSOC);
+            } catch (Exception $e) {
+                // Self-Healing: Se a tabela não existe, cria ela agora
+                $dashboardRepo->getConnection()->exec("CREATE TABLE IF NOT EXISTS avisos_globais (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    title VARCHAR(255) NOT NULL,
+                    message TEXT NOT NULL,
+                    type VARCHAR(50) DEFAULT 'info',
+                    active TINYINT(1) DEFAULT 1,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )");
+                $avisos = [];
+            }
             $insights = $dashboardRepo->getDashboardInsights();
             
             $produtos_validade = $dashboardRepo->getProdutosProximosValidade(5);
