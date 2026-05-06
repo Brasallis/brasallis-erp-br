@@ -73,7 +73,7 @@ const PDV = {
         if (clearBtn) clearBtn.style.display = query.length > 0 ? 'block' : 'none';
 
         const category = this.state.activeCategory;
-        const url = `../api/search_products.php?term=${encodeURIComponent(query)}&categoria_id=${category}&in_stock=1`;
+        const url = `/api/search_products.php?term=${encodeURIComponent(query)}&categoria_id=${category}&in_stock=1`;
 
         fetch(url)
             .then(res => res.json())
@@ -244,7 +244,7 @@ const PDV = {
             cliente_id: this.state.selectedCustomer ? this.state.selectedCustomer.id : null
         };
 
-        fetch('../api/process_sale.php', {
+        fetch('/api/process_sale.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -287,7 +287,7 @@ const PDV = {
 
     printReceipt() {
         if (!this.state.lastSaleId) return;
-        const url = `../employee/imprimir_venda.php?id=${this.state.lastSaleId}`;
+        const url = `/employee/imprimir_venda.php?id=${this.state.lastSaleId}`;
         window.open(url, '_blank', 'width=400,height=600');
     },
 
@@ -441,7 +441,7 @@ const PDV = {
             return;
         }
 
-        fetch(`../api/get_clientes.php?term=${encodeURIComponent(query)}`)
+        fetch(`/api/get_clientes.php?term=${encodeURIComponent(query)}`)
             .then(res => res.json())
             .then(data => {
                 if (data.length > 0) {

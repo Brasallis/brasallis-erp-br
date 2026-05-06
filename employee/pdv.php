@@ -16,8 +16,8 @@ $categories_stmt = $conn_pdv->prepare("SELECT id, nome FROM categorias WHERE emp
 $categories_stmt->execute([$_SESSION['empresa_id']]);
 $pdv_categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-include_once '../includes/cabecalho.php';
-?>
+// Injetar estilos no head para evitar FOUC (Flash of Unstyled Content)
+$extra_css = '
 <style>
     /* INTEGRAÇÃO COM O SISTEMA ORIGINAL */
     .brasallis-main { 
@@ -25,24 +25,16 @@ include_once '../includes/cabecalho.php';
         overflow: hidden;
         height: calc(100vh - 70px); /* Descontando Topbar aproximada */
     }
-    
-    .pdv-app {
-        height: 100%;
-        width: 100%;
-    }
-
-    /* Ajuste para Mobile (quando o Bottom Nav original está presente) */
+    .pdv-app { height: 100%; width: 100%; }
     @media (max-width: 991px) {
-        .pdv-app {
-            height: calc(100vh - 140px); /* Descontando Topbar + Bottom Nav */
-        }
-        .pdv-sheet {
-            bottom: 70px !important; /* Fica acima do Bottom Nav original */
-        }
+        .pdv-app { height: calc(100vh - 140px); }
+        .pdv-sheet { bottom: 70px !important; }
     }
 </style>
-<!-- Carregamento robusto para evitar FOUC -->
-<link rel="stylesheet" href="/assets/css/pdv_nexus.css?v=<?= time() ?>">
+<link rel="stylesheet" href="/assets/css/pdv_nexus.css?v=' . time() . '">';
+
+include_once '../includes/cabecalho.php';
+?>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- =====================================================

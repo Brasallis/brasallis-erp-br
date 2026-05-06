@@ -31,6 +31,7 @@ require_once __DIR__ . '/navigation-brasallis.php';
             overflow-x: hidden;
         }
     </style>
+    <?php if (isset($extra_css)) echo $extra_css; ?>
 </head>
 <body class="bg-light">
 <?php
