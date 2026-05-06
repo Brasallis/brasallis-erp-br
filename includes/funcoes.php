@@ -109,20 +109,31 @@ function registrar_atividade_global() {
  * Registra um erro no banco de dados para o Super Admin.
  */
 function registrar_erro_sistema($message, $severity = 'error', $source = 'PHP', $stack = '') {
+    $empresa_id = $_SESSION['empresa_id'] ?? null;
+    $user_id = $_SESSION['user_id'] ?? null;
+    $url = $_SERVER['REQUEST_URI'] ?? 'Unknown';
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
+
+    // 1. Log Local (Segurança se o Banco Falhar)
+    $log_dir = __DIR__ . '/../logs';
+    if (!is_dir($log_dir)) { @mkdir($log_dir, 0777, true); }
+    $log_msg = "[" . date('Y-m-d H:i:s') . "] [$severity] [$source] Empresa: $empresa_id | User: $user_id | URL: $url | MSG: $message\n";
+    @file_put_contents($log_dir . '/system_errors.log', $log_msg, FILE_APPEND);
+
     try {
         $conn_log = connect_db();
         if (!$conn_log) return;
 
         $stmt = $conn_log->prepare("INSERT INTO system_logs (empresa_id, user_id, severity, source, message, stack_trace, url, ip_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
-            $_SESSION['empresa_id'] ?? null,
-            $_SESSION['user_id'] ?? null,
+            $empresa_id,
+            $user_id,
             $severity,
             $source,
             mb_substr($message, 0, 1000),
             $stack,
-            $_SERVER['REQUEST_URI'] ?? 'Unknown',
-            $_SERVER['REMOTE_ADDR'] ?? 'Unknown'
+            $url,
+            $ip
         ]);
     } catch (Exception $e) {
         error_log("Falha Crítica ao Logar Erro no Banco: " . $e->getMessage());
@@ -131,17 +142,48 @@ function registrar_erro_sistema($message, $severity = 'error', $source = 'PHP', 
 
 // Handlers Globais
 function global_exception_handler($exception) {
-    registrar_erro_sistema($exception->getMessage(), 'error', 'PHP Exception', $exception->getTraceAsString());
-    if (ini_get('display_errors')) {
-        echo "<h1>Erro Crítico</h1><p>" . $exception->getMessage() . "</p>";
+    registrar_erro_sistema($exception->getMessage(), 'critical', 'PHP Exception', $exception->getTraceAsString());
+    
+    // Se for SuperAdmin, mostra o erro técnico
+    if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'super_admin') {
+        echo "<div style='background:#fee2e2; border:1px solid #ef4444; color:#991b1b; padding:20px; border-radius:8px; font-family:sans-serif; margin:20px;'>";
+        echo "<h3>DEBUG MODE (God Mode)</h3>";
+        echo "<p><strong>Erro:</strong> " . htmlspecialchars($exception->getMessage()) . "</p>";
+        echo "<p><strong>Arquivo:</strong> " . $exception->getFile() . " na linha " . $exception->getLine() . "</p>";
+        echo "<pre style='font-size:12px; background:#fff; padding:10px; border-radius:4px;'>" . $exception->getTraceAsString() . "</pre>";
+        echo "</div>";
+        exit;
+    }
+
+    // Resposta amigável
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        header('Content-Type: application/json');
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Ocorreu um erro interno. Nossa equipe já foi notificada.']);
+        exit;
+    }
+
+    if (!headers_sent()) {
+        include_once __DIR__ . '/../error_fatal.php';
+        exit;
     }
 }
 
 function global_error_handler($errno, $errstr, $errfile, $errline) {
     if (!(error_reporting() & $errno)) return false;
-    $severity = ($errno == E_USER_ERROR || $errno == E_ERROR) ? 'error' : 'warning';
+    
+    $severity = ($errno == E_USER_ERROR || $errno == E_ERROR || $errno == E_COMPILE_ERROR) ? 'error' : 'warning';
     $msg = "Error: [$errno] $errstr em $errfile na linha $errline";
+    
     registrar_erro_sistema($msg, $severity, 'PHP Error');
+
+    // Se for erro fatal, mostra a tela amigável
+    if ($severity === 'error') {
+        if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'super_admin') return false; // Deixa o PHP mostrar pro SuperAdmin
+        include_once __DIR__ . '/../error_fatal.php';
+        exit;
+    }
+    
     return false;
 }
 
