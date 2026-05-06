@@ -75,7 +75,7 @@ try {
         username VARCHAR(50) NOT NULL,
         password VARCHAR(255) NOT NULL,
         email VARCHAR(100) NOT NULL UNIQUE,
-        user_type ENUM('admin', 'employee') NOT NULL DEFAULT 'employee',
+        user_type ENUM('admin', 'employee', 'super_admin') NOT NULL DEFAULT 'employee',
         plan VARCHAR(50) NOT NULL DEFAULT 'basico',
         trial_ends_at DATETIME NULL,
         subscription_status VARCHAR(50) NOT NULL DEFAULT 'active',
@@ -283,6 +283,26 @@ try {
     ) ENGINE=InnoDB;";
     $conn->exec($sql_redefinicoes_senha);
     echo "Tabela 'redefinicoes_senha' verificada/criada com sucesso.\n";
+
+    // ==========================================
+    // CRIAÇÃO DO SUPER ADMIN (IMORTALIDADE)
+    // ==========================================
+    $pwd_hash = password_hash('brasallismaster', PASSWORD_DEFAULT);
+    
+    // 1. Criar Empresa Mestre (SaaS Owner)
+    $stmt_empresa = $conn->prepare("INSERT INTO empresas (name, owner_user_id, ai_plan, max_users, support_level) VALUES ('Brasallis Corporate', 1, 'enterprise_elite', 999, 'dedicated')");
+    $stmt_empresa->execute();
+    $master_empresa_id = $conn->lastInsertId();
+
+    // 2. Criar Conta Super Admin
+    $stmt_sa = $conn->prepare("INSERT INTO usuarios (empresa_id, username, password, email, user_type, plan) VALUES (?, 'Super Admin (God Mode)', ?, 'admin@brasallis.com.br', 'super_admin', 'enterprise_elite')");
+    $stmt_sa->execute([$master_empresa_id, $pwd_hash]);
+    
+    // 3. Atualizar o dono da empresa mestre
+    $sa_id = $conn->lastInsertId();
+    $conn->exec("UPDATE empresas SET owner_user_id = {$sa_id} WHERE id = {$master_empresa_id}");
+
+    echo "\n🛡️ Super Admin gerado com sucesso! (admin@brasallis.com.br / brasallismaster)\n";
 
     echo "\n\nConfiguração do banco de dados multi-tenant concluída com sucesso!";
 
