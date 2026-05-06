@@ -6,9 +6,9 @@ require_once '../includes/funcoes.php';
 checkAuth();
 
 $title = "Caixa — PDV Nexus";
-$hide_bottom_nav = true;
-$hide_sidebar = true;
-$hide_topbar = true;
+$hide_bottom_nav = false; // MANTÉM ORIGINALIDADE
+$hide_sidebar = false;    // MANTÉM ORIGINALIDADE
+$hide_topbar = false;     // MANTÉM ORIGINALIDADE
 
 // Buscar categorias dinâmicas do banco
 $conn_pdv = connect_db();
@@ -19,25 +19,29 @@ $pdv_categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
 include_once '../includes/cabecalho.php';
 ?>
 <style>
-    /* CRITICAL ISOLATION — Prevent global UI interference */
-    .brasallis-sidebar, .brasallis-bottom-nav, .brasallis-topbar, #brasallisAppHub { 
-        display: none !important; 
-        visibility: hidden !important; 
-        pointer-events: none !important; 
-    }
+    /* INTEGRAÇÃO COM O SISTEMA ORIGINAL */
     .brasallis-main { 
-        padding: 0 !important; margin: 0 !important; 
-        width: 100% !important; max-width: 100% !important; 
-        min-height: 100vh !important;
+        padding: 0 !important; 
+        overflow: hidden;
+        height: calc(100vh - 70px); /* Descontando Topbar aproximada */
     }
-    body {
-        overflow: hidden !important;
-        height: 100dvh;
-        background: #f0f4f9;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+    
+    .pdv-app {
+        height: 100%;
+        width: 100%;
+    }
+
+    /* Ajuste para Mobile (quando o Bottom Nav original está presente) */
+    @media (max-width: 991px) {
+        .pdv-app {
+            height: calc(100vh - 140px); /* Descontando Topbar + Bottom Nav */
+        }
+        .pdv-sheet {
+            bottom: 70px !important; /* Fica acima do Bottom Nav original */
+        }
     }
 </style>
-<!-- Strict root-relative paths to bypass protocol detection issues -->
+<!-- Carregamento robusto para evitar FOUC -->
 <link rel="stylesheet" href="/assets/css/pdv_nexus.css?v=<?= time() ?>">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
