@@ -18,6 +18,7 @@ $pdv_categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Injetar estilos no head para garantir a fluidez da interface
 $extra_css = '
+<style>
     /* INTEGRAÇÃO PREMIUM — ESTILO GOOGLE HUB */
     
     /* 1. Reset Global para PDV - Previne scroll do body e foca na App Shell */
