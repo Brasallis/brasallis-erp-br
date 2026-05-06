@@ -21,59 +21,87 @@ $extra_css = '
 <style>
     /* INTEGRAÇÃO PREMIUM — ESTILO GOOGLE HUB */
     
-    /* 1. Reset Global para PDV - Previne scroll do body */
-    body {
+    /* 1. Trava o scroll da página inteira */
+    html, body {
         overflow: hidden !important;
+        margin: 0; padding: 0;
+        width: 100%; height: 100%;
     }
 
-    /* 2. Fixa o PDV App ignorando qualquer restrição do painel pai */
-    .pdv-app {
-        position: fixed !important;
-        top: 64px !important;
-        left: 72px !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        width: auto !important;
-        height: auto !important;
-        background: var(--nexus-surface);
-        z-index: 900;
-        margin: 0 !important;
+    /* 2. O main container precisa ocupar o espaço total */
+    .brasallis-main {
         padding: 0 !important;
+        margin: 0 !important;
+        position: absolute;
+        top: 64px; /* Abaixo do topbar */
+        left: 72px; /* Ao lado da sidebar */
+        right: 0;
+        bottom: 0;
+        display: flex;
+    }
+    
+    .brasallis-main > .flex-grow-1 {
+        flex: 1;
+        display: flex;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* 3. PDV App Layout Absoluto */
+    .pdv-app {
+        flex: 1;
+        display: flex;
+        width: 100%;
+        height: 100%;
+        background: #f0f4f9;
     }
 
     @media (min-width: 992px) {
         .pdv-app {
             flex-direction: row !important;
         }
-        /* Garante que o catálogo preencha o restante e o carrinho cole na direita */
-        .pdv-catalog-col { flex: 1 !important; }
-        .pdv-cart-col { width: 400px !important; flex-shrink: 0 !important; }
+        .pdv-catalog-col { flex: 1 !important; height: 100%; }
+        .pdv-cart-col { 
+            width: 380px !important; /* Ligeiramente menor para caber melhor em notebooks */
+            flex-shrink: 0 !important; 
+            height: 100%;
+            border-left: 1px solid #e2e8f0;
+            background: #ffffff;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.02); /* Sombra suave para separar */
+        }
     }
 
     @media (max-width: 991px) {
+        .brasallis-main {
+            left: 0; /* Mobile não tem sidebar fixa na esquerda */
+            top: 64px;
+            bottom: 72px; /* Espaço para o bottom nav global */
+        }
         .pdv-app {
-            left: 0 !important;
-            top: 64px !important;
-            bottom: 72px !important; /* Acima do menu global */
             flex-direction: column !important;
         }
         
-        /* Mobile: Abordagem à prova de falhas baseada em "bottom" em vez de "transform" */
+        /* Mobile Sheet Super Estável */
         .pdv-sheet {
-            bottom: calc(-75vh + 150px) !important; /* Esconde o corpo, deixa só o peek (72px navbar + 78px peek = 150px) */
-            height: 75vh !important;
+            position: fixed !important;
+            bottom: -100% !important; /* Esconde totalmente fora da tela inicialmente */
+            left: 0; right: 0;
+            height: 80vh !important;
+            background: #ffffff;
             z-index: 5000 !important;
-            transform: none !important; /* Remove transforms bugados em mobile */
-            transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+            transition: bottom 0.4s cubic-bezier(0.2, 0, 0, 1) !important;
+            display: flex !important;
+            flex-direction: column;
         }
         
         .pdv-sheet.expanded {
-            bottom: 72px !important; /* Sobe a gaveta para cima do menu */
+            bottom: 72px !important; /* Sobe para ficar exatamente acima do menu global */
         }
         
-        /* Ajuste do botão flutuante para evitar conflito de clique com o peek do sheet */
         .pdv-cart-fab {
-            bottom: 170px !important;
+            bottom: 100px !important; /* Acima do menu global */
             z-index: 5001 !important;
         }
     }
