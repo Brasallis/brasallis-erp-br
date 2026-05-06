@@ -437,6 +437,83 @@
     backdrop-filter: blur(2px);
 }
 
+.pdv-sheet-body {
+    display: none;
+    padding: 20px 24px;
+    flex-direction: column;
+    flex: 1;
+    min-height: 200px;
+    background: #ffffff;
+    overflow-y: auto;
+}
+.pdv-sheet.expanded .pdv-sheet-body {
+    display: flex !important;
+}
+.pdv-sheet.expanded .pdv-sheet-peek {
+    display: none !important;
+}
+
+.pdv-sheet-items {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 100px;
+}
+
+.pdv-sheet-section-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--nexus-navy);
+}
+
+.pdv-sheet-summary {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+}
+.pdv-sheet-summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+.pdv-sheet-total-row {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--nexus-primary);
+    border-top: 1px dashed #cbd5e1;
+    padding-top: 12px;
+    margin-top: 12px;
+    margin-bottom: 0;
+}
+
+.pdv-sheet-full-checkout {
+    width: 100%;
+    height: 64px;
+    background: var(--nexus-primary);
+    color: #fff;
+    border: none;
+    border-radius: 16px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    box-shadow: 0 8px 24px rgba(0,97,164,0.3);
+}
+
+.pdv-sheet-continue {
+    width: 100%;
+    height: 48px;
+    background: transparent;
+    color: var(--nexus-on-surface-variant);
+    border: none;
+    font-weight: 700;
+    margin-top: 8px;
+}
+
 /* =====================================================
    MODAL OVERRIDES (Fix Dark Screen)
    ===================================================== */
@@ -473,6 +550,42 @@
     100% { transform: scale(1); opacity: 1; }
 }
 .pdv-product-card { animation: item-pop 0.3s cubic-bezier(0.2, 0, 0, 1) both; }
+
+.pdv-empty-cart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--nexus-on-surface-variant);
+    height: 100%;
+}
+.pdv-empty-cart-icon {
+    width: 80px;
+    height: 80px;
+    background: #f0f4f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+    color: var(--nexus-primary);
+    opacity: 0.6;
+}
+.pdv-empty-cart h3 {
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--nexus-navy);
+    margin-bottom: 8px;
+}
+.pdv-empty-cart p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    max-width: 240px;
+    margin: 0 auto;
+}
 
 .text-navy { color: var(--nexus-navy); }
 .fw-black { font-weight: 900; }

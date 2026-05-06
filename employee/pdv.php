@@ -136,10 +136,15 @@ $extra_css = '
     }
 </style>
 <link rel="stylesheet" href="/assets/css/toasts.css?v=' . time() . '">
-<link rel="stylesheet" href="/assets/css/pdv_nexus_v3.css?v=' . time() . '">';
+<link rel="stylesheet" href="/assets/css/pdv_nexus_v3_3.css?v=' . time() . '">';
 
 include_once '../includes/cabecalho.php';
 ?>
+<div style="position:fixed; top:0; left:0; width:100%; background:red; color:white; text-align:center; z-index:100000; font-weight:bold; padding:10px;">
+    DEBUG: VOCÊ ESTÁ VENDO ESTA MENSAGEM? (V3.4.2)
+</div>
+<div class="pdv-version-badge">NEXUS V3.4</div>
+<div style="display:none" id="nexus-v3-marker">V3.3.1</div>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- =====================================================
@@ -242,7 +247,7 @@ include_once '../includes/cabecalho.php';
 
 <div class="pdv-sheet" id="pdv-sheet">
     <!-- Sheet Handle Bar -->
-    <div class="pdv-sheet-handle-bar" id="sheet-handle" ontouchstart="PDV.sheetDragStart(event)">
+    <div class="pdv-sheet-handle-bar" id="sheet-handle">
         <div class="pdv-sheet-handle"></div>
     </div>
 
@@ -426,6 +431,6 @@ include_once '../includes/cabecalho.php';
     </div>
 </div>
 
-<script src="/assets/js/pdv_nexus_v3.js?v=<?= time() ?>"></script>
+<script src="/assets/js/pdv_nexus_v3_4.js?v=<?= time() ?>"></script>
 
 <?php include_once '../includes/rodape.php'; ?>

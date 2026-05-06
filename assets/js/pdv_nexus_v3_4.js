@@ -414,8 +414,8 @@ const PDV = {
 
         if (this.state.searchResults.length === 0) {
             container.innerHTML = `
-                <div class="pdv-empty-state">
-                    <div class="pdv-empty-icon"><i class="fas fa-search"></i></div>
+                <div class="pdv-empty-cart">
+                    <div class="pdv-empty-cart-icon"><i class="fas fa-search"></i></div>
                     <h3>Sem resultados</h3>
                     <p>Não encontramos produtos com esse nome.</p>
                 </div>`;
@@ -446,12 +446,12 @@ const PDV = {
 
         if (this.state.cart.length === 0) {
             container.innerHTML = `
-                <div class="text-center text-muted" style="margin-top: 80px; padding: 20px;">
-                    <div style="width: 80px; height: 80px; background: #f0f4f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
-                        <i class="fas fa-shopping-basket" style="font-size: 2rem; color: #0061a4; opacity: 0.5;"></i>
+                <div class="pdv-empty-cart">
+                    <div class="pdv-empty-cart-icon">
+                        <i class="fas fa-shopping-basket"></i>
                     </div>
-                    <p class="small fw-bold" style="color: #001d35; font-size: 1rem;">Carrinho Vazio</p>
-                    <p class="small text-muted" style="line-height: 1.4;">Selecione produtos no catálogo para iniciar a venda.</p>
+                    <h3>Carrinho Vazio</h3>
+                    <p>Adicione itens do catálogo para começar a vender.</p>
                 </div>
             `;
             const btn = document.getElementById('btn-open-payment');
@@ -481,39 +481,49 @@ const PDV = {
     },
 
     renderSheet() {
-        const sheet = document.getElementById('pdv-sheet');
-        if (!sheet) return;
+        try {
+            const sheet = document.getElementById('pdv-sheet');
+            if (!sheet) return;
 
-        if (this.state.cart.length > 0) {
-            sheet.classList.add('has-items');
-        } else {
-            sheet.classList.remove('has-items', 'expanded');
-            this.collapseSheet();
+            if (this.state.cart.length > 0) {
+                sheet.classList.add('has-items');
+            } else {
+                sheet.classList.remove('has-items', 'expanded');
+                this.collapseSheet();
+            }
+
+            const itemsContainer = document.getElementById('sheet-cart-items');
+            if (itemsContainer) {
+                itemsContainer.innerHTML = this.state.cart.map(i => `
+                    <div class="pdv-cart-item">
+                        <div class="pdv-cart-item-info">
+                            <span class="pdv-cart-item-name">${i.name}</span>
+                            <span class="pdv-cart-item-meta">${i.quantity}x ${this.formatCurrency(i.price)}</span>
+                        </div>
+                        <div class="pdv-qty-control">
+                            <button class="pdv-qty-btn" onclick="PDV.updateQuantity(${i.id}, -1)">-</button>
+                            <span class="pdv-qty-val">${i.quantity}</span>
+                            <button class="pdv-qty-btn" onclick="PDV.updateQuantity(${i.id}, 1)">+</button>
+                        </div>
+                        <div class="pdv-cart-item-price">
+                            ${this.formatCurrency(i.price * i.quantity)}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const sheetTotal = document.getElementById('sheet-total');
+            if (sheetTotal) sheetTotal.textContent = this.formatCurrency(this.state.total);
+            
+            const sheetFinalTotal = document.getElementById('sheet-final-total');
+            if (sheetFinalTotal) sheetFinalTotal.textContent = this.formatCurrency(this.state.total);
+            
+            const sheetQty = document.getElementById('sheet-qty');
+            if (sheetQty) sheetQty.textContent = this.state.cart.reduce((acc, i) => acc + i.quantity, 0);
+            
+        } catch (e) {
+            console.error("Render Sheet error:", e);
         }
-
-        const itemsContainer = document.getElementById('sheet-cart-items');
-        itemsContainer.innerHTML = this.state.cart.map(i => `
-            <div class="pdv-cart-item">
-                <div class="pdv-cart-item-info">
-                    <span class="pdv-cart-item-name">${i.name}</span>
-                    <span class="pdv-cart-item-meta">${i.quantity}x ${this.formatCurrency(i.price)}</span>
-                </div>
-                <div class="pdv-qty-control">
-                    <button class="pdv-qty-btn" onclick="PDV.updateQuantity(${i.id}, -1)">-</button>
-                    <span class="pdv-qty-val">${i.quantity}</span>
-                    <button class="pdv-qty-btn" onclick="PDV.updateQuantity(${i.id}, 1)">+</button>
-                </div>
-                <div class="pdv-cart-item-price">
-                    ${this.formatCurrency(i.price * i.quantity)}
-                </div>
-            </div>
-        `).join('');
-
-        document.getElementById('sheet-total').textContent = this.formatCurrency(this.state.total);
-        const sheetDiscountEl = document.getElementById('sheet-discount');
-        if (sheetDiscountEl) sheetDiscountEl.textContent = `- ${this.formatCurrency(this.state.discount)}`;
-        document.getElementById('sheet-final-total').textContent = this.formatCurrency(this.state.total);
-        document.getElementById('sheet-qty').textContent = this.state.cart.reduce((acc, i) => acc + i.quantity, 0);
     },
 
     renderPaymentList() {
