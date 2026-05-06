@@ -9,13 +9,61 @@ if (file_exists(__DIR__ . '/.env')) {
     $dotenv->load();
 }
 
-// --- CONTROLE DE EXIBIÇÃO DE ERROS (PRODUÇÃO VS LOCAL) ---
+// --- ESCUDO DE PRIVACIDADE E SEGURANÇA (FINAL SHIELD) ---
+ob_start(function($buffer) {
+    // Lista de padrões que indicam vazamento de erro técnico
+    $error_patterns = [
+        'SQLSTATE[',
+        'Fatal error:',
+        'Uncaught Exception',
+        'PDOException',
+        'Parse error:',
+        'Stack trace:'
+    ];
+
+    $has_error = false;
+    foreach ($error_patterns as $pattern) {
+        if (strpos($buffer, $pattern) !== false) {
+            $has_error = true;
+            break;
+        }
+    }
+
+    if ($has_error) {
+        // Se o usuário for SuperAdmin, permitimos a visualização técnica para manutenção
+        if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'super_admin') {
+            return $buffer;
+        }
+
+        // Se for uma resposta API/JSON, retorna JSON amigável
+        $is_json = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') 
+                   || (strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') !== false);
+
+        if ($is_json) {
+            header('Content-Type: application/json');
+            return json_encode([
+                'success' => false,
+                'message' => 'Ocorreu um erro interno. Nossa equipe de engenharia já foi notificada.'
+            ]);
+        }
+
+        // Caso contrário, mostra a tela amigável premium
+        $error_page = __DIR__ . '/error_fatal.php';
+        if (file_exists($error_page)) {
+            return file_get_contents($error_page);
+        }
+
+        return "<h1>Ajustando os Motores</h1><p>Ocorreu um imprevisto técnico. Nossa equipe já está trabalhando na solução.</p>";
+    }
+
+    return $buffer;
+});
+
 $app_debug = $_ENV['APP_DEBUG'] ?? getenv('APP_DEBUG');
 if ($app_debug === 'false' || $app_debug === false) {
     ini_set('display_errors', '0');
     ini_set('display_startup_errors', '0');
     error_reporting(E_ALL);
-    // Oculta erros da tela em produção para segurança, registrando apenas em log do servidor
 } else {
     ini_set('display_errors', '1');
     ini_set('display_startup_errors', '1');
