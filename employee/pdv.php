@@ -21,50 +21,54 @@ $extra_css = '
 <style>
     /* INTEGRAÇÃO PREMIUM — ESTILO GOOGLE HUB */
     
-    /* 1. Reset Global para PDV - Previne scroll do body e foca na App Shell */
+    /* 1. Reset Global para PDV - Previne scroll do body */
     body {
         overflow: hidden !important;
     }
 
-    /* 2. Configura o main e seu filho para flexbox fluido */
-    .brasallis-main {
-        display: flex !important;
-        flex-direction: column !important;
-        height: 100vh !important;
-    }
-    
-    .brasallis-main > .flex-grow-1 {
-        flex: 1 !important;
-        display: flex !important;
-        padding: 0 !important;
-        max-width: 100% !important;
-        overflow: hidden !important;
-    }
-
-    /* 3. PDV App ocupa todo o espaço liberado */
+    /* 2. Fixa o PDV App ignorando qualquer restrição do painel pai */
     .pdv-app {
-        flex: 1 !important;
-        width: 100% !important;
-        height: 100% !important;
+        position: fixed !important;
+        top: 64px !important;
+        left: 72px !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: auto !important;
+        height: auto !important;
         background: var(--nexus-surface);
+        z-index: 900;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     @media (min-width: 992px) {
         .pdv-app {
             flex-direction: row !important;
         }
+        /* Garante que o catálogo preencha o restante e o carrinho cole na direita */
+        .pdv-catalog-col { flex: 1 !important; }
+        .pdv-cart-col { width: 400px !important; flex-shrink: 0 !important; }
     }
 
     @media (max-width: 991px) {
         .pdv-app {
+            left: 0 !important;
+            top: 64px !important;
+            bottom: 72px !important; /* Acima do menu global */
             flex-direction: column !important;
         }
         
-        /* Mobile: O Sheet DEVE ter altura fixa para o efeito Drawer funcionar perfeitamente */
+        /* Mobile: Abordagem à prova de falhas baseada em "bottom" em vez de "transform" */
         .pdv-sheet {
-            bottom: 72px !important; /* Acima do menu global */
-            height: 75vh !important; /* Altura padrão Google Bottom Sheet */
+            bottom: calc(-75vh + 150px) !important; /* Esconde o corpo, deixa só o peek (72px navbar + 78px peek = 150px) */
+            height: 75vh !important;
             z-index: 5000 !important;
+            transform: none !important; /* Remove transforms bugados em mobile */
+            transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        
+        .pdv-sheet.expanded {
+            bottom: 72px !important; /* Sobe a gaveta para cima do menu */
         }
         
         /* Ajuste do botão flutuante para evitar conflito de clique com o peek do sheet */
