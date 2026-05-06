@@ -1,3 +1,10 @@
-ALTER TABLE empresas ADD COLUMN ai_plan ENUM('free', 'starter', 'pro') DEFAULT 'free';
+ALTER TABLE empresas ADD COLUMN ai_plan VARCHAR(50) DEFAULT 'foundation';
 ALTER TABLE empresas ADD COLUMN ai_token_limit INT DEFAULT 100000;
+ALTER TABLE empresas ADD COLUMN max_users INT DEFAULT 5;
+ALTER TABLE empresas ADD COLUMN support_level VARCHAR(50) DEFAULT 'community';
 ALTER TABLE empresas ADD COLUMN ai_tokens_used_month INT DEFAULT 0;
+ALTER TABLE empresas ADD COLUMN subscription_status VARCHAR(50) DEFAULT 'trial';
+ALTER TABLE empresas ADD COLUMN next_billing_at DATETIME DEFAULT NULL;
+ALTER TABLE empresas ADD COLUMN iq_actions_used_month INT DEFAULT 0;
+ALTER TABLE empresas ADD COLUMN last_payment_at DATETIME DEFAULT NULL;
+ALTER TABLE empresas ADD COLUMN blocked_at DATETIME DEFAULT NULL;
