@@ -2,8 +2,10 @@
 // includes/cabecalho.php - TOTAL RESCUE
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
-// Carrega a navegação e define $base_url dinamicamente
+// Captura a saída HTML da navegação mas executa a lógica (como $base_url)
+ob_start();
 require_once __DIR__ . '/navigation-brasallis.php';
+$navigation_html = ob_get_clean();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -34,6 +36,7 @@ require_once __DIR__ . '/navigation-brasallis.php';
     <?php if (isset($extra_css)) echo $extra_css; ?>
 </head>
 <body class="bg-light">
+<?php echo $navigation_html; ?>
 <?php
 // Busca avisos globais ativos
 $conn_avisos = connect_db();
