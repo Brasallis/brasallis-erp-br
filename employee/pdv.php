@@ -19,7 +19,14 @@ $pdv_categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
 // Injetar estilos no head para evitar FOUC (Flash of Unstyled Content)
 $extra_css = '
 <style>
-    /* INTEGRAÇÃO COM O SISTEMA ORIGINAL — PENSANDO COMO A GOOGLE */
+    /* RESET RADICAL PARA PDV NEXUS — PENSANDO COMO A GOOGLE */
+    html, body {
+        width: 100% !important;
+        overflow-x: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
     .brasallis-main { 
         padding: 0 !important; 
         margin: 0 !important;
@@ -29,12 +36,17 @@ $extra_css = '
         flex-direction: column;
         width: 100% !important;
         max-width: 100% !important;
+        left: 0 !important;
+        position: relative !important;
     }
     
     .pdv-app { 
         flex: 1;
-        width: 100%;
+        width: 100% !important;
+        max-width: 100% !important;
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
 
     /* BARRA LATERAL À DIREITA — Como solicitado pelo usuário */
@@ -43,6 +55,12 @@ $extra_css = '
         right: 0 !important;
         border-right: none !important;
         border-left: 1px solid rgba(0,0,0,0.06);
+        z-index: 2500 !important;
+    }
+
+    /* BARRA SUPERIOR — Ocultar no PDV para ganhar espaço */
+    .brasallis-topbar {
+        display: none !important;
     }
 
     @media (max-width: 991px) {
@@ -50,28 +68,23 @@ $extra_css = '
             display: flex !important;
             height: calc(100% - 80px) !important;
             top: 0 !important;
-            z-index: 2100;
+            width: 72px !important; /* Mantém slim por padrão */
         }
         .brasallis-sidebar:hover {
             width: 200px !important;
         }
         .pdv-app {
-            height: calc(100dvh - 150px);
-            padding-right: 0 !important; /* Sidebar mobile é overlay */
+            height: calc(100dvh - 80px) !important; /* Ajuste para o bottom nav */
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100vw !important;
+        }
+        .pdv-product-grid {
+            padding-bottom: 120px !important; /* Espaço para o carrinho */
         }
         .pdv-sheet {
             bottom: 80px !important;
-            right: 0;
-            left: 0;
-            z-index: 2000;
-        }
-        /* Garantir que o topo e a busca apareçam */
-        .pdv-search-section {
-            width: 100%;
-            padding: 12px;
-        }
-        .pdv-top-bar {
-            width: 100%;
+            z-index: 2400 !important;
         }
     }
 </style>
