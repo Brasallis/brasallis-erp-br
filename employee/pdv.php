@@ -60,9 +60,9 @@ $extra_css = '
         .pdv-app {
             flex-direction: row !important;
         }
-        .pdv-catalog-col { flex: 1 !important; height: 100%; }
+        .pdv-catalog-col { flex: 1 !important; height: 100%; min-width: 0; }
         .pdv-cart-col { 
-            width: 380px !important; /* Ligeiramente menor para caber melhor em notebooks */
+            width: 320px !important; /* Estreitado para não parecer que toma metade da tela */
             flex-shrink: 0 !important; 
             height: 100%;
             border-left: 1px solid #e2e8f0;
@@ -204,55 +204,55 @@ include_once '../includes/cabecalho.php';
         </div>
     </aside>
 
-    <!-- ═══════════════════════════════════════════════════
-         MOBILE BOTTOM SHEET (Cart — Google Bottom Sheet)
-         ═══════════════════════════════════════════════════ -->
-    <div class="pdv-sheet-backdrop" id="sheet-backdrop" onclick="PDV.collapseSheet()"></div>
+</div><!-- /.pdv-app -->
 
-    <div class="pdv-sheet" id="pdv-sheet">
-        <!-- Sheet Handle Bar -->
-        <div class="pdv-sheet-handle-bar" id="sheet-handle" ontouchstart="PDV.sheetDragStart(event)">
-            <div class="pdv-sheet-handle"></div>
-        </div>
+<!-- ═══════════════════════════════════════════════════
+     MOBILE BOTTOM SHEET (Cart — Google Bottom Sheet)
+     ═══════════════════════════════════════════════════ -->
+<div class="pdv-sheet-backdrop" id="sheet-backdrop" onclick="PDV.collapseSheet()"></div>
 
-        <!-- Sheet Collapsed Peek: Total + Checkout Button -->
-        <div class="pdv-sheet-peek" onclick="PDV.toggleSheet()">
-            <div class="pdv-sheet-peek-info">
-                <span class="pdv-sheet-label">Total</span>
-                <span class="pdv-sheet-total" id="sheet-total">R$ 0,00</span>
-            </div>
-            <button class="pdv-sheet-checkout-btn" id="sheet-checkout-btn" onclick="event.stopPropagation(); PDV.openPaymentModal()">
-                Pagar <span class="pdv-sheet-qty-badge" id="sheet-qty">0</span>
-            </button>
-        </div>
-
-        <!-- Sheet Full Content (when expanded) -->
-        <div class="pdv-sheet-body" id="sheet-body">
-            <div class="pdv-sheet-section-title">Seu Pedido</div>
-            <div id="sheet-cart-items" class="pdv-sheet-items"></div>
-
-            <!-- Summary -->
-            <div class="pdv-sheet-summary">
-                <div class="pdv-sheet-summary-row align-items-center">
-                    <span>Desconto (R$)</span>
-                    <input type="number" id="sheet-discount-input" class="form-control form-control-sm text-end w-auto border-0 bg-light fw-bold" step="0.01" value="0.00" style="max-width: 100px; border-radius: 8px;">
-                </div>
-                <div class="pdv-sheet-summary-row pdv-sheet-total-row">
-                    <span>Total Final</span>
-                    <span id="sheet-final-total">R$ 0,00</span>
-                </div>
-            </div>
-
-            <button class="pdv-sheet-full-checkout" onclick="PDV.openPaymentModal()">
-                <i class="fas fa-lock me-2"></i>Finalizar Pagamento
-            </button>
-            <button class="pdv-sheet-continue" onclick="PDV.collapseSheet()">
-                Continuar Comprando
-            </button>
-        </div>
+<div class="pdv-sheet" id="pdv-sheet">
+    <!-- Sheet Handle Bar -->
+    <div class="pdv-sheet-handle-bar" id="sheet-handle" ontouchstart="PDV.sheetDragStart(event)">
+        <div class="pdv-sheet-handle"></div>
     </div>
 
-</div><!-- /.pdv-app -->
+    <!-- Sheet Collapsed Peek: Total + Checkout Button -->
+    <div class="pdv-sheet-peek" onclick="PDV.toggleSheet()">
+        <div class="pdv-sheet-peek-info">
+            <span class="pdv-sheet-label">Total</span>
+            <span class="pdv-sheet-total" id="sheet-total">R$ 0,00</span>
+        </div>
+        <button class="pdv-sheet-checkout-btn" id="sheet-checkout-btn" onclick="event.stopPropagation(); PDV.openPaymentModal()">
+            Pagar <span class="pdv-sheet-qty-badge" id="sheet-qty">0</span>
+        </button>
+    </div>
+
+    <!-- Sheet Full Content (when expanded) -->
+    <div class="pdv-sheet-body" id="sheet-body">
+        <div class="pdv-sheet-section-title">Seu Pedido</div>
+        <div id="sheet-cart-items" class="pdv-sheet-items"></div>
+
+        <!-- Summary -->
+        <div class="pdv-sheet-summary">
+            <div class="pdv-sheet-summary-row align-items-center">
+                <span>Desconto (R$)</span>
+                <input type="number" id="sheet-discount-input" class="form-control form-control-sm text-end w-auto border-0 bg-light fw-bold" step="0.01" value="0.00" style="max-width: 100px; border-radius: 8px;">
+            </div>
+            <div class="pdv-sheet-summary-row pdv-sheet-total-row">
+                <span>Total Final</span>
+                <span id="sheet-final-total">R$ 0,00</span>
+            </div>
+        </div>
+
+        <button class="pdv-sheet-full-checkout" onclick="PDV.openPaymentModal()">
+            <i class="fas fa-lock me-2"></i>Finalizar Pagamento
+        </button>
+        <button class="pdv-sheet-continue" onclick="PDV.collapseSheet()">
+            Continuar Comprando
+        </button>
+    </div>
+</div>
 
 <!-- 2. BOTÃO FLUTUANTE DO CARRINHO (Mobile Only) -->
 <div class="pdv-cart-fab" id="pdv-mobile-fab" onclick="PDV.toggleSheet()">
