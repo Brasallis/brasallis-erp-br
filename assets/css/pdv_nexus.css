@@ -93,27 +93,25 @@
 
 .pdv-cart-fab {
     position: fixed;
-    bottom: 24px;
-    right: 24px;
+    bottom: 32px !important;
+    right: 32px !important;
     width: 64px; height: 64px;
     background: var(--nexus-primary);
     color: #fff;
     border-radius: 20px;
-    display: none; /* Escondido por padrão no desktop */
+    display: none; /* Desktop hidden */
     align-items: center; justify-content: center;
     cursor: pointer;
-    z-index: 4000;
-    box-shadow: 0 8px 24px rgba(0, 97, 164, 0.4);
+    z-index: 9999 !important; /* Acima de tudo */
+    box-shadow: 0 12px 32px rgba(0, 97, 164, 0.5);
     transition: var(--nexus-transition);
 }
-.pdv-cart-fab i { font-size: 1.5rem; }
-.pdv-cart-fab:active { transform: scale(0.9); }
-.pdv-cart-badge {
-    position: absolute; top: -5px; right: -5px;
+.pdv-cart-fab i { font-size: 1.6rem; }
+.pdv-cart-fab .pdv-cart-badge {
+    position: absolute; top: -8px; right: -8px;
     background: var(--nexus-error); color: #fff;
-    font-size: 0.7rem; font-weight: 800;
-    min-width: 18px; height: 18px;
-    border-radius: 10px; padding: 0 4px;
+    min-width: 22px; height: 22px;
+    border-radius: 11px; font-weight: 800; font-size: 0.75rem;
     display: flex; align-items: center; justify-content: center;
     border: 2px solid #fff;
 }
@@ -380,10 +378,10 @@
    RESPONSIVENESS
    ===================================================== */
 @media (max-width: 991px) {
-    .pdv-cart-col { display: none; }
-    .pdv-cart-fab { display: flex; }
-    .pdv-sheet { display: flex; }
-    .pdv-catalog-col { padding-top: 0; width: 100%; }
+    .pdv-cart-col { display: none !important; }
+    .pdv-cart-fab { display: flex !important; }
+    .pdv-sheet { display: flex !important; }
+    .pdv-catalog-col { padding-top: 0; width: 100% !important; }
 }
 
 @media (max-width: 576px) {

@@ -22,7 +22,6 @@ $extra_css = '
     /* INTEGRAÇÃO PREMIUM — ESTILO GOOGLE HUB */
     .brasallis-main { 
         padding: 0 !important;
-        padding-left: 72px !important;
         margin: 0 !important;
         overflow: hidden;
         height: 100dvh; 
@@ -30,12 +29,18 @@ $extra_css = '
         flex-direction: column;
     }
     
+    @media (min-width: 992px) {
+        .brasallis-main {
+            padding-left: 72px !important; /* Sidebar mini */
+        }
+    }
+
     .pdv-app { 
         flex: 1;
         width: 100%;
         overflow: hidden;
         display: flex;
-        flex-direction: row; /* Desktop lateral */
+        flex-direction: row; /* Desktop lateral: Esquerda (Catalogo), Direita (Carrinho) */
     }
 
     /* Ajuste para o Topbar no PDV */
@@ -46,19 +51,13 @@ $extra_css = '
         top: 0 !important;
         border-radius: 0 !important;
         box-shadow: none !important;
-        z-index: 2000 !important; /* Garantir que o botão hambúrguer global funcione */
+        z-index: 2000 !important;
     }
 
     @media (max-width: 991px) {
-        .brasallis-main {
-            padding-left: 0 !important;
-        }
         .pdv-app {
-            flex-direction: column; /* Mobile stack */
+            flex-direction: column; 
             height: calc(100dvh - 64px); 
-        }
-        .pdv-sheet {
-            bottom: 0 !important;
         }
     }
 </style>
@@ -74,13 +73,8 @@ include_once '../includes/cabecalho.php';
      ===================================================== -->
 
 <div class="pdv-app">
-    <!-- Catalog Section -->
+    <!-- 1. Catalog Section (Esquerda no Desktop) -->
     <div class="pdv-catalog-col">
-        <!-- BOTÃO FLUTUANTE DO CARRINHO (Mobile Only) -->
-        <div class="pdv-cart-fab" id="pdv-mobile-fab" onclick="PDV.toggleSheet()">
-            <i class="fas fa-shopping-basket"></i>
-            <span class="pdv-cart-badge" id="topbar-cart-badge">0</span>
-        </div>
 
         <!-- SEARCH SECTION -->
         <div class="pdv-search-section">
@@ -214,6 +208,12 @@ include_once '../includes/cabecalho.php';
     </div>
 
 </div><!-- /.pdv-app -->
+
+<!-- 2. BOTÃO FLUTUANTE DO CARRINHO (Mobile Only) -->
+<div class="pdv-cart-fab" id="pdv-mobile-fab" onclick="PDV.toggleSheet()">
+    <i class="fas fa-shopping-basket"></i>
+    <span class="pdv-cart-badge" id="topbar-cart-badge">0</span>
+</div>
 
 
 <!-- ═══════════════════════════════════════════════════════
