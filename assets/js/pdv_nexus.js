@@ -78,6 +78,7 @@ const PDV = {
         fetch(url)
             .then(res => res.json())
             .then(data => {
+                console.log("PDV API Results:", data);
                 this.state.searchResults = data;
                 this.renderResults();
             })

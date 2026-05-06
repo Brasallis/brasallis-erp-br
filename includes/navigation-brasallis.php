@@ -20,7 +20,7 @@ if ($host !== 'localhost' && $host !== '127.0.0.1' && $protocol === 'http') {
     $protocol = 'https';
 }
 
-$base_url = $protocol . "://" . $host . rtrim($project_root, '/') . '/';
+$base_url = "//" . $host . rtrim($project_root, '/') . '/';
 
 // Flags de controle de UI
 $hide_sidebar = $hide_sidebar ?? false;

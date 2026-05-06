@@ -37,8 +37,8 @@ include_once '../includes/cabecalho.php';
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
 </style>
-<!-- Use // to ensure same protocol as page (HTTP/HTTPS) -->
-<link rel="stylesheet" href="//<?= $_SERVER['HTTP_HOST'] ?>/assets/css/pdv_nexus.css?v=<?= time() ?>">
+<!-- Strict root-relative paths to bypass protocol detection issues -->
+<link rel="stylesheet" href="/assets/css/pdv_nexus.css?v=<?= time() ?>">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- =====================================================
@@ -359,6 +359,6 @@ include_once '../includes/cabecalho.php';
     </div>
 </div>
 
-<script src="//<?= $_SERVER['HTTP_HOST'] ?>/assets/js/pdv_nexus.js?v=<?= time() ?>"></script>
+<script src="/assets/js/pdv_nexus.js?v=<?= time() ?>"></script>
 
 <?php include_once '../includes/rodape.php'; ?>
