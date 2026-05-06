@@ -254,6 +254,8 @@ ${log.stack_trace || 'N/A'}
 }
 
 function resolveLog(id) {
+    if (!confirm('Deseja marcar este log como resolvido?')) return;
+    
     const formData = new FormData();
     formData.append('id', id);
     formData.append('action', 'resolve');
@@ -267,12 +269,18 @@ function resolveLog(id) {
         if (data.success) {
             location.reload();
         } else {
-            alert('Erro: ' + data.message);
+            alert('Erro ao resolver log: ' + data.message);
         }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Erro de rede ao tentar resolver o log.');
     });
 }
 
 function resolveAll() {
+    if (!confirm('Deseja marcar TODOS os logs desta lista como resolvidos?')) return;
+
     const formData = new FormData();
     formData.append('action', 'resolve_all');
 
@@ -284,7 +292,13 @@ function resolveAll() {
     .then(data => {
         if (data.success) {
             location.reload();
+        } else {
+            alert('Erro ao resolver todos: ' + data.message);
         }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Erro de rede ao tentar resolver todos os logs.');
     });
 }
 

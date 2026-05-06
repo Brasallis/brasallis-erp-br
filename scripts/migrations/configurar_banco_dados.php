@@ -279,6 +279,8 @@ try {
         url VARCHAR(255) NULL,
         ip_address VARCHAR(45) NULL,
         status ENUM('new', 'resolved', 'ignored') DEFAULT 'new',
+        resolved_at TIMESTAMP NULL,
+        resolved_by INT(11) UNSIGNED NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
     ) ENGINE=InnoDB;";
