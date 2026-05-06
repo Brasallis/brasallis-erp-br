@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS pagamentos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    empresa_id INT NOT NULL,
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    empresa_id INT(11) UNSIGNED NOT NULL,
     external_ref VARCHAR(100) NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
     status VARCHAR(50) NOT NULL DEFAULT 'pending',

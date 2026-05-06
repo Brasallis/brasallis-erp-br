@@ -2,8 +2,8 @@
 -- Módulo Fiscal: Notas Fiscais e Configuração de Impostos
 
 CREATE TABLE IF NOT EXISTS fiscal_notas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    empresa_id INT NOT NULL,
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    empresa_id INT(11) UNSIGNED NOT NULL,
     numero VARCHAR(20) NOT NULL,
     serie VARCHAR(5),
     tipo ENUM('entrada', 'saida') NOT NULL, -- Entrada (Compra) ou Saída (Venda)
@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS fiscal_notas (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS fiscal_impostos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    empresa_id INT NOT NULL,
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    empresa_id INT(11) UNSIGNED NOT NULL,
     nome VARCHAR(50) NOT NULL, -- Ex: ICMS, ISS
     aliquota_padrao DECIMAL(5, 2) DEFAULT 0.00, -- %
     descricao VARCHAR(100),

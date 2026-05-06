@@ -12,3 +12,6 @@ ALTER TABLE empresas ADD COLUMN segmento VARCHAR(100) DEFAULT NULL;
 ALTER TABLE empresas ADD COLUMN onboarding_completed TINYINT(1) DEFAULT 0;
 ALTER TABLE empresas ADD COLUMN active_modules JSON DEFAULT NULL;
 ALTER TABLE empresas ADD COLUMN branding_color VARCHAR(20) DEFAULT '#000000';
+ALTER TABLE empresas ADD COLUMN branding_primary_color VARCHAR(20) DEFAULT '#1e3a8a';
+ALTER TABLE empresas ADD COLUMN branding_secondary_color VARCHAR(20) DEFAULT '#3b82f6';
+ALTER TABLE empresas ADD COLUMN branding_bg_style VARCHAR(50) DEFAULT 'modern_light';

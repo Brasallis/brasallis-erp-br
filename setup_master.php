@@ -60,7 +60,24 @@ try {
         }
     }
 
-    echo "\n--- SETUP CONCLUÍDO COM SUCESSO! ---\n";
+    echo "\n🛡️ Imortalizando Super Admin (God Mode)...\n";
+    $pwd_hash = password_hash('brasallismaster', PASSWORD_DEFAULT);
+    
+    // 1. Criar Empresa Mestre (SaaS Owner)
+    $stmt_empresa = $pdo->prepare("INSERT INTO empresas (name, ai_plan, max_users, support_level) VALUES ('Brasallis Corporate', 'enterprise_elite', 999, 'dedicated')");
+    $stmt_empresa->execute();
+    $master_empresa_id = $pdo->lastInsertId();
+
+    // 2. Criar Conta Super Admin
+    $stmt_sa = $pdo->prepare("INSERT INTO usuarios (empresa_id, username, password, email, user_type, plan) VALUES (?, 'Super Admin (God Mode)', ?, 'admin@brasallis.com.br', 'super_admin', 'enterprise_elite')");
+    $stmt_sa->execute([$master_empresa_id, $pwd_hash]);
+    
+    // 3. Atualizar o dono da empresa mestre
+    $sa_id = $pdo->lastInsertId();
+    $pdo->exec("UPDATE empresas SET owner_user_id = {$sa_id} WHERE id = {$master_empresa_id}");
+
+    echo "--- SETUP CONCLUÍDO COM SUCESSO! ---\n";
+    echo "Super Admin: admin@brasallis.com.br / brasallismaster\n";
     echo "Acesse: http://localhost:8001\n";
 
 } catch (Exception $e) {

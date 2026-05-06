@@ -1,6 +1,6 @@
 -- Tabela de Avisos Globais do Super Admin
 CREATE TABLE IF NOT EXISTS avisos_globais (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
     mensagem TEXT NOT NULL,
     tipo ENUM('info', 'warning', 'success', 'danger') DEFAULT 'info',
@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS avisos_globais (
 
 -- Tabela de Chamados de Suporte
 CREATE TABLE IF NOT EXISTS chamados_suporte (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    empresa_id INT NOT NULL,
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    empresa_id INT(11) UNSIGNED NOT NULL,
     assunto VARCHAR(255) NOT NULL,
     mensagem TEXT NOT NULL,
     resposta TEXT,
