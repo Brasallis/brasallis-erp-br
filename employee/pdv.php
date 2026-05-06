@@ -20,44 +20,39 @@ $pdv_categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
 $extra_css = '
 <style>
     /* INTEGRAÇÃO PREMIUM — ESTILO GOOGLE HUB */
-    .brasallis-main { 
-        padding: 0 !important;
-        margin: 0 !important;
-        overflow: hidden;
-        height: 100dvh; 
-        display: flex;
-        flex-direction: column;
+    .brasallis-main > .flex-grow-1 { padding: 0 !important; }
+
+    .pdv-app {
+        position: fixed !important;
+        top: 64px !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: auto !important;
+        height: auto !important;
+        z-index: 100;
+        background: var(--nexus-surface);
     }
-    
+
     @media (min-width: 992px) {
-        .brasallis-main {
-            padding-left: 72px !important; /* Sidebar mini */
+        .pdv-app {
+            left: 72px !important; /* Sidebar width */
+            flex-direction: row !important;
         }
-    }
-
-    .pdv-app { 
-        flex: 1;
-        width: 100%;
-        overflow: hidden;
-        display: flex;
-        flex-direction: row; /* Desktop lateral: Esquerda (Catalogo), Direita (Carrinho) */
-    }
-
-    /* Ajuste para o Topbar no PDV */
-    .brasallis-topbar {
-        position: relative !important;
-        left: 0 !important;
-        width: 100% !important;
-        top: 0 !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        z-index: 2000 !important;
     }
 
     @media (max-width: 991px) {
         .pdv-app {
-            flex-direction: column; 
-            height: calc(100dvh - 64px); 
+            left: 0 !important;
+            top: 80px !important; /* Mobile topbar + margin usually takes ~80px */
+            flex-direction: column !important;
+        }
+        /* Mobile: Compensa a bottom nav global de 72px */
+        .pdv-sheet {
+            bottom: 72px !important;
+            z-index: 5000 !important;
+        }
+        .pdv-cart-fab {
+            bottom: 170px !important; /* Move para cima do sheet-peek */
         }
     }
 </style>

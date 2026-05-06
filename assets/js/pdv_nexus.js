@@ -417,7 +417,8 @@ const PDV = {
         `).join('');
 
         document.getElementById('sheet-total').textContent = this.formatCurrency(this.state.total);
-        document.getElementById('sheet-discount').textContent = `- ${this.formatCurrency(this.state.discount)}`;
+        const sheetDiscountEl = document.getElementById('sheet-discount');
+        if (sheetDiscountEl) sheetDiscountEl.textContent = `- ${this.formatCurrency(this.state.discount)}`;
         document.getElementById('sheet-final-total').textContent = this.formatCurrency(this.state.total);
         document.getElementById('sheet-qty').textContent = this.state.cart.reduce((acc, i) => acc + i.quantity, 0);
     },
