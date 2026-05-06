@@ -19,13 +19,21 @@ function connect_db()
         }
     }
 
-    // Configurações de sessão segura
+    // Configurações de sessão segura e robusta para Produção/Proxies
     if (session_status() === PHP_SESSION_NONE) {
-        ini_set('session.cookie_httponly', 1);
-        ini_set('session.use_only_cookies', 1);
-        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-            ini_set('session.cookie_secure', 1);
-        }
+        $is_https = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') || 
+                    (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+        
+        // Configurar cookies ANTES de iniciar a sessão
+        session_set_cookie_params([
+            'lifetime' => 0,
+            'path' => '/',
+            'domain' => $_SERVER['HTTP_HOST'],
+            'secure' => $is_https,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+        
         session_start();
     }
 

@@ -1,20 +1,23 @@
 <?php
 header('Content-Type: application/json');
+require_once '../includes/funcoes.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    if (session_status() === PHP_SESSION_NONE) { session_start(); }
-}
+// A conexão com o banco já inicia a sessão via funcoes.php
+$conn = connect_db();
 
 // 1. Verificação de Autenticação
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['empresa_id'])) {
     http_response_code(401);
-    echo json_encode(['error' => 'Acesso não autorizado.']);
+    echo json_encode([
+        'error' => 'Acesso não autorizado.',
+        'debug' => [
+            'has_session' => session_status() === PHP_SESSION_ACTIVE,
+            'user_id_set' => isset($_SESSION['user_id']),
+            'empresa_id_set' => isset($_SESSION['empresa_id'])
+        ]
+    ]);
     exit;
 }
-
-require_once '../includes/funcoes.php';
-
-$conn = connect_db();
 $empresa_id = $_SESSION['empresa_id'];
 $query = $_GET['term'] ?? '';
 
