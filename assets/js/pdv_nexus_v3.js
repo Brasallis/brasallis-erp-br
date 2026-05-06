@@ -178,11 +178,9 @@ const PDV = {
         if (this.state.cart.length === 0) return;
         this.state.isSheetExpanded = true;
         const sheet = document.getElementById('pdv-sheet');
-        if (sheet) {
-            sheet.classList.add('expanded');
-            sheet.style.setProperty('bottom', '72px', 'important');
-        }
         const backdrop = document.getElementById('sheet-backdrop');
+        
+        if (sheet) sheet.classList.add('expanded');
         if (backdrop) {
             backdrop.style.display = 'block';
             setTimeout(() => backdrop.style.opacity = '1', 10);
@@ -192,11 +190,9 @@ const PDV = {
     collapseSheet() {
         this.state.isSheetExpanded = false;
         const sheet = document.getElementById('pdv-sheet');
-        if (sheet) {
-            sheet.classList.remove('expanded');
-            sheet.style.setProperty('bottom', '-100%', 'important');
-        }
         const backdrop = document.getElementById('sheet-backdrop');
+        
+        if (sheet) sheet.classList.remove('expanded');
         if (backdrop) {
             backdrop.style.opacity = '0';
             setTimeout(() => backdrop.style.display = 'none', 300);
@@ -499,6 +495,18 @@ const PDV = {
         
         const countBadge = document.getElementById('cart-count-badge');
         if (countBadge) countBadge.textContent = `${qty} itens`;
+
+        // Manage Mobile FAB
+        const fab = document.getElementById('pdv-cart-fab');
+        if (fab && window.innerWidth <= 991) {
+            if (qty > 0 && !this.state.isSheetExpanded) {
+                fab.style.display = 'flex';
+                setTimeout(() => fab.style.transform = 'scale(1)', 10);
+            } else {
+                fab.style.transform = 'scale(0)';
+                setTimeout(() => fab.style.display = 'none', 300);
+            }
+        }
     },
 
     // =====================================================

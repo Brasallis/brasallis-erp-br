@@ -19,101 +19,123 @@ $pdv_categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
 // Injetar estilos no head para garantir a fluidez da interface
 $extra_css = '
 <style>
-    /* INTEGRAÇÃO ULTRA-PREMIUM — GOOGLE HUB FULLSCREEN */
+    /* PDV NEXUS v3.1 — REFINAMENTO GOOGLE-GRADE */
     
-    /* 1. Reset Global para evitar scroll duplo e garantir ocupação total */
-    html, body {
-        overflow: hidden !important;
-        margin: 0; padding: 0;
-        width: 100% !important;
-        height: 100% !important;
+    :root {
+        --pdv-topbar: 64px;
+        --pdv-sidebar: 72px;
+        --pdv-bottom-nav: 72px;
     }
 
-    /* 2. Forçar o App Shell a ser verdadeiramente Full Width e Full Height */
+    /* 1. Layout Central — Integração Perfeita com o Hub */
+    html, body {
+        overflow: hidden !important;
+        height: 100dvh !important;
+        background: #f0f4f9 !important;
+    }
+
     .brasallis-main {
         position: fixed !important;
-        top: 64px !important; /* Topbar height */
-        left: 72px !important; /* Sidebar width */
+        top: var(--topbar-height) !important;
+        left: var(--sidebar-width) !important;
         right: 0 !important;
         bottom: 0 !important;
         padding: 0 !important;
         margin: 0 !important;
         display: flex !important;
-        flex-direction: column !important;
         background: #f0f4f9 !important;
-        z-index: 100;
+        overflow: hidden !important;
+        z-index: 10;
     }
     
     .brasallis-main > .flex-grow-1 {
         flex: 1 !important;
         display: flex !important;
+        flex-direction: column !important;
         padding: 0 !important;
-        margin: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        overflow: hidden !important;
     }
 
-    /* 3. PDV App Container — O Coração da Interface */
+    /* 2. App Shell Components */
     .pdv-app {
-        flex: 1 !important;
-        display: flex !important;
-        width: 100% !important;
-        height: 100% !important;
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 100%;
         background: #f0f4f9;
-        position: relative;
+        overflow: hidden;
     }
 
-    /* 4. Grid de Produtos — Mais larga e expressiva no desktop */
+    /* 3. Catalog Section com Sticky Header */
+    .pdv-catalog-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-width: 0;
+        background: #f0f4f9;
+    }
+
+    .pdv-search-section {
+        background: #f0f4f9;
+        padding: 16px 24px 8px;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+    }
+
+    .pdv-chips-row {
+        background: #f0f4f9;
+        padding: 0 24px 16px;
+        position: sticky;
+        top: 72px; /* Altura da barra de busca */
+        z-index: 19;
+    }
+
+    /* 4. Carrinho Lateral (Desktop) */
     @media (min-width: 992px) {
-        .pdv-app {
-            flex-direction: row !important;
-        }
-        .pdv-catalog-col { 
-            flex: 1 !important; 
-            height: 100%; 
-            min-width: 0; 
-            display: flex;
-            flex-direction: column;
-        }
         .pdv-cart-col { 
-            width: 360px !important; /* Tamanho ideal para leitura */
-            flex-shrink: 0 !important; 
-            height: 100%;
+            width: 380px !important;
+            flex-shrink: 0 !important;
+            background: #ffffff !important;
             border-left: 1px solid #e2e8f0;
-            background: #ffffff;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.03);
             display: flex !important;
             flex-direction: column;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.03);
         }
     }
 
+    /* 5. Mobile Adjustments */
     @media (max-width: 991px) {
         .brasallis-main {
             left: 0 !important;
-            bottom: 72px !important; /* Bottom nav global */
+            bottom: var(--pdv-bottom-nav) !important;
         }
         .pdv-app {
             flex-direction: column !important;
         }
         .pdv-cart-col { display: none !important; }
         
-        /* Mobile Sheet Super Estável */
-        .pdv-sheet {
-            position: fixed !important;
-            bottom: -100% !important;
-            left: 0; right: 0;
-            height: 80vh !important;
-            background: #ffffff;
+        .pdv-search-section { padding: 12px 16px 4px; }
+        .pdv-chips-row { padding: 0 16px 12px; top: 68px; }
+
+        /* FAB & Sheet */
+        .pdv-cart-fab {
+            bottom: 24px !important; /* Ajustado para não colidir com o menu */
+            right: 24px !important;
             z-index: 5000 !important;
-            border-radius: 24px 24px 0 0;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
-            transition: bottom 0.4s cubic-bezier(0.2, 0, 0, 1) !important;
-            display: flex !important;
-            flex-direction: column;
         }
-        .pdv-sheet.expanded { bottom: 72px !important; }
-        .pdv-cart-fab { bottom: 100px !important; z-index: 5001 !important; }
+        
+        .pdv-sheet {
+            z-index: 6000 !important;
+            border-radius: 32px 32px 0 0;
+            max-height: 85dvh !important;
+        }
+        .pdv-sheet.expanded {
+            bottom: 0 !important; /* Agora sobe até o fim, o menu fica atrás */
+        }
     }
 </style>
 <link rel="stylesheet" href="/assets/css/toasts.css?v=' . time() . '">
