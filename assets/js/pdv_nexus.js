@@ -395,6 +395,10 @@ const PDV = {
     renderCart() {
         const container = document.getElementById('cart-container');
         if(!container) return;
+        
+        // Update totals regardless of cart emptiness
+        document.getElementById('cart-subtotal').textContent = this.formatCurrency(this.state.subtotal);
+        document.getElementById('cart-total').textContent = this.formatCurrency(this.state.total);
 
         if (this.state.cart.length === 0) {
             container.innerHTML = `
@@ -427,9 +431,6 @@ const PDV = {
                 </div>
             `).join('');
         }
-
-        document.getElementById('cart-subtotal').textContent = this.formatCurrency(this.state.subtotal);
-        document.getElementById('cart-total').textContent = this.formatCurrency(this.state.total);
         
         const btn = document.getElementById('btn-open-payment');
         if(btn) btn.disabled = this.state.cart.length === 0;
