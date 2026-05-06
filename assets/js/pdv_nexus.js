@@ -307,6 +307,19 @@ const PDV = {
 
     renderResults() {
         const container = document.getElementById('pdv-results');
+        
+        // Safety check to prevent "map is not a function" error
+        if (!Array.isArray(this.state.searchResults)) {
+            console.error("API error: searchResults is not an array", this.state.searchResults);
+            container.innerHTML = `
+                <div class="pdv-empty-state">
+                    <div class="pdv-empty-icon text-danger"><i class="fas fa-exclamation-triangle"></i></div>
+                    <h3>Erro de Conexão</h3>
+                    <p>Não foi possível carregar os produtos. Tente recarregar a página.</p>
+                </div>`;
+            return;
+        }
+
         if (this.state.searchResults.length === 0) {
             container.innerHTML = `
                 <div class="pdv-empty-state">

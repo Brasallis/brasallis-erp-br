@@ -11,6 +11,7 @@ require_once __DIR__ . '/navigation-brasallis.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brasallis Hub - Inteligência Operacional</title>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <link rel="icon" type="image/png" href="<?= $base_url ?>assets/img/pureza.png">
     
     <!-- Fonts & Icons -->
