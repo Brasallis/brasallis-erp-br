@@ -22,6 +22,7 @@ $extra_css = '
     /* INTEGRAÇÃO PREMIUM — ESTILO GOOGLE HUB */
     .brasallis-main { 
         padding: 0 !important;
+        padding-left: 72px !important;
         margin: 0 !important;
         overflow: hidden;
         height: 100dvh; 
@@ -34,7 +35,7 @@ $extra_css = '
         width: 100%;
         overflow: hidden;
         display: flex;
-        flex-direction: column;
+        flex-direction: row; /* Desktop lateral */
     }
 
     /* Ajuste para o Topbar no PDV */
@@ -49,11 +50,15 @@ $extra_css = '
     }
 
     @media (max-width: 991px) {
+        .brasallis-main {
+            padding-left: 0 !important;
+        }
         .pdv-app {
-            height: calc(100dvh - 64px); /* Espaço do Topbar */
+            flex-direction: column; /* Mobile stack */
+            height: calc(100dvh - 64px); 
         }
         .pdv-sheet {
-            bottom: 0 !important; /* Colado no fundo agora que não tem bottom nav */
+            bottom: 0 !important;
         }
     }
 </style>
@@ -71,18 +76,10 @@ include_once '../includes/cabecalho.php';
 <div class="pdv-app">
     <!-- Catalog Section -->
     <div class="pdv-catalog-col">
-        <!-- TOP BAR (Mobile/Tablet Only) -->
-        <div class="pdv-top-bar">
-            <div class="pdv-topbar-left">
-                <div class="pdv-topbar-title">
-                    <span class="pdv-title-label">PDV NEXUS</span>
-                    <span class="pdv-operator-name"><?= htmlspecialchars($_SESSION['user_nome'] ?? $_SESSION['username'] ?? 'Operador') ?></span>
-                </div>
-            </div>
-            <div class="pdv-cart-fab" onclick="PDV.toggleSheet()">
-                <i class="fas fa-shopping-basket"></i>
-                <span class="pdv-cart-badge" id="topbar-cart-badge">0</span>
-            </div>
+        <!-- BOTÃO FLUTUANTE DO CARRINHO (Mobile Only) -->
+        <div class="pdv-cart-fab" id="pdv-mobile-fab" onclick="PDV.toggleSheet()">
+            <i class="fas fa-shopping-basket"></i>
+            <span class="pdv-cart-badge" id="topbar-cart-badge">0</span>
         </div>
 
         <!-- SEARCH SECTION -->

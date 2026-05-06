@@ -92,14 +92,22 @@
 .pdv-operator-name { font-size: 0.75rem; color: var(--nexus-on-surface-variant); }
 
 .pdv-cart-fab {
-    position: relative;
-    width: 48px; height: 48px;
-    background: var(--nexus-primary-container);
-    color: var(--nexus-on-primary-container);
-    border-radius: 16px;
-    display: flex; align-items: center; justify-content: center;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 64px; height: 64px;
+    background: var(--nexus-primary);
+    color: #fff;
+    border-radius: 20px;
+    display: none; /* Escondido por padrão no desktop */
+    align-items: center; justify-content: center;
     cursor: pointer;
+    z-index: 4000;
+    box-shadow: 0 8px 24px rgba(0, 97, 164, 0.4);
+    transition: var(--nexus-transition);
 }
+.pdv-cart-fab i { font-size: 1.5rem; }
+.pdv-cart-fab:active { transform: scale(0.9); }
 .pdv-cart-badge {
     position: absolute; top: -5px; right: -5px;
     background: var(--nexus-error); color: #fff;
@@ -373,9 +381,9 @@
    ===================================================== */
 @media (max-width: 991px) {
     .pdv-cart-col { display: none; }
-    .pdv-top-bar { display: flex; }
+    .pdv-cart-fab { display: flex; }
     .pdv-sheet { display: flex; }
-    .pdv-catalog-col { padding-top: 0; }
+    .pdv-catalog-col { padding-top: 0; width: 100%; }
 }
 
 @media (max-width: 576px) {
