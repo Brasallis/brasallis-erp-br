@@ -136,17 +136,10 @@ $extra_css = '
     }
 </style>
 <link rel="stylesheet" href="/assets/css/toasts.css?v=' . time() . '">
-<link rel="stylesheet" href="/assets/css/pdv_nexus_v3_3.css?v=' . time() . '">';
+<link rel="stylesheet" href="/assets/css/pdv_nexus_v4.css?v=' . time() . '">';
 
 include_once '../includes/cabecalho.php';
 ?>
-<div class="pdv-version-badge">NEXUS V3.4.2</div>
-<div style="display:none" id="nexus-v3-marker">V3.3.1</div>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-<!-- =====================================================
-     PDV NEXUS — APP SHELL
-     ===================================================== -->
 
 <div class="pdv-app">
     <!-- 1. Catalog Section (Esquerda no Desktop) -->
@@ -428,6 +421,6 @@ include_once '../includes/cabecalho.php';
     </div>
 </div>
 
-<script src="/assets/js/pdv_nexus_v3_4.js?v=<?= time() ?>"></script>
+<script src="/assets/js/pdv_nexus_v4.js?v=<?= time() ?>"></script>
 
 <?php include_once '../includes/rodape.php'; ?>
