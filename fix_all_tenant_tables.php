@@ -116,6 +116,13 @@ try {
     $pdo->exec($sql_fiscal_notas);
     echo "<p style='color:green;'>Tabela 'fiscal_notas' verificada/criada.</p>";
 
+    // 7. Reparar Historico Estoque
+    $check_hist = $pdo->query("SHOW COLUMNS FROM historico_estoque LIKE 'details'");
+    if ($check_hist->rowCount() == 0) {
+        $pdo->exec("ALTER TABLE historico_estoque ADD COLUMN details TEXT NULL AFTER venda_id");
+        echo "<p style='color:green;'>Coluna 'details' adicionada em 'historico_estoque'.</p>";
+    }
+
     echo "<h2>🎉 Todas as tabelas de suporte ao PDV, CRM e Fiscal foram reparadas!</h2>";
 
 } catch (Exception $e) {

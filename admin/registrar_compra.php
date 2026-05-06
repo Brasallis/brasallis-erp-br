@@ -109,7 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
         } catch (Exception $e) {
             $conn->rollBack();
-            $_SESSION['message'] = 'Erro: ' . $e->getMessage();
+            registrar_erro_sistema($e->getMessage(), 'critical', 'Purchase Module', $e->getTraceAsString());
+            $_SESSION['message'] = 'Ops! Não conseguimos processar esta entrada de estoque agora. Nossa equipe já foi notificada.';
             $_SESSION['message_type'] = 'danger';
         }
     }

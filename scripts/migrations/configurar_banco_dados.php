@@ -333,6 +333,7 @@ try {
         quantity INT(11) NOT NULL,
         new_quantity INT(11) NULL,
         venda_id INT(11) UNSIGNED NULL,
+        details TEXT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE,
         FOREIGN KEY (product_id) REFERENCES produtos(id) ON DELETE CASCADE,
