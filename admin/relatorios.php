@@ -219,7 +219,7 @@ $module_values = array_values($module_stats);
                 <div class="col-lg-8 mb-4">
                     <div class="card-custom">
                         <div class="card-header-custom">
-                            <h6 class="card-title-custom">Fluxo de Caixa (Vendas vs Lucro)</h6>
+                            <h6 class="card-title-custom">Fluxo de Vendas (Vendas vs Lucro)</h6>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">

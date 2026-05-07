@@ -40,7 +40,7 @@ include_once '../includes/cabecalho.php';
 <div class="container-fluid">
     <div class="caixa-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
         <div>
-            <h3 class="fw-bold m-0"><i class="fas fa-cash-register text-primary me-2"></i> Fluxo de Caixa</h3>
+            <h3 class="fw-bold m-0"><i class="fas fa-cash-register text-primary me-2"></i> Fluxo de Vendas</h3>
             <p class="text-muted m-0">Gerencie e consulte todas as vendas realizadas</p>
         </div>
         <form class="d-flex flex-column flex-sm-row gap-2 w-100 w-md-auto">

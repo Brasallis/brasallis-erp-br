@@ -106,7 +106,7 @@ function can_access($module) {
                 <?php if (can_access('pdv')): ?>
                     <a href="<?php echo $base_url; ?>employee/pdv.php" class="submenu-item">PDV (Frente de Caixa)</a>
                     <a href="<?php echo $base_url; ?>admin/vendas.php" class="submenu-item">Relatório de Vendas</a>
-                    <a href="<?php echo $base_url; ?>modules/financeiro/views/fluxo_caixa.php" class="submenu-item">Fluxo de Caixa de Vendas</a>
+                    <a href="<?php echo $base_url; ?>modules/financeiro/views/fluxo_caixa.php" class="submenu-item">Fluxo de Vendas</a>
                 <?php endif; ?>
                 <?php if (can_access('estoque')): ?>
                     <a href="<?php echo $base_url; ?>admin/produtos.php" class="submenu-item">Produtos</a>
