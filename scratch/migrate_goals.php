@@ -8,11 +8,18 @@ try {
 
     echo "Adicionando colunas de metas financeiras... ";
     
-    // monthly_revenue_goal
-    $pdo->exec("ALTER TABLE empresas ADD COLUMN IF NOT EXISTS monthly_revenue_goal DECIMAL(15,2) DEFAULT 0.00");
-    
-    // fixed_costs
-    $pdo->exec("ALTER TABLE empresas ADD COLUMN IF NOT EXISTS fixed_costs DECIMAL(15,2) DEFAULT 0.00");
+    // Helper para adicionar coluna se não existir (MySQL compat)
+    function addColumnIfMissing($pdo, $table, $column, $definition) {
+        $check = $pdo->query("SHOW COLUMNS FROM `$table` LIKE '$column'")->fetch();
+        if (!$check) {
+            $pdo->exec("ALTER TABLE `$table` ADD COLUMN `$column` $definition");
+            return true;
+        }
+        return false;
+    }
+
+    addColumnIfMissing($pdo, 'empresas', 'monthly_revenue_goal', "DECIMAL(15,2) DEFAULT 0.00");
+    addColumnIfMissing($pdo, 'empresas', 'fixed_costs', "DECIMAL(15,2) DEFAULT 0.00");
 
     echo "OK!\n";
 
