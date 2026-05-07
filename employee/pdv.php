@@ -1,5 +1,5 @@
 <?php
-// employee/pdv.php — PDV NEXUS v5.0 (Full Functional & Google Polish)
+// employee/pdv.php — PDV NEXUS v5.1 (Fixed & Formatted)
 require_once '../includes/funcoes.php';
 checkAuth();
 
@@ -15,7 +15,7 @@ include_once '../includes/cabecalho.php';
 ?>
 
 <div class="pdv-app">
-    <!-- 1. Catalog Section (Catalog) -->
+    <!-- 1. Catalog Section -->
     <div class="pdv-catalog-col">
         <div class="pdv-search-section">
             <div class="pdv-search-bar">
@@ -59,7 +59,7 @@ include_once '../includes/cabecalho.php';
                     <span id="cart-total" class="pdv-total-amount">R$ 0,00</span>
                 </div>
                 <button class="pdv-checkout-btn" id="btn-open-payment" onclick="PDV.openPaymentModal()" disabled>
-                    Pagar Venda
+                    Finalizar Venda
                 </button>
                 <button class="pdv-clear-btn" onclick="PDV.clearCart()">Limpar Carrinho</button>
             </div>

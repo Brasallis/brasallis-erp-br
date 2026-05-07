@@ -1,5 +1,5 @@
 /**
- * PDV NEXUS v5.0 — FULL PROFESSIONAL FLOW
+ * PDV NEXUS v5.2 — THE DEFINITIVE SYSTEM
  * Professional checkout, modal handling, and mobile responsiveness.
  */
 
@@ -15,7 +15,7 @@ const PDV = {
     },
 
     init() {
-        console.log("PDV Nexus v5.0 Active");
+        console.log("PDV Nexus v5.2 Active");
         this.loadData();
         this.setupEventListeners();
         this.moveModalsToBody();
@@ -96,6 +96,7 @@ const PDV = {
         this.calculateTotals();
         this.renderCart();
         this.renderSheet();
+        this.updateGlobalBadges();
         this.notify(`${product.name} no carrinho`, "success");
     },
 
@@ -109,6 +110,7 @@ const PDV = {
         this.calculateTotals();
         this.renderCart();
         this.renderSheet();
+        this.updateGlobalBadges();
     },
 
     calculateTotals() {
@@ -152,6 +154,69 @@ const PDV = {
         document.getElementById('btn-open-payment').disabled = false;
     },
 
+    renderSheet() {
+        const sheet = document.getElementById('pdv-sheet');
+        if (!sheet) return;
+
+        if (this.state.cart.length > 0) sheet.classList.add('has-items');
+        else { sheet.classList.remove('has-items', 'expanded'); this.state.isSheetExpanded = false; }
+
+        const itemsContainer = document.getElementById('sheet-cart-items');
+        if (itemsContainer) {
+            if (this.state.cart.length === 0) {
+                itemsContainer.innerHTML = '<p class="text-center text-muted p-4">Carrinho vazio</p>';
+            } else {
+                itemsContainer.innerHTML = this.state.cart.map(i => `
+                    <div class="pdv-cart-item">
+                        <div class="pdv-cart-item-info">
+                            <span class="pdv-cart-item-name">${i.name}</span>
+                            <span class="pdv-cart-item-meta">${this.formatCurrency(i.price)}</span>
+                        </div>
+                        <div class="pdv-qty-control">
+                            <button class="pdv-qty-btn" onclick="PDV.updateQuantity(${i.id}, -1)">-</button>
+                            <span class="pdv-qty-val">${i.quantity}</span>
+                            <button class="pdv-qty-btn" onclick="PDV.updateQuantity(${i.id}, 1)">+</button>
+                        </div>
+                        <div class="pdv-cart-item-price">${this.formatCurrency(i.price * i.quantity)}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        const totalEl = document.getElementById('sheet-total');
+        if (totalEl) totalEl.textContent = this.formatCurrency(this.state.total);
+        
+        const finalTotalEl = document.getElementById('sheet-final-total');
+        if (finalTotalEl) finalTotalEl.textContent = this.formatCurrency(this.state.total);
+    },
+
+    toggleSheet() {
+        const sheet = document.getElementById('pdv-sheet');
+        const backdrop = document.getElementById('sheet-backdrop');
+        this.state.isSheetExpanded = !this.state.isSheetExpanded;
+
+        if (this.state.isSheetExpanded) {
+            sheet.classList.add('expanded');
+            if(backdrop) { backdrop.style.display = 'block'; setTimeout(() => backdrop.style.opacity = '1', 10); }
+        } else {
+            sheet.classList.remove('expanded');
+            if(backdrop) { backdrop.style.opacity = '0'; setTimeout(() => backdrop.style.display = 'none', 300); }
+        }
+        this.updateGlobalBadges();
+    },
+
+    collapseSheet() {
+        if (this.state.isSheetExpanded) this.toggleSheet();
+    },
+
+    openPaymentModal() {
+        this.collapseSheet();
+        const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+        const totalEl = document.getElementById('modal-total-sale');
+        if (totalEl) totalEl.textContent = this.formatCurrency(this.state.total);
+        modal.show();
+    },
+
     confirmSale(method) {
         if (this.state.cart.length === 0) return;
 
@@ -183,60 +248,23 @@ const PDV = {
         .catch(err => this.notify("Erro na comunicação com o servidor", "error"));
     },
 
-    renderSheet() {
-        const sheet = document.getElementById('pdv-sheet');
-        if (!sheet) return;
-
-        if (this.state.cart.length > 0) sheet.classList.add('has-items');
-        else { sheet.classList.remove('has-items', 'expanded'); this.state.isSheetExpanded = false; }
-
-        const itemsContainer = document.getElementById('sheet-cart-items');
-        if (itemsContainer) {
-            itemsContainer.innerHTML = this.state.cart.map(i => `
-                <div class="pdv-cart-item">
-                    <div class="pdv-cart-item-info">
-                        <span class="pdv-cart-item-name">${i.name}</span>
-                        <span class="pdv-cart-item-meta">${this.formatCurrency(i.price)}</span>
-                    </div>
-                    <div class="pdv-qty-control">
-                        <button class="pdv-qty-btn" onclick="PDV.updateQuantity(${i.id}, -1)">-</button>
-                        <span class="pdv-qty-val">${i.quantity}</span>
-                        <button class="pdv-qty-btn" onclick="PDV.updateQuantity(${i.id}, 1)">+</button>
-                    </div>
-                    <div class="pdv-cart-item-price">${this.formatCurrency(i.price * i.quantity)}</div>
-                </div>
-            `).join('');
+    updateGlobalBadges() {
+        const qty = this.state.cart.reduce((acc, i) => acc + i.quantity, 0);
+        const fab = document.getElementById('pdv-cart-fab');
+        
+        if (fab && window.innerWidth <= 991) {
+            if (qty > 0 && !this.state.isSheetExpanded) {
+                fab.style.display = 'flex';
+                setTimeout(() => fab.style.transform = 'scale(1)', 10);
+            } else {
+                fab.style.transform = 'scale(0)';
+                setTimeout(() => fab.style.display = 'none', 300);
+            }
         }
 
-        document.getElementById('sheet-total').textContent = this.formatCurrency(this.state.total);
-        document.getElementById('sheet-final-total').textContent = this.formatCurrency(this.state.total);
-    },
-
-    toggleSheet() {
-        const sheet = document.getElementById('pdv-sheet');
-        const backdrop = document.getElementById('sheet-backdrop');
-        this.state.isSheetExpanded = !this.state.isSheetExpanded;
-
-        if (this.state.isSheetExpanded) {
-            sheet.classList.add('expanded');
-            backdrop.style.display = 'block';
-            setTimeout(() => backdrop.style.opacity = '1', 10);
-        } else {
-            sheet.classList.remove('expanded');
-            backdrop.style.opacity = '0';
-            setTimeout(() => backdrop.style.display = 'none', 300);
-        }
-    },
-
-    collapseSheet() {
-        if (this.state.isSheetExpanded) this.toggleSheet();
-    },
-
-    openPaymentModal() {
-        this.collapseSheet();
-        const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
-        document.getElementById('modal-total-sale').textContent = this.formatCurrency(this.state.total);
-        modal.show();
+        // Topbar badge if exists
+        const topBadge = document.getElementById('topbar-cart-badge');
+        if (topBadge) topBadge.textContent = qty;
     },
 
     clearCart() {
@@ -246,10 +274,13 @@ const PDV = {
         this.calculateTotals();
         this.renderCart();
         this.renderSheet();
+        this.updateGlobalBadges();
     },
 
     closeSuccessModal() {
-        bootstrap.Modal.getInstance(document.getElementById('successModal')).hide();
+        const modalEl = document.getElementById('successModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
     },
 
     formatCurrency(val) {
