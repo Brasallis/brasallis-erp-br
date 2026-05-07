@@ -124,7 +124,12 @@ const PDV = {
         document.getElementById('cart-total').textContent = this.formatCurrency(this.state.total);
 
         if (this.state.cart.length === 0) {
-            container.innerHTML = `<div class="pdv-empty-cart"><p>Carrinho vazio</p></div>`;
+            container.innerHTML = `
+                <div class="pdv-empty-cart">
+                    <div class="pdv-empty-cart-icon"><i class="fas fa-shopping-basket"></i></div>
+                    <p class="fw-bold">Seu carrinho está vazio</p>
+                </div>
+            `;
             document.getElementById('btn-open-payment').disabled = true;
             return;
         }
@@ -140,11 +145,42 @@ const PDV = {
                     <span class="pdv-qty-val">${i.quantity}</span>
                     <button class="pdv-qty-btn" onclick="PDV.updateQuantity(${i.id}, 1)">+</button>
                 </div>
-                <div class="pdv-cart-item-price">${this.formatCurrency(i.price * i.quantity)}</div>
+                <div class="pdv-cart-item-price text-navy fw-bold">${this.formatCurrency(i.price * i.quantity)}</div>
             </div>
         `).join('');
 
         document.getElementById('btn-open-payment').disabled = false;
+    },
+
+    confirmSale(method) {
+        if (this.state.cart.length === 0) return;
+
+        const data = {
+            cart: this.state.cart,
+            payments: [{ method: method, value: this.state.total }],
+            cliente_id: this.state.selectedCustomer ? this.state.selectedCustomer.id : null,
+            discount_amount: this.state.discount
+        };
+
+        this.notify("Processando venda...", "info");
+
+        fetch('../api/process_sale.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.success) {
+                bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+                this.clearCart();
+            } else {
+                this.notify(res.error || "Erro ao processar venda", "error");
+            }
+        })
+        .catch(err => this.notify("Erro na comunicação com o servidor", "error"));
     },
 
     renderSheet() {
@@ -201,32 +237,6 @@ const PDV = {
         const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
         document.getElementById('modal-total-sale').textContent = this.formatCurrency(this.state.total);
         modal.show();
-    },
-
-    confirmSale(method) {
-        // Enviar para o banco de dados via API
-        const data = {
-            cliente_id: this.state.selectedCustomer ? this.state.selectedCustomer.id : null,
-            total: this.state.total,
-            pagamento: method,
-            itens: this.state.cart
-        };
-
-        this.notify("Processando venda...", "info");
-
-        fetch('../api/process_venda.php', {
-            method: 'POST',
-            body: JSON.stringify(data)
-        }).then(res => res.json())
-          .then(res => {
-              if (res.success) {
-                  bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
-                  new bootstrap.Modal(document.getElementById('successModal')).show();
-                  this.clearCart();
-              } else {
-                  this.notify(res.message || "Erro ao salvar venda", "error");
-              }
-          });
     },
 
     clearCart() {
