@@ -40,10 +40,7 @@ require_once __DIR__ . '/../includes/header.php';
     </button>
 </nav>
 
-<!-- BRASALLIS SMART FAB (WhatsApp Support) -->
-<a href="https://wa.me/5511999999999" target="_blank" class="m3-fab" style="background: var(--u-wa-green);" aria-label="Suporte WhatsApp">
-    <i class="fab fa-whatsapp" style="font-size: 1.8rem;"></i>
-</a>
+
 
 <style>
     :root {
@@ -909,7 +906,7 @@ require_once __DIR__ . '/../includes/header.php';
 </style>
 
 <!-- Floating WhatsApp -->
-<a href="https://wa.me/5511999999999?text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20as%20solu%C3%A7%C3%B5es%20do%20Brasallis%20Hub." class="wa-float" target="_blank" title="Falar com Consultor">
+<a href="https://wa.me/5511937748884?text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20as%20solu%C3%A7%C3%B5es%20do%20Brasallis%20Hub." class="wa-float" target="_blank" title="Falar com Consultor">
     <i class="fab fa-whatsapp"></i>
 </a>
 
@@ -1032,7 +1029,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <h3 class="u-card-title">Corporativo</h3>
                 <p class="u-card-desc">Soluções customizadas para grandes operações. Infraestrutura dedicada, SLAs e gerente de conta exclusivo.</p>
                 <div class="mt-4">
-                    <a href="https://wa.me/5511999999999" class="btn btn-outline-dark w-100 py-3 fw-bold" style="border-radius:12px;">Atendimento VIP</a>
+                    <a href="https://wa.me/5511937748884" class="btn btn-outline-dark w-100 py-3 fw-bold" style="border-radius:12px;">Atendimento VIP</a>
                 </div>
             </div>
         </div>
