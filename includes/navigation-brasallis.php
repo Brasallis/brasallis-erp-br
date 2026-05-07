@@ -105,36 +105,68 @@ function can_access($module) {
             <div class="brasallis-submenu" id="sub-operacional">
                 <?php if (can_access('pdv')): ?>
                     <a href="<?php echo $base_url; ?>employee/pdv.php" class="submenu-item">PDV (Frente de Caixa)</a>
-                    <a href="<?php echo $base_url; ?>admin/vendas.php" class="submenu-item">Relatório de Vendas</a>
-                    <a href="<?php echo $base_url; ?>modules/financeiro/views/fluxo_caixa.php" class="submenu-item">Fluxo de Caixa</a>
                 <?php endif; ?>
                 <?php if (can_access('estoque')): ?>
                     <a href="<?php echo $base_url; ?>admin/produtos.php" class="submenu-item">Produtos</a>
                     <a href="<?php echo $base_url; ?>admin/categorias.php" class="submenu-item">Categorias</a>
                 <?php endif; ?>
+                <?php if (can_access('pdv')): ?>
+                    <a href="<?php echo $base_url; ?>admin/vendas.php" class="submenu-item">Relatório de Vendas</a>
+                <?php endif; ?>
             </div>
         </div>
         <?php endif; ?>
 
-        <!-- GRUPO GESTÃO -->
-        <?php if (can_access('financeiro') || can_access('crm') || can_access('fiscal')): ?>
+        <!-- GRUPO FINANCEIRO -->
+        <?php if (can_access('financeiro') || can_access('fiscal')): ?>
         <div class="nav-group">
-            <div class="brasallis-item has-submenu" onclick="toggleSubmenu('sub-gestao')">
-                <i class="fas fa-briefcase"></i>
-                <span class="nav-label">Gestão</span>
+            <div class="brasallis-item has-submenu" onclick="toggleSubmenu('sub-financeiro')">
+                <i class="fas fa-wallet"></i>
+                <span class="nav-label">Financeiro</span>
                 <i class="fas fa-chevron-right submenu-arrow"></i>
             </div>
-            <div class="brasallis-submenu" id="sub-gestao">
+            <div class="brasallis-submenu" id="sub-financeiro">
                 <?php if (can_access('financeiro')): ?>
                     <a href="<?php echo $base_url; ?>modules/financeiro/views/index.php" class="submenu-item">Financeiro Hub</a>
-                <?php endif; ?>
-                <?php if (can_access('crm')): ?>
-                    <a href="<?php echo $base_url; ?>modules/crm/views/kanban.php" class="submenu-item">CRM Kanban</a>
-                    <a href="<?php echo $base_url; ?>modules/crm/views/clientes.php" class="submenu-item">Clientes</a>
+                    <a href="<?php echo $base_url; ?>modules/financeiro/views/fluxo_caixa.php" class="submenu-item">Fluxo de Caixa</a>
+                    <a href="<?php echo $base_url; ?>modules/financeiro/views/contas_receber.php" class="submenu-item">Contas a Receber</a>
+                    <a href="<?php echo $base_url; ?>modules/financeiro/views/contas_pagar.php" class="submenu-item">Contas a Pagar</a>
                 <?php endif; ?>
                 <?php if (can_access('fiscal')): ?>
                     <a href="<?php echo $base_url; ?>admin/fiscal.php" class="submenu-item">Fiscal NF-e</a>
                 <?php endif; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <!-- GRUPO MARKETING -->
+        <?php if (can_access('crm')): ?>
+        <div class="nav-group">
+            <div class="brasallis-item has-submenu" onclick="toggleSubmenu('sub-marketing')">
+                <i class="fas fa-handshake"></i>
+                <span class="nav-label">Marketing</span>
+                <i class="fas fa-chevron-right submenu-arrow"></i>
+            </div>
+            <div class="brasallis-submenu" id="sub-marketing">
+                <a href="<?php echo $base_url; ?>modules/crm/views/kanban.php" class="submenu-item">CRM Kanban</a>
+                <a href="<?php echo $base_url; ?>modules/crm/views/clientes.php" class="submenu-item">Gestão de Clientes</a>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <!-- GRUPO RH -->
+        <?php if (can_access('rh') || $is_admin): ?>
+        <div class="nav-group">
+            <div class="brasallis-item has-submenu" onclick="toggleSubmenu('sub-rh')">
+                <i class="fas fa-users"></i>
+                <span class="nav-label">RH</span>
+                <i class="fas fa-chevron-right submenu-arrow"></i>
+            </div>
+            <div class="brasallis-submenu" id="sub-rh">
+                <?php if ($is_admin): ?>
+                    <a href="<?php echo $base_url; ?>admin/usuarios.php" class="submenu-item">Gestão de Equipe</a>
+                <?php endif; ?>
+                <a href="<?php echo $base_url; ?>admin/meu-perfil.php" class="submenu-item">Meu Perfil / Senha</a>
             </div>
         </div>
         <?php endif; ?>
@@ -166,10 +198,8 @@ function can_access($module) {
                 <i class="fas fa-chevron-right submenu-arrow"></i>
             </div>
             <div class="brasallis-submenu" id="sub-config">
-                <a href="<?php echo $base_url; ?>admin/meu-perfil.php" class="submenu-item">Meu Perfil / Senha</a>
                 <a href="<?php echo $base_url; ?>admin/suporte.php" class="submenu-item">Suporte Técnico</a>
                 <?php if ($is_admin): ?>
-                    <a href="<?php echo $base_url; ?>admin/usuarios.php" class="submenu-item">Gestão de Equipe</a>
                     <a href="<?php echo $base_url; ?>admin/configuracoes.php" class="submenu-item">Minha Empresa</a>
                 <?php endif; ?>
             </div>
