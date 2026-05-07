@@ -1,0 +1,103 @@
+/* 
+ * PDV NEXUS v5.0 — THE DEFINITIVE SYSTEM
+ * Google Hub Integration & Professional PDV Flux.
+ */
+
+:root {
+    --nexus-primary: var(--brasallis-primary);
+    --nexus-navy: var(--navy);
+    --nexus-surface: var(--surface);
+    --nexus-radius: var(--radius-lg);
+    --sidebar-cart-width: 420px;
+}
+
+/* 1. Reset & Main Layout */
+.pdv-app {
+    display: flex;
+    height: calc(100vh - var(--topbar-height) - 40px);
+    gap: 24px;
+    background: transparent;
+}
+
+/* Catalog */
+.pdv-catalog-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.pdv-search-section { position: sticky; top: 0; background: var(--nexus-surface); z-index: 100; padding-bottom: 12px; }
+.pdv-search-bar { 
+    background: #fff; height: 56px; border-radius: 28px; 
+    display: flex; align-items: center; padding: 0 24px; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); 
+}
+.pdv-search-input { border: none; background: transparent; outline: none; flex: 1; font-weight: 500; }
+.pdv-search-icon { color: var(--nexus-primary); margin-right: 12px; }
+
+/* Product Grid */
+.pdv-product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; padding-bottom: 40px; }
+.pdv-product-card { 
+    background: #fff; border-radius: 20px; padding: 16px; 
+    border: 1px solid rgba(0,0,0,0.03); transition: all 0.3s; 
+    cursor: pointer; display: flex; flex-direction: column; 
+    animation: fade-in 0.4s ease forwards;
+}
+.pdv-product-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
+.pdv-item-icon { width: 100%; height: 100px; background: #f8fafc; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--slate-400); margin-bottom: 12px; }
+.pdv-item-name { font-weight: 700; color: var(--nexus-navy); display: block; }
+.pdv-item-price { font-weight: 800; color: var(--nexus-primary); font-size: 1.1rem; }
+
+/* 2. Cart Column (Desktop) */
+.pdv-cart-col { width: var(--sidebar-cart-width); }
+.pdv-cart-panel { background: #fff; border-radius: 24px; height: 100%; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.05); overflow: hidden; }
+.pdv-cart-header { padding: 24px; border-bottom: 1px solid #f1f5f9; }
+.pdv-cart-items { flex: 1; overflow-y: auto; padding: 12px 24px; }
+.pdv-cart-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f8fafc; }
+.pdv-cart-item-info { flex: 1; }
+.pdv-cart-item-name { font-weight: 700; font-size: 0.9rem; display: block; }
+.pdv-qty-control { display: flex; align-items: center; gap: 8px; background: #f1f5f9; border-radius: 10px; padding: 4px; }
+.pdv-qty-btn { width: 28px; height: 28px; border: none; background: #fff; border-radius: 6px; font-weight: 800; }
+
+.pdv-cart-footer { padding: 24px; background: #fff; border-top: 1px solid #f1f5f9; }
+.pdv-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.pdv-total-amount { font-weight: 900; font-size: 1.8rem; color: var(--nexus-navy); }
+.pdv-checkout-btn { width: 100%; height: 60px; background: var(--nexus-primary); color: #fff; border: none; border-radius: 16px; font-weight: 800; cursor: pointer; }
+.pdv-checkout-btn:disabled { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
+
+/* 3. Bottom Sheet (Mobile) */
+.pdv-sheet { 
+    position: fixed; bottom: 0; left: 0; right: 0; background: #fff; 
+    border-radius: 32px 32px 0 0; z-index: 5000; transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+    max-height: 85dvh; display: flex; flex-direction: column;
+}
+.pdv-sheet.has-items { transform: translateY(calc(100% - 84px)); }
+.pdv-sheet.expanded { transform: translateY(0); }
+.pdv-sheet-peek { height: 84px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+.pdv-sheet-body { display: none; padding: 24px; overflow-y: auto; flex: 1; }
+.pdv-sheet.expanded .pdv-sheet-body { display: flex; flex-direction: column; }
+.pdv-sheet.expanded .pdv-sheet-peek { display: none; }
+
+/* 4. Payment Modal */
+.pdv-method-card { 
+    background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; 
+    padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px;
+    cursor: pointer; transition: all 0.2s;
+}
+.pdv-method-card:hover { background: #f1f5f9; border-color: var(--nexus-primary); color: var(--nexus-primary); }
+.pdv-method-card i { font-size: 1.5rem; }
+.pdv-payment-methods-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* 5. Mobile FAB */
+.pdv-cart-fab {
+    position: fixed; bottom: 24px; right: 24px; width: 64px; height: 64px;
+    background: var(--nexus-primary); color: #fff; border-radius: 20px;
+    display: none; align-items: center; justify-content: center; font-size: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 112, 242, 0.3); z-index: 4500; transform: scale(0); transition: all 0.3s;
+}
+
+/* Animations */
+@keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Responsividade */
+@media (max-width: 991px) {
+    .pdv-app { height: auto; flex-direction: column; padding: 0 16px 120px; }
+    .pdv-cart-col { display: none; }
+    .pdv-product-grid { grid-template-columns: 1fr 1fr; }
+}
