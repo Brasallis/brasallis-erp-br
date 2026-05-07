@@ -58,8 +58,10 @@ class OrganizacaoRepository
                 certificado_path = ?,
                 openai_api_key = ?,
                 gemini_api_key = ?,
-                mp_access_token = ?,
-                pagarme_key = ?
+                mp_access_token = ?, 
+                pagarme_key = ?,
+                monthly_revenue_goal = ?,
+                fixed_costs = ?
              WHERE id = ?"
         );
 
@@ -104,6 +106,8 @@ class OrganizacaoRepository
             $data['gemini_api_key'] ?? null,
             $data['mp_access_token'] ?? null,
             $data['pagarme_key'] ?? null,
+            $data['monthly_revenue_goal'] ?? 0,
+            $data['fixed_costs'] ?? 0,
             $this->empresaId
         ]);
     }

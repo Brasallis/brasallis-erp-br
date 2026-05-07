@@ -57,6 +57,11 @@ try {
         $s_stmt->execute([$item['quantity'], $item['id']]);
     }
 
+    // --- INTEGRAÇÃO FINANCEIRA (NOVO v1.1) ---
+    // Registra a entrada automática no Fluxo de Caixa
+    $f_stmt = $conn->prepare("INSERT INTO contas_receber (empresa_id, descricao, valor, data_vencimento, status) VALUES (?, ?, ?, CURDATE(), 'recebido')");
+    $f_stmt->execute([$empresa_id, "Venda PDV #$venda_id", $final_total]);
+
     $conn->commit();
     echo json_encode(['success' => true, 'venda_id' => $venda_id]);
 

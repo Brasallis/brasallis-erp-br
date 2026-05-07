@@ -147,6 +147,9 @@ require_once BASE_PATH . '/includes/cabecalho.php';
                     <button class="nav-link" id="v-fiscal-tab" data-bs-toggle="pill" data-bs-target="#v-fiscal" type="button" role="tab">
                         <i class="fas fa-file-invoice-dollar"></i> Configuração Fiscal
                     </button>
+                    <button class="nav-link" id="v-metas-tab" data-bs-toggle="pill" data-bs-target="#v-metas" type="button" role="tab">
+                        <i class="fas fa-bullseye"></i> Metas Financeiras
+                    </button>
                 </div>
                 
                 <div class="mt-4 text-center">
@@ -442,6 +445,41 @@ require_once BASE_PATH . '/includes/cabecalho.php';
                                     <div class="alert alert-info border-0 mt-4 rounded-4 small">
                                         <i class="fas fa-info-circle me-2"></i> Para emitir notas, certifique-se de que sua empresa possui o CNAE correto e está credenciada na SEFAZ do seu estado.
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- TAB: METAS FINANCEIRAS -->
+                    <div class="tab-pane fade" id="v-metas" role="tabpanel">
+                        <div class="solar-card">
+                            <div class="d-flex align-items-center mb-5">
+                                <div class="icon-box me-3"><i class="fas fa-bullseye text-danger"></i></div>
+                                <div>
+                                    <h4 class="fw-bold mb-0">Gestão de Metas e Saúde Financeira</h4>
+                                    <p class="small text-muted mb-0">Defina os parâmetros para que a IA monitore sua lucratividade.</p>
+                                </div>
+                            </div>
+
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="solar-label">Meta de Faturamento Mensal (R$)</label>
+                                    <input type="number" step="0.01" name="monthly_revenue_goal" class="form-control solar-input" value="<?= htmlspecialchars($empresa['monthly_revenue_goal'] ?? '0.00') ?>" placeholder="Ex: 50000.00">
+                                    <p class="text-xs text-muted mt-2" style="font-size: 0.75rem;">O valor que sua empresa deseja vender por mês.</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="solar-label">Custos Fixos Mensais (R$)</label>
+                                    <input type="number" step="0.01" name="fixed_costs" class="form-control solar-input" value="<?= htmlspecialchars($empresa['fixed_costs'] ?? '0.00') ?>" placeholder="Ex: 15000.00">
+                                    <p class="text-xs text-muted mt-2" style="font-size: 0.75rem;">Aluguel, salários, energia e outras despesas fixas.</p>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-warning border-0 mt-5 rounded-4 p-4 d-flex align-items-start gap-3">
+                                <i class="fas fa-shield-virus fs-3 mt-1"></i>
+                                <div>
+                                    <h6 class="fw-bold">Por que configurar isso?</h6>
+                                    <p class="small mb-0 opacity-75">Com esses valores, o **Brasallis Hub** calculará automaticamente seu Ponto de Equilíbrio diário. Se você vender menos que a meta diária, o sistema alertará sobre o risco à saúde financeira.</p>
                                 </div>
                             </div>
                         </div>
